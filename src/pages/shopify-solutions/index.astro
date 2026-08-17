@@ -94,6 +94,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   .hero[data-active="launch"] .hero-word[data-solution="launch"]::after{background:var(--lime);transform:scaleX(1) rotate(-1deg);opacity:1}
   .hero[data-active="connect"] .hero-word[data-solution="connect"]::after{background:var(--mint);transform:scaleX(1) rotate(.6deg);opacity:1}
   .hero[data-active="scale"] .hero-word[data-solution="scale"]::after{background:var(--lavender);transform:scaleX(1) rotate(-.6deg);opacity:1}
+  .hero[data-active="build"] .hero-word[data-solution="build"]::after{background:var(--peach);transform:scaleX(1) rotate(.8deg);opacity:1}
   .hero-sub{max-width:650px;margin:28px 0 0;color:var(--muted);font-size:clamp(1.05rem,1.55vw,1.32rem);line-height:1.65}
   .hero-mascot{--mascot-shift:0px;--mascot-rotate:0deg;position:relative;height:430px;width:390px;display:grid;place-items:start center;align-self:start;isolation:isolate;margin-top:58px;margin-left:-72px;overflow:visible}
   .hero-mascot::before{content:"";position:absolute;z-index:-2;width:380px;height:380px;left:52%;top:46%;border:1px dashed;border-color:rgba(32,33,36,.11) transparent rgba(32,33,36,.07) transparent;border-radius:50%;transform:translate(-50%,-50%) rotate(-18deg);pointer-events:none}
@@ -102,14 +103,16 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   .hero[data-active="launch"] .hero-mascot{--mascot-shift:-6px;--mascot-rotate:-.45deg}
   .hero[data-active="connect"] .hero-mascot{--mascot-shift:0px;--mascot-rotate:0deg}
   .hero[data-active="scale"] .hero-mascot{--mascot-shift:7px;--mascot-rotate:.45deg}
+  .hero[data-active="build"] .hero-mascot{--mascot-shift:12px;--mascot-rotate:.65deg}
   .hero[data-active="launch"] .hero-mascot::after{background:radial-gradient(circle,rgba(194,255,2,.26),transparent 68%)}
   .hero[data-active="connect"] .hero-mascot::after{background:radial-gradient(circle,rgba(153,254,237,.29),transparent 68%)}
   .hero[data-active="scale"] .hero-mascot::after{background:radial-gradient(circle,rgba(217,214,253,.42),transparent 68%)}
+  .hero[data-active="build"] .hero-mascot::after{background:radial-gradient(circle,rgba(255,189,155,.36),transparent 68%)}
   .hero-mascot__prompt{position:absolute;z-index:4;right:-2px;top:34px;max-width:172px;padding:10px 13px;border:1px solid rgba(32,33,36,.08);border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 12px 28px rgba(32,33,36,.08);color:var(--muted);font-size:.58rem;font-weight:800;line-height:1.35;transition:transform .28s var(--ease),background .2s ease}
   .hero-guide{--packet-x:16.666%;--packet-color:var(--lime);position:relative;max-width:1110px;height:38px;margin:18px auto 0}
   .hero-guide::before{content:"";position:absolute;left:8%;right:8%;top:50%;height:1px;background:repeating-linear-gradient(90deg,rgba(32,33,36,.20) 0 5px,transparent 5px 11px)}
   .hero-guide__node{position:absolute;top:50%;width:8px;height:8px;border:2px solid rgba(32,33,36,.18);border-radius:50%;background:#fff;transform:translate(-50%,-50%);transition:background .22s ease,border-color .22s ease,transform .22s ease}
-  .hero-guide__node:nth-of-type(1){left:16.666%}.hero-guide__node:nth-of-type(2){left:50%}.hero-guide__node:nth-of-type(3){left:83.333%}
+  .hero-guide__node:nth-of-type(1){left:12.5%}.hero-guide__node:nth-of-type(2){left:37.5%}.hero-guide__node:nth-of-type(3){left:62.5%}.hero-guide__node:nth-of-type(4){left:87.5%}
   .hero-guide__packet{position:absolute;z-index:2;left:var(--packet-x);top:50%;width:12px;height:12px;border-radius:50%;background:var(--packet-color);box-shadow:0 0 0 5px color-mix(in srgb,var(--packet-color) 20%,transparent);transform:translate(-50%,-50%);transition:left .45s var(--ease),background .24s ease}
   .hero[data-active="launch"] .hero-guide{--packet-x:12.5%;--packet-color:var(--lime)}
   .hero[data-active="connect"] .hero-guide{--packet-x:37.5%;--packet-color:var(--mint)}
@@ -217,7 +220,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   .machine-card__price small{margin-top:4px;color:var(--muted);font-size:.54rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
   .machine-card__chips{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
   .machine-card__chips span{padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:.51rem;font-weight:750;white-space:nowrap}
-  .machine-card__actions{margin-top:16px}
+  .machine-card__actions{margin-top:auto;padding-top:16px}
   .machine-more{width:100%;min-height:51px;display:inline-flex;align-items:center;justify-content:space-between;gap:12px;padding:0 17px;border:1px solid rgba(32,33,36,.11);border-radius:999px;background:var(--ink);color:#fff;font-size:.69rem;font-weight:800;transition:transform .25s var(--ease),box-shadow .25s ease,background .2s ease}
   .machine-more__arrow{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--machine-accent);color:var(--ink);transition:transform .25s var(--ease)}
   .machine-more:hover,.machine-more:focus-visible{transform:translateY(-2px);box-shadow:0 13px 28px rgba(32,33,36,.16)}
@@ -411,9 +414,26 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   .hero-mascot::after{width:166px;height:166px}
   .hero-mascot__prompt{right:0;top:20px;max-width:112px;padding:7px 9px;font-size:.49rem}
   }
+  @media (min-width:901px){
+  .shopify-solutions-page .hero{padding-top:clamp(164px,10vw,190px);padding-bottom:82px}
+  .shopify-solutions-page .hero-head{grid-template-columns:minmax(0,1fr) minmax(320px,390px);max-width:1180px}
+  .shopify-solutions-page .hero-mascot{margin-top:88px;margin-left:-44px;height:400px;width:360px}
+  .shopify-solutions-page .hero-mascot img{height:clamp(330px,23vw,390px)}
+  .shopify-solutions-page .hero-mascot__prompt{top:44px;right:-8px}
+  .shopify-solutions-page .hero-guide{max-width:calc(var(--page) - 28px);margin-top:34px}
+  .shopify-solutions-page .solutions{margin-top:18px}
+  .shopify-solutions-page .launch-preview-browser{left:8%;right:6%;top:32px}
+  .shopify-solutions-page .launch-preview-browser img{object-position:top center}
+  .shopify-solutions-page .enterprise-preview-browser{left:16%;right:16%;top:76px}
+  .shopify-solutions-page .enterprise-preview-browser img{object-position:top center}
+  }
+  @media (min-width:901px) and (max-width:1120px){
+  .shopify-solutions-page .hero{padding-top:150px}
+  .shopify-solutions-page .hero-mascot{margin-top:76px;margin-left:-36px}
+  }
   @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
-  <main>
+  <main class="shopify-solutions-page">
   <section class="hero" data-active="launch" id="top">
   <div class="page-shell">
   <div class="hero-head">
@@ -573,4 +593,45 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   </div>
   </section>
   </main>
+  <script slot="scripts" is:inline>
+  (() => {
+    const hero = document.querySelector('.shopify-solutions-page .hero');
+    const solutionCards = [...document.querySelectorAll('.shopify-solutions-page [data-solution-card]')];
+    const solutionWords = [...document.querySelectorAll('.shopify-solutions-page .hero-word[data-solution]')];
+    const mascotPrompt = document.getElementById('heroMascotPrompt');
+    const prompts = {
+      launch: 'Starting a client store?',
+      connect: 'Already using SAGE?',
+      scale: 'Managing too many stores?',
+      build: 'Need something custom?'
+    };
+
+    function activateSolution(key) {
+      if (!hero || !key) return;
+      hero.dataset.active = key;
+      if (mascotPrompt) mascotPrompt.textContent = prompts[key] || prompts.launch;
+      solutionCards.forEach((card) => {
+        card.classList.toggle('is-active', card.dataset.solutionCard === key);
+      });
+    }
+
+    [...solutionCards, ...solutionWords].forEach((el) => {
+      const key = el.dataset.solutionCard || el.dataset.solution;
+      el.addEventListener('pointerenter', () => activateSolution(key));
+      el.addEventListener('focus', () => activateSolution(key));
+    });
+
+    activateSolution('launch');
+
+    if ('IntersectionObserver' in window && matchMedia('(max-width: 900px)').matches) {
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) activateSolution(visible.target.dataset.solutionCard);
+      }, { rootMargin: '-28% 0px -42%', threshold: [.15, .35, .55] });
+      solutionCards.forEach((card) => observer.observe(card));
+    }
+  })();
+  </script>
 </BaseLayout>

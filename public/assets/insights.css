@@ -257,6 +257,15 @@ button, input { font: inherit; }
   background: linear-gradient(135deg, #f3f5ff, #faf8ff 54%, #f4fbff);
   border: 1px solid #ececf7;
 }
+.featured-card[aria-disabled="true"],
+.article-card a[aria-disabled="true"] {
+  cursor: progress;
+  pointer-events: none;
+}
+.featured-card[aria-disabled="true"] .text-link,
+.article-card a[aria-disabled="true"] .card-arrow {
+  opacity: .45;
+}
 .featured-visual {
   position: relative;
   min-height: 510px;

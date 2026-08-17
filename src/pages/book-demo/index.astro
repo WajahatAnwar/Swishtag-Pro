@@ -32,36 +32,33 @@ const robots = "index,follow";
         color:var(--ink);
         font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
         background:
-          radial-gradient(circle at 6% 8%, rgba(255,189,155,.52), transparent 22rem),
-          radial-gradient(circle at 93% 9%, rgba(217,214,253,.70), transparent 24rem),
-          radial-gradient(circle at 13% 88%, rgba(194,255,2,.18), transparent 22rem),
-          radial-gradient(circle at 91% 84%, rgba(153,254,237,.45), transparent 24rem),
-          linear-gradient(180deg,#fffdfa 0%,#fbfaf6 55%,#f8fbf8 100%);
+          radial-gradient(circle at 0% 0%, rgba(255,189,155,.45), transparent 27rem),
+          radial-gradient(circle at 100% 0%, rgba(217,214,253,.68), transparent 30rem),
+          radial-gradient(circle at 0% 100%, rgba(194,255,2,.14), transparent 20rem),
+          linear-gradient(180deg,#fffdf9 0%,#fff 52%,#fbfaf7 100%);
         min-height:100vh;
       }
       button,input,textarea,select{font:inherit}
-      a{color:inherit}
-      .page{position:relative;isolation:isolate;min-height:100vh;overflow:hidden}
-      .page::before,.page::after{
-        content:"";position:absolute;z-index:-1;border-radius:50%;pointer-events:none;opacity:.65;filter:blur(2px)
+      .book-demo-page a{color:inherit}
+      .book-demo-page{position:relative;isolation:isolate;min-height:100vh;overflow:hidden;padding:100px 0 66px;background:
+        radial-gradient(circle at 4% 0%, rgba(255,189,155,.30), transparent 26rem),
+        radial-gradient(circle at 96% 0%, rgba(217,214,253,.48), transparent 31rem),
+        linear-gradient(180deg,rgba(255,253,249,.94),rgba(255,255,255,.94) 54%,rgba(251,250,247,.96))}
+      .book-demo-page::before,.book-demo-page::after{
+        content:"";position:absolute;z-index:-1;border-radius:50%;pointer-events:none;opacity:.8
       }
-      .page::before{width:420px;height:420px;left:-180px;top:30%;background:rgba(194,255,2,.10)}
-      .page::after{width:460px;height:460px;right:-220px;top:12%;background:rgba(217,214,253,.20)}
-      .shell{width:min(var(--max),calc(100% - 32px));margin:0 auto}
-      .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:76px}
-      .brand{font-weight:900;letter-spacing:.08em;font-size:1.15rem;text-decoration:none}
-      .back-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#5f6166;font-size:.82rem;font-weight:700}
-      .back-link span{transition:transform .18s ease}.back-link:hover span{transform:translateX(-2px)}
-      main{padding:18px 0 64px}
-      .hero{text-align:center;max-width:880px;margin:0 auto 28px}
-      .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid rgba(32,33,36,.08);background:rgba(255,255,255,.78);border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 18px rgba(32,33,36,.04)}
-      .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 5px rgba(194,255,2,.16)}
-      h1{margin:18px auto 12px;max-width:880px;font-size:clamp(2.6rem,7vw,5rem);line-height:.95;letter-spacing:-.06em;text-wrap:balance}
-      .hero p{margin:0 auto;max-width:710px;color:var(--muted);font-size:1.06rem;line-height:1.7}
-      .hero-note{margin-top:16px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-      .hero-note span{padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.74);border:1px solid rgba(32,33,36,.07);font-size:.75rem;font-weight:700;color:#67696f}
+      .book-demo-page::before{width:430px;height:430px;left:-250px;top:61%;background:rgba(194,255,2,.12)}
+      .book-demo-page::after{width:560px;height:560px;right:-315px;top:9%;background:rgba(217,214,253,.25);filter:blur(1px)}
+      .book-demo-page.shell{width:100%;max-width:none;margin:0}
+      .book-demo-page .hero{width:min(980px,calc(100% - 32px));text-align:center;max-width:980px;margin:0 auto 22px}
+      .book-demo-page .eyebrow{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:calc(100vw - 32px);gap:8px;margin:0 auto;padding:8px 14px;border:1px solid rgba(32,33,36,.08);background:rgba(255,255,255,.86);border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 18px rgba(32,33,36,.04)}
+      .book-demo-page .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 5px rgba(194,255,2,.16)}
+      .book-demo-page h1{margin:18px auto 12px;max-width:920px;font-size:clamp(3rem,5.6vw,5.05rem);line-height:.96;letter-spacing:-.06em;text-wrap:balance}
+      .book-demo-page .hero p{margin:0 auto;max-width:760px;color:var(--muted);font-size:1.03rem;line-height:1.5}
+      .book-demo-page .hero-note{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+      .book-demo-page .hero-note span{display:inline-flex;align-items:center;min-height:34px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(32,33,36,.07);font-size:.75rem;font-weight:700;color:#67696f}
   
-      .form-shell{max-width:920px;margin:0 auto}
+      .form-shell{width:min(920px,calc(100% - 32px));max-width:920px;margin:18px auto 0}
       .card{position:relative;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow);overflow:hidden}
       .card::before{content:"";display:block;height:5px;background:linear-gradient(90deg,var(--lime),var(--mint),var(--lav),var(--peach))}
       .card-inner{padding:34px}
@@ -83,6 +80,7 @@ const robots = "index,follow";
       .field{display:grid;gap:8px;margin-bottom:16px}
       .field label{font-size:.84rem;font-weight:800;color:#44474d}
       .field input,.field textarea,.field select{width:100%;border:1px solid #dbdcd8;border-radius:16px;background:#fff;padding:15px 16px;font-size:.97rem;color:var(--ink);outline:none;transition:border-color .16s ease, box-shadow .16s ease}
+      .field select{appearance:none;-webkit-appearance:none;padding-right:46px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23202124' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 18px center;background-size:14px 14px}
       .field input:focus,.field textarea:focus,.field select:focus{border-color:#a7bc0c;box-shadow:0 0 0 4px rgba(194,255,2,.12)}
       .field textarea{min-height:100px;resize:vertical}
       .optional{font-weight:600;color:#9a9ca1;font-size:.8em}
@@ -120,13 +118,13 @@ const robots = "index,follow";
       .summary-strip.show{display:block}
       .summary-strip strong{display:block;color:var(--ink);margin-bottom:4px}
       .actions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px}
-      .btn{appearance:none;border:0;border-radius:999px;padding:15px 18px;font-size:.92rem;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease}
-      .btn:hover{transform:translateY(-1px)}
-      .btn-primary{background:var(--ink);color:#fff;box-shadow:0 10px 24px rgba(32,33,36,.14)}
-      .btn-primary b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--lime);color:var(--ink)}
-      .btn-light{background:#fff;color:var(--ink);border:1px solid #dcddda;box-shadow:var(--shadow-sm)}
-      .btn-ghost{background:transparent;color:#686a70;padding-left:0;padding-right:0}
-      .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none !important}
+      .book-demo-page .btn{appearance:none;border:0;border-radius:999px;padding:15px 18px;font-size:.92rem;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease}
+      .book-demo-page .btn:hover{transform:translateY(-1px)}
+      .book-demo-page .btn-primary{background:var(--ink);color:#fff;box-shadow:0 10px 24px rgba(32,33,36,.14)}
+      .book-demo-page .btn-primary b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--lime);color:var(--ink)}
+      .book-demo-page .btn-light{background:#fff;color:var(--ink);border:1px solid #dcddda;box-shadow:var(--shadow-sm)}
+      .book-demo-page .btn-ghost{background:transparent;color:#686a70;padding-left:0;padding-right:0}
+      .book-demo-page .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none !important}
       .fine-print{font-size:.78rem;line-height:1.55;color:#8b8d92;max-width:340px}
       .error{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,189,155,.18);border:1px solid rgba(188,123,88,.16);font-size:.82rem;color:#7b5f52;display:none}
       .error.show{display:block}
@@ -201,8 +199,8 @@ const robots = "index,follow";
       .spark::before{width:8px;height:8px;background:var(--mint);right:-180px;top:62px;box-shadow:0 0 0 7px rgba(153,254,237,.10)}
       .spark::after{width:7px;height:7px;background:var(--peach);left:40px;top:250px;box-shadow:0 0 0 6px rgba(255,189,155,.10)}
   
-      footer{padding:28px 0 36px;border-top:1px solid rgba(32,33,36,.06);font-size:.8rem;color:#77797e}
-      .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+      .book-demo-page footer{padding:28px 0 36px;border-top:1px solid rgba(32,33,36,.06);font-size:.8rem;color:#77797e}
+      .book-demo-page .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       @media (max-width:920px){
         .card-inner{padding:26px}
         .picker-grid,.success-wrap{grid-template-columns:1fr}
@@ -213,14 +211,16 @@ const robots = "index,follow";
         .rocket-trail{left:31%;top:66%;width:110px;height:92px}
       }
       @media (max-width:720px){
-        .shell{width:min(calc(100% - 22px),var(--max))}
-        .topbar{height:66px}
-        .brand{font-size:1rem}.back-link{font-size:.72rem}
-        main{padding:12px 0 54px}
-        .hero{margin-bottom:22px}
-        .eyebrow{font-size:.6rem;padding:8px 11px}
-        .hero p{font-size:.95rem}
-        .hero-note span{font-size:.68rem;padding:8px 10px}
+        .book-demo-page.shell{width:100%;max-width:none}
+        .book-demo-page{padding:82px 0 48px}
+        .book-demo-page::before{width:330px;height:330px;left:-210px;top:58%}
+        .book-demo-page::after{width:380px;height:380px;right:-250px;top:7%}
+        .book-demo-page .hero,.form-shell{width:min(calc(100% - 22px),var(--max))}
+        .book-demo-page .hero{margin-bottom:22px}
+        .book-demo-page .eyebrow{font-size:.6rem;padding:8px 11px;width:max-content;max-width:calc(100vw - 22px)}
+        .book-demo-page h1{font-size:clamp(2.45rem,13vw,4.1rem)}
+        .book-demo-page .hero p{font-size:.95rem}
+        .book-demo-page .hero-note span{font-size:.68rem;padding:8px 10px}
         .card{border-radius:26px}
         .card-inner{padding:22px 16px}
         .stepper{margin-bottom:22px}
@@ -230,8 +230,8 @@ const robots = "index,follow";
         .grid-2,.choices,.success-grid,.date-list,.time-list{grid-template-columns:1fr}
         .panel-head{margin-bottom:20px}.panel-head p{font-size:.9rem}
         .actions{flex-direction:column-reverse;align-items:stretch}
-        .btn,.btn-ghost{width:100%;justify-content:center;padding:15px 16px}
-        .btn-ghost{border:1px solid #dddfdb;background:#fff;border-radius:999px;padding-left:16px;padding-right:16px;box-shadow:var(--shadow-sm);color:var(--ink)}
+        .book-demo-page .btn,.book-demo-page .btn-ghost{width:100%;justify-content:center;padding:15px 16px}
+        .book-demo-page .btn-ghost{border:1px solid #dddfdb;background:#fff;border-radius:999px;padding-left:16px;padding-right:16px;box-shadow:var(--shadow-sm);color:var(--ink)}
         .fine-print{max-width:none;text-align:center}
         .success h2{font-size:2.4rem}
         .success p{font-size:.95rem}
@@ -243,7 +243,7 @@ const robots = "index,follow";
       }
       @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.panel.active,.success.show,.astronaut,.rocket-pack .nozzle::after,.rocket-trail{animation:none}*{transition:none!important}}
   </style>
-  <main class="shell">
+  <main class="book-demo-page shell">
       <section class="hero">
         <span class="eyebrow"><i></i> Book a Demo</span>
         <h1>Book the right Shopify demo for your company-store workflow.</h1>
@@ -274,18 +274,18 @@ const robots = "index,follow";
                   <div class="grid-2">
                     <div class="field">
                       <label for="fullName">Full name</label>
-                      <input id="fullName" name="fullName" type="text" autocomplete="name" required>
+                      <input id="fullName"  placeholder="Enter your full name"  name="fullName" type="text" autocomplete="name" required>
                     </div>
                     <div class="field">
                       <label for="workEmail">Work email</label>
-                      <input id="workEmail" name="workEmail" type="email" autocomplete="email" required>
+                      <input id="workEmail" name="workEmail"  placeholder="Enter your email address"  type="email" autocomplete="email" required>
                     </div>
                     <div class="field">
                       <label for="companyName">Company</label>
-                      <input id="companyName" name="companyName" type="text" autocomplete="organization" required>
+                      <input id="companyName" name="companyName" type="text" autocomplete="organization" required placeholder="Enter your company" >
                     </div>
                     <div class="field">
-                      <label for="website">Website <span class="optional">optional</span></label>
+                      <label for="website">Website <span class="optional">(optional)</span></label>
                       <input id="website" name="website" type="url" placeholder="https://">
                     </div>
                     <div class="field sr-only" aria-hidden="true">

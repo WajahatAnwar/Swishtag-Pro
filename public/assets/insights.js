@@ -13,6 +13,7 @@ const FILTER_FALLBACK_SEARCH = {
   migration: 'migration',
   commerce: 'commerce ecommerce'
 };
+const EXCLUDED_CATEGORY_SLUGS = new Set(['uncategorized']);
 let categoryCache;
 let tocObserver;
 
@@ -22,10 +23,48 @@ function decodeHtml(value = '') {
   return element.value;
 }
 
+function stripWordPressShortcodes(value = '') {
+  let output = decodeHtml(String(value));
+  const shortcodePattern = /\[(?:\/)?(?:vc_[\w-]+|mk_[\w-]+|et_pb_[\w-]+|fusion_[\w-]+|nectar_[\w-]+|porto_[\w-]+|us_[\w-]+|caption|gallery|embed|audio|video|playlist|contact-form-7|gravityform|wp_caption|rev_slider)(?:[^\]]*)?\]/gi;
+
+  for (let index = 0; index < 3; index += 1) {
+    output = output.replace(shortcodePattern, ' ');
+  }
+
+  return output
+    .replace(/\[[A-Za-z_][\w-]*(?:\s+[^\]]*)?\]/g, ' ')
+    .replace(/\[\/[A-Za-z_][\w-]*\]/g, ' ');
+}
+
 function htmlToText(value = '') {
   const element = document.createElement('div');
-  element.innerHTML = value;
-  return element.textContent.replace(/\s+/g, ' ').trim();
+  element.innerHTML = stripWordPressShortcodes(value).replace(/<!--[\s\S]*?-->/g, ' ');
+  $$('script, style, iframe, noscript', element).forEach(node => node.remove());
+  return decodeHtml(element.textContent)
+    .replace(/\[[^\]]*\]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function hasShortcodeNoise(value = '') {
+  return /\b(?:vc_row|vc_column|vc_column_text|full_screen_row_position|column_margin|column_padding|column_direction|row_border_radius|background_color_opacity|background_hover_color_opacity|column_shadow|column_backdrop_filter|overlay_strength|shape_divider_position|bg_image_animation)\b/i.test(value);
+}
+
+function truncateText(value = '', maxLength = 185) {
+  const text = htmlToText(value);
+  if (text.length <= maxLength) return text;
+  const shortened = text.slice(0, maxLength).replace(/\s+\S*$/, '').trim();
+  return shortened ? `${shortened}...` : text;
+}
+
+function getPostExcerpt(post, maxLength = 185) {
+  const excerpt = truncateText(post?.excerpt?.rendered || '', maxLength);
+  if (excerpt && excerpt.length > 24 && !hasShortcodeNoise(excerpt)) return excerpt;
+
+  const content = truncateText(post?.content?.rendered || '', maxLength);
+  if (content && !hasShortcodeNoise(content)) return content;
+
+  return '';
 }
 
 function formatDate(value, options = { month: 'short', day: 'numeric' }) {
@@ -50,7 +89,7 @@ function getFeaturedImage(post) {
 function getCategory(post) {
   const termGroups = post?._embedded?.['wp:term'] || [];
   const category = termGroups.flat().find(term => term.taxonomy === 'category');
-  const text = `${htmlToText(post?.title?.rendered)} ${htmlToText(post?.excerpt?.rendered)} ${category?.name || ''}`.toLowerCase();
+  const text = `${htmlToText(post?.title?.rendered)} ${getPostExcerpt(post)} ${category?.name || ''}`.toLowerCase();
   const inferred = [
     { slug: 'migration', name: 'Migration', terms: ['migration', 'migrate', 'moving to shopify', 'checkout', 'seo'] },
     { slug: 'integrations', name: 'Integrations', terms: ['integration', 'erp', 'sage', 'api', 'workflow'] },
@@ -61,13 +100,30 @@ function getCategory(post) {
     { slug: 'commerce', name: 'Commerce', terms: ['commerce', 'ecommerce', 'e-commerce'] }
   ].find(item => item.terms.some(term => text.includes(term)));
 
-  if (category && category.slug !== 'blog') return { name: category.name, slug: category.slug };
+  if (category) return { name: decodeHtml(category.name || 'Blog'), slug: category.slug || normalizeSlug(category.name || 'blog') };
   return inferred || { name: category?.name || 'Blog', slug: category?.slug || 'blog' };
 }
 
 function buildPostUrl(post) {
   const slug = post?.slug || '';
-  return slug ? `/insights/blog/?slug=${encodeURIComponent(slug)}` : '/insights/blog/';
+  return slug ? `/insights/blog/?slug=${encodeURIComponent(slug)}` : '';
+}
+
+function disableLoadingLinks(scope = document) {
+  $$('[data-loading-link]', scope).forEach(link => {
+    link.removeAttribute('href');
+    link.setAttribute('aria-disabled', 'true');
+    link.setAttribute('tabindex', '-1');
+  });
+}
+
+function enableLink(link, href) {
+  if (!link || !href) return false;
+  link.href = href;
+  link.removeAttribute('aria-disabled');
+  link.removeAttribute('tabindex');
+  link.removeAttribute('data-loading-link');
+  return true;
 }
 
 function setImage(target, imageUrl, altText, fallbackClass = 'a') {
@@ -94,7 +150,14 @@ function createCard(post, index) {
   article.dataset.category = category.slug;
 
   const link = document.createElement('a');
-  link.href = buildPostUrl(post);
+  const postUrl = buildPostUrl(post);
+  if (postUrl) {
+    link.href = postUrl;
+  } else {
+    link.dataset.loadingLink = '';
+    link.setAttribute('aria-disabled', 'true');
+    link.setAttribute('tabindex', '-1');
+  }
 
   const imageWrap = document.createElement('div');
   imageWrap.className = 'article-image';
@@ -108,7 +171,7 @@ function createCard(post, index) {
   title.textContent = decodeHtml(htmlToText(post?.title?.rendered));
 
   const excerpt = document.createElement('p');
-  excerpt.textContent = htmlToText(post?.excerpt?.rendered);
+  excerpt.textContent = getPostExcerpt(post);
 
   const bottom = document.createElement('div');
   bottom.className = 'card-bottom';
@@ -137,11 +200,11 @@ function renderFeaturedPost(post) {
   if (!featured || !post) return;
 
   const category = getCategory(post);
-  featured.href = buildPostUrl(post);
+  enableLink(featured, buildPostUrl(post));
   setImage($('.featured-visual', featured), getFeaturedImage(post), htmlToText(post?.title?.rendered), 'a');
   $('.featured-content .eyebrow', featured).textContent = category.name;
   $('.featured-content h2', featured).textContent = decodeHtml(htmlToText(post?.title?.rendered));
-  $('.featured-content p', featured).textContent = htmlToText(post?.excerpt?.rendered);
+  $('.featured-content p', featured).textContent = getPostExcerpt(post, 210);
 
   const meta = $('.featured-content .meta', featured);
   if (meta) {
@@ -192,18 +255,27 @@ async function getCategories() {
     page += 1;
   } while (page <= totalPages);
 
-  categoryCache = categories;
+  categoryCache = categories
+    .filter(category => Number(category.count || 0) > 0)
+    .filter(category => !EXCLUDED_CATEGORY_SLUGS.has(normalizeSlug(category.slug || category.name || '')))
+    .map(category => ({
+      ...category,
+      name: decodeHtml(htmlToText(category.name || 'Blog')),
+      slug: normalizeSlug(category.slug || category.name || 'blog')
+    }));
   return categoryCache;
 }
 
 async function getCategoryIds(filter) {
   if (!filter || filter === 'all') return [];
+  const idMatch = String(filter).match(/^id:(\d+)$/);
+  if (idMatch) return [Number(idMatch[1])];
 
   let categories = [];
   try {
     categories = await getCategories();
   } catch (error) {
-    return [];
+    return null;
   }
 
   const wanted = normalizeSlug(filter);
@@ -216,10 +288,51 @@ async function getCategoryIds(filter) {
   return matches.map(category => category.id);
 }
 
+function createFilterButton({ label, value, count, active = false }) {
+  const button = document.createElement('button');
+  button.className = `filter-pill${active ? ' active' : ''}`;
+  button.type = 'button';
+  button.dataset.filter = value;
+  button.textContent = label;
+  if (Number.isFinite(count)) button.dataset.count = String(count);
+  return button;
+}
+
+function renderCategoryFilters(container, categories, activeFilter = 'all') {
+  if (!container || !categories.length) return activeFilter;
+
+  const filters = [
+    { label: 'All', value: 'all' },
+    ...categories
+      .slice()
+      .sort((a, b) => Number(b.count || 0) - Number(a.count || 0) || a.name.localeCompare(b.name))
+      .map(category => ({
+        label: category.name,
+        value: `id:${category.id}`,
+        count: Number(category.count || 0)
+      }))
+  ];
+  const nextActive = filters.some(filter => filter.value === activeFilter) ? activeFilter : 'all';
+
+  container.innerHTML = '';
+  filters.forEach(filter => {
+    container.appendChild(createFilterButton({
+      ...filter,
+      active: filter.value === nextActive
+    }));
+  });
+
+  return nextActive;
+}
+
 async function fetchPosts({ page = 1, filter = 'all', query = '', signal } = {}) {
   const url = new URL(WORDPRESS_POSTS_API);
   const categoryIds = await getCategoryIds(filter);
-  const fallbackSearch = !categoryIds.length && filter !== 'all'
+  if (filter !== 'all' && Array.isArray(categoryIds) && !categoryIds.length) {
+    return { posts: [], totalPages: 1 };
+  }
+
+  const fallbackSearch = categoryIds === null && filter !== 'all'
     ? FILTER_FALLBACK_SEARCH[filter] || filter.replace(/-/g, ' ')
     : '';
 
@@ -229,7 +342,7 @@ async function fetchPosts({ page = 1, filter = 'all', query = '', signal } = {})
   url.searchParams.set('orderby', 'date');
   url.searchParams.set('order', 'desc');
 
-  if (categoryIds.length) {
+  if (Array.isArray(categoryIds) && categoryIds.length) {
     url.searchParams.set('categories', categoryIds.join(','));
   }
 
@@ -250,8 +363,10 @@ async function loadListingPosts() {
   const grid = $('[data-wp-posts-grid]');
   if (!grid) return;
 
+  disableLoadingLinks();
+
   const loadMore = $('[data-wp-load-more]');
-  const filterButtons = $$('.filter-pill');
+  const filterContainer = $('.category-scroll');
   const searchInput = $('#insight-search');
   let page = 1;
   let totalPages = 1;
@@ -325,18 +440,20 @@ async function loadListingPosts() {
     searchTimer = window.setTimeout(resetAndLoad, 350);
   };
 
-  filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      if (button.classList.contains('active')) return;
-      filterButtons.forEach(current => current.classList.remove('active'));
-      button.classList.add('active');
-      resetAndLoad();
-    });
+  filterContainer?.addEventListener('click', event => {
+    const button = event.target.closest('.filter-pill');
+    if (!button || !filterContainer.contains(button) || button.classList.contains('active')) return;
+    $$('.filter-pill', filterContainer).forEach(current => current.classList.remove('active'));
+    button.classList.add('active');
+    resetAndLoad();
   });
 
   searchInput?.addEventListener('input', scheduleSearch);
 
   try {
+    try {
+      activeFilter = renderCategoryFilters(filterContainer, await getCategories(), activeFilter);
+    } catch (error) {}
     await renderPage(false);
     loadMore?.addEventListener('click', async () => {
       if (page >= totalPages) {
@@ -389,13 +506,14 @@ async function loadSinglePost() {
 
   const category = getCategory(post);
   document.title = `${htmlToText(post.title.rendered)} | Swishtag`;
+  const postExcerpt = getPostExcerpt(post, 220);
   const description = $('meta[name="description"]');
-  if (description) description.setAttribute('content', htmlToText(post.excerpt.rendered));
+  if (description) description.setAttribute('content', postExcerpt);
   const canonical = $('link[rel="canonical"]');
   if (canonical) canonical.setAttribute('href', `${location.origin}/insights/blog/?slug=${encodeURIComponent(post.slug)}`);
   const metaUpdates = {
     'og:title': htmlToText(post.title.rendered),
-    'og:description': htmlToText(post.excerpt.rendered),
+    'og:description': postExcerpt,
     'og:url': `${location.origin}/insights/blog/?slug=${encodeURIComponent(post.slug)}`
   };
   Object.entries(metaUpdates).forEach(([property, content]) => {
@@ -422,7 +540,7 @@ async function loadSinglePost() {
   if (breadcrumbCategory) breadcrumbCategory.textContent = category.name;
   $('.eyebrow', hero).textContent = category.name;
   $('h1', hero).textContent = decodeHtml(htmlToText(post.title.rendered));
-  $('.article-dek', hero).textContent = htmlToText(post.excerpt.rendered);
+  $('.article-dek', hero).textContent = postExcerpt;
 
   const heroMeta = $('.hero-meta', hero);
   if (heroMeta) {
@@ -445,7 +563,7 @@ async function loadSinglePost() {
   }
 
   const dynamicWrapper = document.createElement('div');
-  dynamicWrapper.innerHTML = post.content.rendered;
+  dynamicWrapper.innerHTML = stripWordPressShortcodes(post.content.rendered);
   prepareArticleContent(dynamicWrapper);
   body.innerHTML = '';
   body.appendChild(dynamicWrapper);

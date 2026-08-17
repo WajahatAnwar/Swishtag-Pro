@@ -4098,18 +4098,7 @@
       overflow: hidden;
     }
 
-    .unified-solutions::after {
-      content: "";
-      position: absolute;
-      left: 26%;
-      top: 123px;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--lime);
-      box-shadow: 0 0 0 6px rgba(194,255,2,.12);
-      animation: brandNodePulse 2.8s ease-in-out infinite;
-    }
+
 
     /* Customer story: one measurement line */
     .customer-story-section {
@@ -12129,7 +12118,7 @@ html.save-data .soar-earth-revolve__surface{
   border: 1px solid rgba(32,33,36,.07);
   border-radius: 999px;
   background: rgba(255,255,255,.64);
-  font-size: .60rem;
+  font-size: .80rem;
   font-weight: 800;
 }
 
