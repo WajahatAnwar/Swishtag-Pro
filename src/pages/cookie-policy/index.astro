@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = "Cookie Policy | Swishtag";
+const description = "An overview of cookies and similar technologies that may be used on the Swishtag website.";
+const canonical = "https://swishtag.com/cookie-policy/";
+const robots = "index,follow";
+---
+<BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
+  <link slot="head" rel="stylesheet" href="/assets/generic-page.css" />
+  <main><section class="gp-hero"><div class="gp-wrap"><div class="gp-kicker">Legal</div><h1>Cookie Policy</h1><p>An overview of cookies and similar technologies that may be used on the Swishtag website.</p></div></section><section class="gp-section"><div class="gp-wrap gp-prose"><h2>What cookies are</h2><p>Cookies are small browser-stored files commonly used for website functionality, preferences, analytics and marketing measurement.</p><h2>How this site may use them</h2><p>The website may use necessary cookies and, when configured, analytics or marketing technologies to understand website usage and campaign performance.</p><h2>Managing cookies</h2><p>Browser controls can be used to block or delete cookies. Some website features may work differently when cookies are disabled.</p><h2>Updates</h2><p>This policy should be updated when the website’s analytics, advertising or consent tools change.</p><p class="gp-note">Draft website policy content. Review with qualified legal counsel before relying on it for compliance obligations.</p></div></section></main>
+</BaseLayout>

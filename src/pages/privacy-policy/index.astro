@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = "Privacy Policy | Swishtag";
+const description = "A plain-language overview of how Swishtag may handle information submitted through this website.";
+const canonical = "https://swishtag.com/privacy-policy/";
+const robots = "index,follow";
+---
+<BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
+  <link slot="head" rel="stylesheet" href="/assets/generic-page.css" />
+  <main><section class="gp-hero"><div class="gp-wrap"><div class="gp-kicker">Legal</div><h1>Privacy Policy</h1><p>A plain-language overview of how Swishtag may handle information submitted through this website.</p></div></section><section class="gp-section"><div class="gp-wrap gp-prose"><h2>Information you provide</h2><p>We may receive information you choose to submit, such as your name, work email, company, project details and meeting preferences.</p><h2>How information may be used</h2><p>Information may be used to respond to inquiries, deliver requested services, improve the website and maintain business records.</p><h2>Service providers</h2><p>Website hosting, analytics, scheduling, email and other service providers may process information on our behalf when those services are enabled.</p><h2>Your choices</h2><p>You can contact Swishtag to ask about personal information you previously submitted through the website.</p><p class="gp-note">Draft website policy content. Review with qualified legal counsel before relying on it for compliance obligations.</p></div></section></main>
+</BaseLayout>

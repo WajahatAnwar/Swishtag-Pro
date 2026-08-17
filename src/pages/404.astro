@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Page Not Found | Swishtag';
+const robots = 'noindex';
+---
+<BaseLayout title={title} robots={robots}>
+  <link slot="head" rel="stylesheet" href="/assets/generic-page.css" />
+  <main>
+    <section class="gp-hero">
+      <div class="gp-wrap">
+        <div class="gp-kicker">404</div>
+        <h1>This page is off orbit.</h1>
+        <p>The URL may have moved. Use the main navigation or return to the homepage.</p>
+        <div class="gp-actions">
+          <a class="gp-btn primary" href="/">Go home -&gt;</a>
+          <a class="gp-btn secondary" href="/contact/">Contact Swishtag</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

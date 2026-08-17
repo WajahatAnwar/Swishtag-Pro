@@ -1,0 +1,279 @@
+<script is:inline>
+(() => {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
+    if ((connection && connection.saveData) || prefersReducedMotion) {
+      document.documentElement.classList.add("save-data");
+    }
+
+    if (!("IntersectionObserver" in window)) return;
+
+    const animatedSections = [...document.querySelectorAll([
+      ".reference-hero",
+      ".credibility",
+      ".pain-drag-section",
+      ".unified-solutions",
+      ".customer-story-section",
+      ".platform-section",
+      ".systems-section",
+      ".industries-section",
+      ".faq-section",
+      ".final-space-cta-section"
+    ].join(","))];
+
+    animatedSections.forEach(section => section.classList.add("perf-paused"));
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          entry.target.dataset.perfVisible = String(entry.isIntersecting);
+          entry.target.classList.toggle(
+            "perf-paused",
+            !entry.isIntersecting || document.hidden
+          );
+        });
+      },
+      { rootMargin: "220px 0px", threshold: 0.01 }
+    );
+
+    animatedSections.forEach(section => observer.observe(section));
+
+    document.addEventListener("visibilitychange", () => {
+      animatedSections.forEach(section => {
+        const isVisible = section.dataset.perfVisible === "true";
+        section.classList.toggle("perf-paused", document.hidden || !isVisible);
+      });
+    });
+  })();
+</script>
+
+<script is:inline>
+(() => {
+  const block = document.querySelector(".customer-story__clients");
+  const viewport = block?.querySelector("[data-story-clients]");
+  const track = block?.querySelector(".story-clients-track");
+  const sourceSet = block?.querySelector("[data-story-logo-set]");
+  const toggle = block?.querySelector(".story-clients-toggle");
+  const toggleLabel = block?.querySelector(".story-clients-toggle__label");
+  const toggleIcon = block?.querySelector(".story-clients-toggle__icon");
+
+  if (!block || !viewport || !track || !sourceSet) return;
+
+  let activated = false;
+  let cloneCreated = false;
+  let paused = false;
+
+  const markImage = image => {
+    const card = image.closest(".story-client-logo");
+
+    image.addEventListener("load", () => {
+      card?.classList.add("is-loaded");
+    }, { once: true });
+
+    image.addEventListener("error", () => {
+      card?.classList.add("is-broken");
+    }, { once: true });
+  };
+
+  const createClone = () => {
+    if (cloneCreated) return;
+    cloneCreated = true;
+
+    const clone = sourceSet.cloneNode(true);
+    clone.removeAttribute("data-story-logo-set");
+    clone.setAttribute("aria-hidden", "true");
+    track.appendChild(clone);
+
+    [...clone.querySelectorAll("img")].forEach(markImage);
+    block.classList.add("is-ready");
+  };
+
+  const loadBatch = (images, start, size) => {
+    const end = Math.min(start + size, images.length);
+
+    for (let index = start; index < end; index += 1) {
+      const image = images[index];
+      const url = image.dataset.logoSrc;
+      if (!url) continue;
+
+      markImage(image);
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.fetchPriority = "low";
+      image.src = url;
+      image.removeAttribute("data-logo-src");
+    }
+
+    if (end >= images.length) {
+      createClone();
+      return;
+    }
+
+    const next = () => loadBatch(images, end, size);
+
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(next, { timeout: 850 });
+    } else {
+      setTimeout(next, 90);
+    }
+  };
+
+  const activate = () => {
+    if (activated) return;
+    activated = true;
+
+    if (!document.querySelector('link[data-client-logo-origin]')) {
+      const preconnect = document.createElement("link");
+      preconnect.rel = "preconnect";
+      preconnect.href = "https://swishtag.com";
+      preconnect.crossOrigin = "anonymous";
+      preconnect.dataset.clientLogoOrigin = "true";
+      document.head.appendChild(preconnect);
+    }
+
+    const images = [...sourceSet.querySelectorAll("img[data-logo-src]")];
+
+    // Load the first visible group, then continue in small idle batches.
+    loadBatch(images, 0, 8);
+    setTimeout(createClone, 3200);
+  };
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        block.classList.toggle("is-in-view", entry.isIntersecting);
+
+        if (entry.isIntersecting) activate();
+      });
+    }, { rootMargin: "500px 0px", threshold: 0.01 });
+
+    observer.observe(block);
+  } else {
+    block.classList.add("is-in-view");
+    activate();
+  }
+
+  toggle?.addEventListener("click", () => {
+    paused = !paused;
+    block.classList.toggle("is-paused", paused);
+    toggle.setAttribute("aria-pressed", String(paused));
+    toggle.setAttribute(
+      "aria-label",
+      paused ? "Resume client logo movement" : "Pause client logo movement"
+    );
+
+    if (toggleLabel) toggleLabel.textContent = paused ? "Play" : "Pause";
+    if (toggleIcon) toggleIcon.textContent = paused ? "▶" : "Ⅱ";
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    block.classList.toggle("is-page-hidden", document.hidden);
+  });
+})();
+</script>
+
+<script is:inline>
+(() => {
+  const map = document.querySelector('.enterprise-map');
+  const core = map?.querySelector('.enterprise-core');
+  const svg = map?.querySelector('.enterprise-connectors');
+
+  if (!map || !core || !svg) return;
+
+  const paths = [...svg.querySelectorAll('[data-enterprise-target]')];
+  let frame = 0;
+
+  const pointOnRectangle = (center, target, rect) => {
+    const vx = center.x - target.x;
+    const vy = center.y - target.y;
+    const halfW = rect.width / 2;
+    const halfH = rect.height / 2;
+    const tx = Math.abs(vx) > 0.001 ? halfW / Math.abs(vx) : Infinity;
+    const ty = Math.abs(vy) > 0.001 ? halfH / Math.abs(vy) : Infinity;
+    const scale = Math.min(tx, ty);
+
+    return {
+      x: target.x + vx * scale,
+      y: target.y + vy * scale
+    };
+  };
+
+  const update = () => {
+    frame = 0;
+
+    const mapRect = map.getBoundingClientRect();
+    const coreRect = core.getBoundingClientRect();
+    const width = Math.max(1, mapRect.width);
+    const height = Math.max(1, mapRect.height);
+
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+    const center = {
+      x: coreRect.left - mapRect.left + coreRect.width / 2,
+      y: coreRect.top - mapRect.top + coreRect.height / 2
+    };
+    const radius = Math.min(coreRect.width, coreRect.height) / 2;
+
+    paths.forEach((path, index) => {
+      const node = map.querySelector(path.dataset.enterpriseTarget);
+      if (!node) return;
+
+      const nodeRect = node.getBoundingClientRect();
+      const target = {
+        x: nodeRect.left - mapRect.left + nodeRect.width / 2,
+        y: nodeRect.top - mapRect.top + nodeRect.height / 2
+      };
+
+      const dx = target.x - center.x;
+      const dy = target.y - center.y;
+      const distance = Math.hypot(dx, dy) || 1;
+      const start = {
+        x: center.x + (dx / distance) * radius,
+        y: center.y + (dy / distance) * radius
+      };
+      const end = pointOnRectangle(center, target, nodeRect);
+
+      const midX = (start.x + end.x) / 2;
+      const midY = (start.y + end.y) / 2;
+      const bend = Math.min(18, distance * .045) * (index % 2 === 0 ? 1 : -1);
+      const normalX = -dy / distance;
+      const normalY = dx / distance;
+      const controlX = midX + normalX * bend;
+      const controlY = midY + normalY * bend;
+
+      path.setAttribute(
+        'd',
+        `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} Q ${controlX.toFixed(2)} ${controlY.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`
+      );
+    });
+  };
+
+  const scheduleUpdate = () => {
+    if (frame) cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(update);
+  };
+
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(scheduleUpdate);
+    observer.observe(map);
+    paths.forEach(path => {
+      const node = map.querySelector(path.dataset.enterpriseTarget);
+      if (node) observer.observe(node);
+    });
+    observer.observe(core);
+  } else {
+    window.addEventListener('resize', scheduleUpdate, { passive: true });
+  }
+
+  window.addEventListener('load', scheduleUpdate, { once: true });
+  document.fonts?.ready?.then(scheduleUpdate);
+  scheduleUpdate();
+})();
+</script>
+
+<script is:inline>
+window.addEventListener("load", () => {
+    document.documentElement.classList.add("is-loaded");
+  }, { once: true });
+</script>

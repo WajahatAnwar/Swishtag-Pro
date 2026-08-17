@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeStructuredData from '../components/home/HomeStructuredData.astro';
+import Hero from '../components/home/Hero.astro';
+import Credibility from '../components/home/Credibility.astro';
+import GrowthPain from '../components/home/GrowthPain.astro';
+import Solutions from '../components/home/Solutions.astro';
+import CustomerStory from '../components/home/CustomerStory.astro';
+import PlatformPortfolio from '../components/home/PlatformPortfolio.astro';
+import Systems from '../components/home/Systems.astro';
+import Industries from '../components/home/Industries.astro';
+import Faq from '../components/home/Faq.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+import HomeScripts from '../components/home/HomeScripts.astro';
+
+const title = "Swishtag Commerce without chaos.";
+const description = "Swishtag modernizes promotional commerce with Shopify, enterprise automation, PunchOut, artwork workflows, and production software.";
+const canonical = "https://swishtag.com/";
+---
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <HomeStructuredData slot="head" />
+  <main id="home">
+    <Hero />
+    <Credibility />
+    <GrowthPain />
+    <Solutions />
+    <CustomerStory />
+    <PlatformPortfolio />
+    <Systems />
+    <Industries />
+    <Faq />
+    <FinalCta />
+  </main>
+  <HomeScripts slot="scripts" />
+</BaseLayout>

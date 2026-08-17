@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = "Terms of Use | Swishtag";
+const description = "Basic terms for using the Swishtag website and its published materials.";
+const canonical = "https://swishtag.com/terms/";
+const robots = "index,follow";
+---
+<BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
+  <link slot="head" rel="stylesheet" href="/assets/generic-page.css" />
+  <main><section class="gp-hero"><div class="gp-wrap"><div class="gp-kicker">Legal</div><h1>Terms of Use</h1><p>Basic terms for using the Swishtag website and its published materials.</p></div></section><section class="gp-section"><div class="gp-wrap gp-prose"><h2>Website use</h2><p>You may use this website for lawful business and informational purposes. Do not attempt to interfere with the website or misuse its content or systems.</p><h2>Content</h2><p>Website content is provided for general information and may be updated as services, capabilities and commercial terms change.</p><h2>Project agreements</h2><p>Any paid project, software subscription or implementation is governed by the specific proposal, statement of work or agreement accepted for that engagement.</p><h2>Third-party services</h2><p>References to third-party platforms do not transfer responsibility for those platforms, their availability or their separate terms.</p><p class="gp-note">Draft website policy content. Review with qualified legal counsel before relying on it for compliance obligations.</p></div></section></main>
+</BaseLayout>

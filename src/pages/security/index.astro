@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = "Security | Swishtag";
+const description = "A high-level overview of Swishtag’s approach to website and project security.";
+const canonical = "https://swishtag.com/security/";
+const robots = "index,follow";
+---
+<BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
+  <link slot="head" rel="stylesheet" href="/assets/generic-page.css" />
+  <main><section class="gp-hero"><div class="gp-wrap"><div class="gp-kicker">Legal</div><h1>Security</h1><p>A high-level overview of Swishtag’s approach to website and project security.</p></div></section><section class="gp-section"><div class="gp-wrap gp-prose"><h2>Website security</h2><p>Reasonable technical and operational measures should be used to protect website infrastructure, forms and administrative access.</p><h2>Project security</h2><p>Security requirements for client projects depend on the platforms, data flows, integrations and access model used in that project.</p><h2>Access control</h2><p>Administrative and integration credentials should use least-privilege access and be removed when no longer required.</p><h2>Reporting concerns</h2><p>If you believe you found a security issue related to Swishtag, contact hello@swishtag.com with enough detail for the issue to be reviewed.</p><p class="gp-note">Draft website policy content. Review with qualified legal counsel before relying on it for compliance obligations.</p></div></section></main>
+</BaseLayout>

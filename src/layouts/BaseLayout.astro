@@ -1,0 +1,92 @@
+---
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import HeaderBehavior from '../components/layout/HeaderBehavior.astro';
+import '../styles/home.css';
+import '../styles/header.css';
+
+const {
+  title = 'Swishtag',
+  description = '',
+  canonical,
+  robots = 'index,follow',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#FFFFFF" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="preconnect" href="https://cdn.shopify.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="robots" content={robots} />
+    <script defer src="/assets/site-shell.js"></script>
+    <slot name="head" />
+    <style is:global>
+      @media (min-width: 901px) {
+        .page-nav-wrap {
+          top: 70px !important;
+          pointer-events: none;
+        }
+
+        .page-nav-wrap > .page-shell,
+        .page-nav-wrap .page-shell {
+          width: min(var(--page), 1240px) !important;
+          max-width: none !important;
+        }
+
+        .page-nav-shell {
+          pointer-events: auto;
+        }
+
+        .site-header.is-nav-connected .modern-nav {
+          border-radius: 24px 24px 0 0 !important;
+          border-color: rgba(32,33,36,.08) !important;
+          border-bottom-color: transparent !important;
+          background: rgba(255,255,255,.97) !important;
+          box-shadow: none !important;
+        }
+
+        .page-nav-wrap.is-stuck {
+          padding-top: 0 !important;
+          filter: drop-shadow(0 22px 42px rgba(32,33,36,.11));
+        }
+
+        .page-nav-wrap.is-stuck .page-nav-shell {
+          margin-top: -1px !important;
+          border-top-color: transparent !important;
+          border-radius: 0 0 24px 24px !important;
+          background: rgba(255,255,255,.97) !important;
+          box-shadow: none !important;
+        }
+      }
+
+      @media (min-width: 681px) and (max-width: 900px) {
+        .page-nav-wrap {
+          top: 68px !important;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .page-nav-wrap {
+          top: 64px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <slot />
+    <Footer />
+    <HeaderBehavior />
+    <slot name="scripts" />
+  </body>
+</html>

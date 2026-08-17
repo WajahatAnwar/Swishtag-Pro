@@ -1,0 +1,215 @@
+/* Optional secondary navigation that visually connects to the shared header.
+   Pages without #pageNavWrap use the normal .site-header.is-scrolled state. */
+.site-header .modern-nav__brand,
+.site-header .mobile-menu__brand {
+  gap: 0;
+}
+
+.site-header .modern-nav__brand-mark {
+  width: 126px;
+  height: 42px;
+  flex: 0 0 126px;
+  border-radius: 0;
+  background: url("/assets/swishtag-logo.svg") center / contain no-repeat;
+  box-shadow: none;
+  transform: none;
+}
+
+.site-header .modern-nav__brand-mark::after {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .site-header .modern-nav__brand-mark {
+    width: 118px;
+    height: 39px;
+    flex-basis: 118px;
+  }
+}
+
+.page-nav-wrap {
+  position: sticky;
+  z-index: 60;
+  top: 84px;
+  padding: 7px 0 12px;
+  background: transparent;
+  pointer-events: none;
+}
+
+.page-nav-wrap .page-shell {
+  width: min(var(--page), 1240px);
+}
+
+.page-nav-shell {
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 8px 6px 17px;
+  border: 1px solid rgba(32,33,36,.08);
+  border-radius: 999px;
+  background: rgba(255,255,255,.90);
+  box-shadow: 0 12px 34px rgba(32,33,36,.07);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+  transition: border-radius .28s var(--ease), box-shadow .25s ease, background .25s ease, border-color .25s ease;
+}
+
+.page-nav {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.page-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.page-nav a {
+  flex: 0 0 auto;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 13px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 750;
+  white-space: nowrap;
+  transition: background .2s ease, color .2s ease;
+}
+
+.page-nav a:hover,
+.page-nav a.is-active {
+  color: var(--graphite);
+  background: var(--gray);
+}
+
+.page-nav__cta {
+  margin-left: auto !important;
+  color: var(--graphite) !important;
+  background: var(--lime) !important;
+}
+
+.page-nav-toggle {
+  display: none;
+}
+
+.site-header.is-nav-connected .modern-nav {
+  border-radius: 24px 24px 0 0;
+  background: rgba(255,255,255,.97);
+  box-shadow: none;
+  border-color: rgba(32,33,36,.08);
+  border-bottom-color: transparent;
+}
+
+.page-nav-wrap.is-stuck {
+  padding-top: 0;
+  filter: drop-shadow(0 22px 42px rgba(32,33,36,.11));
+}
+
+.page-nav-wrap.is-stuck .page-nav-shell {
+  margin-top: -1px;
+  border-top-color: transparent;
+  border-radius: 0 0 24px 24px;
+  background: rgba(255,255,255,.97);
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .page-nav-wrap {
+    top: 78px;
+  }
+
+  .site-header.is-nav-connected .modern-nav {
+    border-radius: 22px 22px 0 0;
+  }
+
+  .page-nav-wrap.is-stuck .page-nav-shell {
+    border-radius: 0 0 22px 22px;
+  }
+}
+
+@media (max-width: 680px) {
+  .page-nav-wrap {
+    top: 70px;
+    padding: 6px 0 8px;
+  }
+
+  .page-nav-shell {
+    padding: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: none;
+  }
+
+  .page-nav-toggle {
+    width: 100%;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 16px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+  }
+
+  .page-nav-toggle small,
+  .page-nav-toggle strong {
+    display: block;
+  }
+
+  .page-nav-toggle small {
+    color: var(--muted);
+    font-size: .52rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+
+  .page-nav-toggle strong {
+    margin-top: 2px;
+    font-size: .73rem;
+  }
+
+  .page-nav-toggle__icon {
+    font-size: 1rem;
+    transition: transform .2s ease;
+  }
+
+  .page-nav-shell.is-open .page-nav-toggle__icon {
+    transform: rotate(45deg);
+  }
+
+  .page-nav {
+    display: none;
+    padding: 0 7px 7px;
+  }
+
+  .page-nav-shell.is-open .page-nav {
+    display: grid;
+  }
+
+  .page-nav a {
+    width: 100%;
+    min-height: 40px;
+    border-radius: 12px;
+  }
+
+  .page-nav__cta {
+    margin-left: 0 !important;
+    margin-top: 3px;
+    justify-content: center;
+  }
+
+  .site-header.is-nav-connected .modern-nav {
+    border-radius: 20px 20px 0 0;
+  }
+
+  .page-nav-wrap.is-stuck .page-nav-shell {
+    border-radius: 0 0 20px 20px;
+  }
+}
