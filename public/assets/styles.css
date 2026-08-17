@@ -1069,17 +1069,6 @@
     .process-section { background: var(--ink); color: var(--white); overflow: hidden; }
     .process-section .eyebrow, .process-section .section-copy { color: rgba(255, 255, 255, .62); }
 
-    .process-section::before {
-      content: "";
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      right: -180px;
-      top: -220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(194, 255, 2, .18), transparent 68%);
-    }
-
     .process-rail {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -3547,16 +3536,6 @@
       linear-gradient(180deg, #ffffff 0%, #f6fbf9 48%, #faf9ff 100%);
   }
 
-  .process-section::before {
-    width: 420px;
-    height: 420px;
-    right: -150px;
-    top: -165px;
-    border: 1px solid rgba(32,33,36,.07);
-    background: transparent;
-    box-shadow: 0 0 0 54px rgba(217,214,253,.10), 0 0 0 108px rgba(153,254,237,.06);
-  }
-
   .process-section::after {
     content: "";
     position: absolute;
@@ -3745,7 +3724,6 @@
 
   @media (max-width: 680px) {
     .process-section { padding: 82px 0 88px; }
-    .process-section::before { width: 250px; height: 250px; right: -112px; top: -104px; box-shadow: 0 0 0 34px rgba(217,214,253,.09); }
     .process-section::after { display: none; }
     .process-heading { gap: 18px; }
     .process-heading .section-copy { font-size: .96rem; }

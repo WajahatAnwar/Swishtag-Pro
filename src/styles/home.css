@@ -4092,23 +4092,10 @@
       animation: brandSparkPulse 3.2s ease-in-out infinite;
     }
 
-    /* Solutions: one curved launch path and one small node */
+    /* Solutions: one small node */
     .unified-solutions {
       position: relative;
       overflow: hidden;
-    }
-
-    .unified-solutions::before {
-      content: "";
-      position: absolute;
-      left: 4%;
-      right: 48%;
-      top: 112px;
-      height: 120px;
-      border-top: 1px solid rgba(32,33,36,.10);
-      border-radius: 50% 50% 0 0;
-      transform: rotate(-3deg);
-      pointer-events: none;
     }
 
     .unified-solutions::after {
@@ -4204,24 +4191,10 @@
       animation: brandNodePulse 3s ease-in-out infinite -.8s;
     }
 
-    /* Industries: one soft arch behind the heading */
+    /* Industries */
     .industries-section {
       position: relative;
       overflow: hidden;
-    }
-
-    .industries-section::before {
-      content: "";
-      position: absolute;
-      left: -90px;
-      top: 72px;
-      width: 300px;
-      height: 150px;
-      border: 1px solid rgba(32,33,36,.08);
-      border-bottom: 0;
-      border-radius: 300px 300px 0 0;
-      transform: rotate(-12deg);
-      pointer-events: none;
     }
 
     /* FAQ: one capsule and one crosshair */
@@ -4286,7 +4259,6 @@
         height: 60px;
       }
 
-      .unified-solutions::before,
       .unified-solutions::after,
       .customer-story-section::before,
       .customer-story-section::after,
@@ -4321,13 +4293,6 @@
         font-size: 1rem;
       }
 
-      .unified-solutions::before {
-        left: 0;
-        right: 58%;
-        top: 96px;
-        height: 70px;
-      }
-
       .unified-solutions::after {
         left: 22%;
         top: 101px;
@@ -4336,11 +4301,6 @@
       .platform-heading::after {
         bottom: -18px;
         width: 62vw;
-      }
-
-      .industries-section::before {
-        width: 210px;
-        height: 105px;
       }
 
       .faq-section::before,
@@ -4484,25 +4444,6 @@
     @keyframes dotsFloat {
       0%,100% { transform: translateY(0); opacity: .48; }
       50% { transform: translateY(-6px); opacity: .66; }
-    }
-
-    .vision-curve {
-      position: absolute;
-      left: 8%;
-      right: 10%;
-      top: 50%;
-      height: 120px;
-      border-top: 1.5px solid rgba(32,33,36,.13);
-      border-radius: 50% 50% 0 0;
-      transform: rotate(-10deg);
-      transform-origin: center center;
-      z-index: -1;
-      animation: curveBreathe 7s ease-in-out infinite;
-    }
-
-    @keyframes curveBreathe {
-      0%,100% { transform: rotate(-10deg) translateY(0); }
-      50% { transform: rotate(-8deg) translateY(-4px); }
     }
 
     .vision-node {
@@ -4868,7 +4809,6 @@
       }
 
       .vision-dots,
-      .vision-curve,
       .vision-node--two,
       .vision-mini--results,
       .vision-rocket-badge {
@@ -4916,7 +4856,6 @@
     @media (prefers-reduced-motion: reduce) {
       .vision-portal,
       .vision-dots,
-      .vision-curve,
       .vision-node,
       .vision-spark,
       .float-card {
@@ -5573,20 +5512,6 @@
       backdrop-filter: blur(10px);
     }
 
-    .credibility-panel::after {
-      content: "";
-      position: absolute;
-      right: -70px;
-      bottom: -92px;
-      width: 240px;
-      height: 170px;
-      border: 1px solid rgba(32,33,36,.06);
-      border-bottom: 0;
-      border-radius: 240px 240px 0 0;
-      transform: rotate(-12deg);
-      pointer-events: none;
-    }
-
     /* 3. Pain section begins with the same Mint atmosphere, then opens to white */
     .pain-drag-section {
       position: relative;
@@ -5605,20 +5530,6 @@
           #FFFFFF 48%,
           #FFFFFF 100%
         );
-    }
-
-    .pain-drag-section::before {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      left: 5%;
-      right: 46%;
-      top: 54px;
-      height: 120px;
-      border-top: 1px solid rgba(32,33,36,.08);
-      border-radius: 50% 50% 0 0;
-      transform: rotate(-3deg);
-      pointer-events: none;
     }
 
     .pain-drag-section::after {
@@ -5660,11 +5571,6 @@
       .pain-drag-section {
         padding-top: 104px;
         padding-bottom: 108px;
-      }
-
-      .pain-drag-section::before {
-        right: 36%;
-        top: 42px;
       }
 
       .pain-drag-section::after {
@@ -5709,13 +5615,6 @@
         box-shadow: 0 18px 46px rgba(32,33,36,.065);
       }
 
-      .credibility-panel::after {
-        width: 160px;
-        height: 112px;
-        right: -56px;
-        bottom: -68px;
-      }
-
       .pain-drag-section {
         padding-top: 88px;
         padding-bottom: 92px;
@@ -5728,13 +5627,6 @@
             #FFFFFF 58%,
             #FFFFFF 100%
           );
-      }
-
-      .pain-drag-section::before {
-        left: 0;
-        right: 58%;
-        top: 34px;
-        height: 70px;
       }
 
       .pain-drag-section::after {
@@ -11609,20 +11501,6 @@ html.save-data .soar-earth-revolve__surface{
     linear-gradient(180deg, #FFFFFF 0%, #F8F8F5 100%);
 }
 
-.platform-section--connected::before {
-  content: "";
-  position: absolute;
-  left: -90px;
-  top: 120px;
-  width: 290px;
-  height: 145px;
-  border: 1px solid rgba(32,33,36,.075);
-  border-bottom: 0;
-  border-radius: 290px 290px 0 0;
-  transform: rotate(-12deg);
-  pointer-events: none;
-}
-
 .platform-intro {
   position: relative;
   display: grid;
@@ -12001,20 +11879,6 @@ html.save-data .soar-earth-revolve__surface{
     radial-gradient(circle at 8% 54%, rgba(153,254,237,.38), transparent 26%),
     radial-gradient(circle at 74% 98%, rgba(255,189,155,.25), transparent 28%),
     linear-gradient(180deg, #FFFFFF 0%, #F8F8F5 100%);
-}
-
-.platform-section--portfolio::before {
-  content: "";
-  position: absolute;
-  left: -105px;
-  top: 122px;
-  width: 320px;
-  height: 160px;
-  border: 1px solid rgba(32,33,36,.075);
-  border-bottom: 0;
-  border-radius: 320px 320px 0 0;
-  transform: rotate(-12deg);
-  pointer-events: none;
 }
 
 .platform-portfolio-intro {
