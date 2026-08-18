@@ -247,7 +247,7 @@ const robots = "index,follow";
       <section class="hero">
         <span class="eyebrow"><i></i> Book a Demo</span>
         <h1>Book the right Shopify demo for your company-store workflow.</h1>
-        <p>Tell us who you are, choose what you want help with, then pick a time that works for you. We’ll tailor the conversation for promotional products distributors.</p>
+        <p>Tell us who you are, choose what you want help with, then pick a time that works for you. We'll tailor the conversation for promotional products distributors.</p>
         <div class="hero-note">
           <span>30-minute tailored demo</span>
           <span>Built for promo distributors</span>
@@ -265,11 +265,12 @@ const robots = "index,follow";
                 <div class="step" data-step-indicator="3"><div class="step-badge">3</div><strong>Pick a time</strong></div>
               </div>
   
-              <form id="demoForm" novalidate>
+              <form id="demoForm" action="/api/send-form.php" method="post" novalidate>
+                <input type="hidden" name="form_source" value="book-demo">
                 <div class="panel active" data-step="1">
                   <div class="panel-head">
                     <h2>Tell us about you</h2>
-                    <p>So we know who we’re meeting and where to send your confirmation.</p>
+                    <p>So we know who we're meeting and where to send your confirmation.</p>
                   </div>
                   <div class="grid-2">
                     <div class="field">
@@ -295,8 +296,8 @@ const robots = "index,follow";
                   </div>
                   <div class="error" data-error></div>
                   <div class="actions">
-                    <p class="fine-print">We’ll only use this information to schedule your demo and follow up about the workflow you want to discuss.</p>
-                    <button class="btn btn-primary" type="button" data-next>Continue <b>→</b></button>
+                    <p class="fine-print">We'll only use this information to schedule your demo and follow up about the workflow you want to discuss.</p>
+                    <button class="btn btn-primary" type="button" data-next>Continue <b>&rarr;</b></button>
                   </div>
                 </div>
   
@@ -315,8 +316,8 @@ const robots = "index,follow";
                     <label>How many company stores are you managing? <span class="optional">optional</span></label>
                     <div class="mini-choices">
                       <div class="chip"><input type="radio" id="stores-none" name="storeCount" value="None yet"><label for="stores-none">None yet</label></div>
-                      <div class="chip"><input type="radio" id="stores-1-5" name="storeCount" value="1–5"><label for="stores-1-5">1–5</label></div>
-                      <div class="chip"><input type="radio" id="stores-6-25" name="storeCount" value="6–25"><label for="stores-6-25">6–25</label></div>
+                      <div class="chip"><input type="radio" id="stores-1-5" name="storeCount" value="1-5"><label for="stores-1-5">1-5</label></div>
+                      <div class="chip"><input type="radio" id="stores-6-25" name="storeCount" value="6-25"><label for="stores-6-25">6-25</label></div>
                       <div class="chip"><input type="radio" id="stores-25-plus" name="storeCount" value="25+"><label for="stores-25-plus">25+</label></div>
                     </div>
                   </div>
@@ -327,7 +328,7 @@ const robots = "index,follow";
                   <div class="error" data-error></div>
                   <div class="actions">
                     <button class="btn btn-ghost"  style="border-color: #4b5563; border-width: 2px;" type="button" data-back>Back</button>
-                    <button class="btn btn-primary" type="button" data-next>Choose a meeting time <b>→</b></button>
+                    <button class="btn btn-primary" type="button" data-next>Choose a meeting time <b>&rarr;</b></button>
                   </div>
                 </div>
   
@@ -339,7 +340,7 @@ const robots = "index,follow";
                   <div class="picker-grid">
                     <div class="picker-box">
                       <h3>Choose a date</h3>
-                      <p>We’re showing the next available business days.</p>
+                      <p>We're showing the next available business days.</p>
                       <div class="date-list" id="dateList"></div>
                     </div>
                     <div class="picker-box">
@@ -354,7 +355,7 @@ const robots = "index,follow";
                   <div class="error" data-error></div>
                   <div class="actions">
                     <button class="btn btn-ghost" type="button" data-back>Back</button>
-                    <button class="btn btn-primary" id="submitBtn" type="submit">Book my demo <b>↗</b></button>
+                    <button class="btn btn-primary" id="submitBtn" type="submit">Book my demo <b>&#8599;</b></button>
                   </div>
                 </div>
               </form>
@@ -364,8 +365,8 @@ const robots = "index,follow";
               <div class="success-wrap">
                 <div class="success-copy">
                   <span class="success-kicker"><i></i> Mission confirmed</span>
-                  <h2>You’re cleared for launch.</h2>
-                  <p>Your demo is booked. We’ve sent the details to <strong id="successEmail"></strong> and we’ll come prepared for your company-store workflow.</p>
+                  <h2>You're cleared for launch.</h2>
+                  <p>Your demo request is in. We'll follow up at <strong id="successEmail"></strong> and come prepared for your company-store workflow.</p>
                   <div class="success-card">
                     <div class="success-grid">
                       <div class="success-item"><small>Date</small><strong id="successDate">-</strong></div>
@@ -373,10 +374,10 @@ const robots = "index,follow";
                       <div class="success-item"><small>Company</small><strong id="successCompany">-</strong></div>
                       <div class="success-item"><small>Focus</small><strong id="successFocus">-</strong></div>
                     </div>
-                    <div class="success-note">Bring the messy workflow. We’ll bring the ideas. You can keep exploring solutions or book another session if someone else from your team should join.</div>
+                    <div class="success-note">Bring the messy workflow. We'll bring the ideas. You can keep exploring solutions or book another session if someone else from your team should join.</div>
                   </div>
                   <div class="success-actions">
-                    <a class="btn btn-primary" href="../shopify-solutions/">Back to Shopify Solutions <b>↗</b></a>
+                    <a class="btn btn-primary" href="../shopify-solutions/">Back to Shopify Solutions <b>&#8599;</b></a>
                     <button class="btn btn-light" type="button" id="bookAnotherBtn">Book another demo</button>
                   </div>
                 </div>
@@ -533,7 +534,7 @@ const robots = "index,follow";
   function updateSummary(){
     if(state.selectedDate && state.selectedTime){
       bookingSummary.classList.add('show');
-      bookingSummary.innerHTML = `<strong>Your selected slot</strong>${state.selectedDate} at ${state.selectedTime} · ${state.timezone}`;
+      bookingSummary.innerHTML = `<strong>Your selected slot</strong>${state.selectedDate} at ${state.selectedTime} &middot; ${state.timezone}`;
     } else if(state.selectedDate){
       bookingSummary.classList.add('show');
       bookingSummary.innerHTML = `<strong>Date selected</strong>${state.selectedDate}. Choose a time slot to finish booking.`;
@@ -552,18 +553,64 @@ const robots = "index,follow";
     setStep(Math.max(1, state.step - 1));
   }));
 
-  form.addEventListener('submit', (e) => {
+  function setSubmitting(isSubmitting){
+    submitBtn.disabled = isSubmitting;
+    submitBtn.innerHTML = isSubmitting ? 'Sending... <b>...</b>' : 'Book my demo <b>&#8599;</b>';
+  }
+
+  async function postForm(payload){
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    const contentType = response.headers.get('content-type') || '';
+    if(!contentType.includes('application/json')){
+      throw new Error('The mail service returned an unexpected response. Please try again or email hello@swishtag.com directly.');
+    }
+    const result = await response.json().catch(() => ({}));
+    if(!response.ok || !result.ok){
+      throw new Error(result.message || 'Something went wrong while sending your request.');
+    }
+    return result;
+  }
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if(!validateStep(3)) return;
     if(document.getElementById('nickname').value.trim()) return;
 
-    const params = new URLSearchParams({
-      date: state.selectedDate,
-      time: `${state.selectedTime} · ${state.timezone}`,
-      company: document.getElementById('companyName').value.trim(),
-      focus: form.querySelector('input[name="solutionInterest"]:checked').value
-    });
-    window.location.href = `/thank-you/?${params.toString()}`;
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('workEmail').value.trim();
+    const company = document.getElementById('companyName').value.trim();
+    const focus = form.querySelector('input[name="solutionInterest"]:checked').value;
+    const payload = Object.fromEntries(new FormData(form).entries());
+    payload.form_source = 'book-demo';
+    payload.selectedDate = state.selectedDate;
+    payload.selectedDateISO = state.selectedDateISO;
+    payload.selectedTime = state.selectedTime;
+    payload.timezone = state.timezone;
+    payload.page = window.location.href;
+
+    try {
+      setSubmitting(true);
+      await postForm(payload);
+      document.getElementById('successEmail').textContent = email;
+      document.getElementById('successDate').textContent = state.selectedDate;
+      document.getElementById('successTime').textContent = `${state.selectedTime} - ${state.timezone}`;
+      document.getElementById('successCompany').textContent = company;
+      document.getElementById('successFocus').textContent = focus;
+      flow.style.display = 'none';
+      success.classList.add('show');
+      success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (error) {
+      showError(3, error.message || 'We could not send the email right now. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   });
 
   bookAnotherBtn.addEventListener('click', () => {

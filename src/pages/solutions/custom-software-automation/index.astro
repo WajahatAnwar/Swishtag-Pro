@@ -1062,6 +1062,12 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   textarea{min-height:138px;padding:13px 14px;resize:vertical}
   input:focus,select:focus,textarea:focus{border-color:#95bf00;box-shadow:0 0 0 4px rgba(194,255,2,.18)}
   .form-note{margin:14px 0 0;color:var(--muted);font-size:.7rem;line-height:1.55}
+  .form-feedback{display:none;margin:14px 0 0;padding:13px 14px;border-radius:14px;font-size:.84rem;line-height:1.45}
+  .form-feedback.is-visible{display:block}
+  .form-feedback.is-error{color:#7b4f3d;background:rgba(255,189,155,.2);border:1px solid rgba(188,123,88,.18)}
+  .form-feedback.is-success{color:#536415;background:rgba(194,255,2,.13);border:1px solid rgba(149,191,0,.22)}
+  .form-card .btn[disabled]{opacity:.52;cursor:not-allowed;transform:none!important}
+  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   
   /* Footer, same structure */
   .site-footer{padding:72px 0 28px;background:#F5F5F3;border-top:1px solid var(--line)}
@@ -1230,7 +1236,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
           business problem to a working, documented system.
         </p>
         <div class="hero-actions">
-          <a class="btn btn--primary" href="/book-demo/">Discuss your idea <span aria-hidden="true">↗</span></a>
+          <a class="btn btn--primary" href="#discuss-idea">Discuss your idea <span aria-hidden="true">↗</span></a>
           <a class="btn btn--secondary" href="#process">See how we work</a>
         </div>
         <div class="hero-note"><span class="hero-note-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>No technical specification required. Build the rocket while you think about the idea.</span></div>
@@ -1401,7 +1407,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
           <a href="#delivery">Turnkey Delivery</a>
           <a href="#proof">Proof</a>
           <a href="/shopify-solutions/#faq">FAQs</a>
-          <a class="page-nav__cta" href="/book-demo/">Discuss Your Idea</a>
+          <a class="page-nav__cta" href="#discuss-idea">Discuss Your Idea</a>
         </div>
       </nav>
     </div>
@@ -1609,8 +1615,12 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
         <p class="section-copy" style="font-size:1rem">If the project looks like a fit, the next step is to understand the workflow, define requirements and map the development path before coding begins.</p>
       </div>
   
-      <form class="form-card" action="/contact/" method="post" data-reveal>
-        <!-- Connect to Swishtag CRM/form handler before production launch. -->
+      <form class="form-card" id="ideaForm" action="/api/send-form.php" method="post" data-reveal novalidate>
+        <input type="hidden" name="form_source" value="custom-software">
+        <div class="field sr-only" aria-hidden="true">
+          <label for="idea-gotcha">Leave this empty</label>
+          <input id="idea-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+        </div>
         <div class="fields">
           <div class="field">
             <label for="name">Your name</label>
@@ -1666,7 +1676,8 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
             </select>
           </div>
           <div class="field full">
-            <button class="btn btn--primary" type="submit">Send my idea <span aria-hidden="true">↗</span></button>
+            <button class="btn btn--primary" id="ideaSubmitButton" type="submit">Send my idea <span aria-hidden="true">&#8599;</span></button>
+            <div class="form-feedback" id="ideaFormFeedback" role="status" aria-live="polite"></div>
             <p class="form-note">No technical specification required. For larger or unclear projects, a dedicated Solution Blueprint may be recommended before development pricing is finalized.</p>
           </div>
         </div>
@@ -1899,6 +1910,91 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
         },cruiseDelay));
       });
     }
+
+    const ideaForm = document.getElementById("ideaForm");
+    const ideaFeedback = document.getElementById("ideaFormFeedback");
+    const ideaSubmitButton = document.getElementById("ideaSubmitButton");
+
+    const showIdeaFeedback = (message, type) => {
+      if (!ideaFeedback) return;
+      ideaFeedback.textContent = message;
+      ideaFeedback.classList.remove("is-error", "is-success");
+      ideaFeedback.classList.add("is-visible", type === "success" ? "is-success" : "is-error");
+    };
+
+    const setIdeaSubmitting = isSubmitting => {
+      if (!ideaSubmitButton) return;
+      ideaSubmitButton.disabled = isSubmitting;
+      ideaSubmitButton.innerHTML = isSubmitting
+        ? 'Sending... <span aria-hidden="true">...</span>'
+        : 'Send my idea <span aria-hidden="true">&#8599;</span>';
+    };
+
+    const validateIdeaForm = () => {
+      if (!ideaForm) return false;
+      const requiredFields = [
+        ["name", "Please enter your name."],
+        ["email", "Please enter a valid work email."],
+        ["project-type", "Please choose what you are trying to build."],
+        ["stage", "Please choose where you are today."],
+        ["project-problem", "Please describe the problem you want to solve."]
+      ];
+
+      for (const [id, message] of requiredFields) {
+        const field = document.getElementById(id);
+        if (!field || !field.value.trim()) {
+          field?.focus();
+          showIdeaFeedback(message, "error");
+          return false;
+        }
+      }
+
+      const email = document.getElementById("email");
+      if (email && !email.checkValidity()) {
+        email.focus();
+        showIdeaFeedback("Please enter a valid work email.", "error");
+        return false;
+      }
+
+      return true;
+    };
+
+    ideaForm?.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!validateIdeaForm()) return;
+      if (document.getElementById("idea-gotcha")?.value.trim()) return;
+
+      const payload = Object.fromEntries(new FormData(ideaForm).entries());
+      payload.form_source = "custom-software";
+      payload.page = window.location.href;
+
+      try {
+        setIdeaSubmitting(true);
+        const response = await fetch(ideaForm.action, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          throw new Error("The mail service is not running in this preview. Use Hostinger/PHP hosting or npm run preview:php to test submissions.");
+        }
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.ok) {
+          throw new Error(result.message || "We could not send your idea right now.");
+        }
+
+        ideaForm.reset();
+        showIdeaFeedback("Thanks. Your idea has been sent to Swishtag. We will review it and follow up by email.", "success");
+      } catch (error) {
+        showIdeaFeedback(error.message || "We could not send your idea right now. Please try again.", "error");
+      } finally {
+        setIdeaSubmitting(false);
+      }
+    });
   })();
   </script>
 </BaseLayout>

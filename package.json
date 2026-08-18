@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "preview:php": "npm run build && php -S localhost:8080 -t dist"
   },
   "dependencies": {
     "astro": "^5.12.9"

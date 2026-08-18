@@ -19,6 +19,35 @@
   display: none;
 }
 
+/* Keep shared mobile menu rows intact even on pages with older inline menu CSS. */
+#siteHeader .mobile-nav__direct,
+#siteHeader .mobile-nav__toggle {
+  width: 100% !important;
+  min-height: 68px !important;
+  display: grid !important;
+  grid-template-columns: 30px minmax(0, 1fr) 24px !important;
+  align-items: center !important;
+  column-gap: 12px !important;
+  padding: 0 8px !important;
+  text-align: left !important;
+}
+
+#siteHeader .mobile-nav__direct > span:nth-child(2),
+#siteHeader .mobile-nav__toggle > span:nth-child(2) {
+  min-width: 0 !important;
+}
+
+#siteHeader .mobile-nav__direct > span:last-child,
+#siteHeader .mobile-nav__toggle > span:last-child {
+  justify-self: end !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+#siteHeader .mobile-nav__index {
+  justify-self: start !important;
+}
+
 @media (max-width: 820px) {
   .site-header .modern-nav__brand-mark {
     width: 118px;
