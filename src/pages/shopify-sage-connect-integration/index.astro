@@ -1,3 +1,8 @@
+---
+import Header from '../../components/layout/Header.astro';
+import '../../styles/home.css';
+import '../../styles/header.css';
+---
 <!DOCTYPE html>
 <html lang="en">
  <head>
@@ -42,10 +47,110 @@
   <link as="image" fetchpriority="high" href="../assets/sage-logo.webp" rel="preload" type="image/webp"/>
   <link as="image" fetchpriority="high" href="../assets/shopify-company-store-mobile.webp" rel="preload" type="image/webp"/>
   <meta content="light" name="color-scheme"/>
- <link rel="stylesheet" href="../assets/site-shell.css">
-<script is:inline src="../assets/site-shell.js" defer></script>
+  <style is:global>
+    .shopify-sage-connect-integration-page .site-header,
+    .shopify-sage-connect-integration-page .site-header.is-scrolled,
+    .shopify-sage-connect-integration-page .site-header.is-nav-connected {
+      z-index: 320 !important;
+    }
+
+    .shopify-sage-connect-integration-page .page-nav-wrap,
+    .shopify-sage-connect-integration-page .page-nav-wrap.is-stuck {
+      z-index: 210 !important;
+    }
+
+    .shopify-sage-connect-integration-page .page-nav-toggle > span:first-child {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin-right: 12px;
+    }
+
+    .shopify-sage-connect-integration-page .page-nav-toggle > .page-nav-toggle__icon {
+      margin-left: auto !important;
+      margin-right: 0 !important;
+    }
+
+    @media (min-width: 901px) {
+      .shopify-sage-connect-integration-page {
+        --navigation-width: min(1240px, calc(100vw - 48px));
+      }
+
+      .shopify-sage-connect-integration-page .modern-nav {
+        width: var(--navigation-width) !important;
+        max-width: none !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-wrap {
+        top: var(--page-nav-top, 70px) !important;
+        padding-top: 0 !important;
+        pointer-events: none !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-wrap > .page-shell {
+        width: var(--navigation-width) !important;
+        max-width: none !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-shell {
+        pointer-events: auto !important;
+      }
+
+      .shopify-sage-connect-integration-page .site-header.is-nav-connected .modern-nav {
+        border-radius: 24px 24px 0 0 !important;
+        border-bottom-color: transparent !important;
+        box-shadow: none !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-wrap.is-stuck {
+        filter: drop-shadow(0 22px 42px rgba(32,33,36,.11));
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-wrap.is-stuck .page-nav-shell {
+        margin-top: -1px !important;
+        border-top-color: transparent !important;
+        border-radius: 0 0 24px 24px !important;
+        background: rgba(255,255,255,.97) !important;
+        box-shadow: none !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .shopify-sage-connect-integration-page .page-nav-wrap,
+      .shopify-sage-connect-integration-page .page-nav-wrap.is-stuck {
+        top: var(--page-nav-top, 70px) !important;
+        pointer-events: auto !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-shell,
+      .shopify-sage-connect-integration-page .page-nav-shell.is-open {
+        overflow: visible !important;
+        pointer-events: auto !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-toggle {
+        display: flex !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-shell .page-nav {
+        pointer-events: none !important;
+      }
+
+      .shopify-sage-connect-integration-page .page-nav-shell.is-open .page-nav {
+        display: grid !important;
+        max-height: min(68vh, 520px) !important;
+        padding: 10px !important;
+        overflow-y: auto !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transform: translateY(0) scale(1) !important;
+      }
+    }
+  </style>
 </head>
- <body>
+ <body class="shopify-sage-connect-integration-page">
+  <Header />
+  <!-- Legacy copied header disabled; shared Header.astro is used instead.
   <header class="site-header" id="siteHeader">
   <nav aria-label="Primary navigation" class="nav modern-nav" id="mainNav">
     <a aria-label="Swishtag home" class="brand modern-nav__brand" href="/">
@@ -284,6 +389,7 @@
     </div>
   </div>
 </header>
+  -->
   <main class="sage-connect-page">
    <section class="hero" id="top">
     <div class="page-shell hero-grid">
@@ -380,7 +486,7 @@
          <span class="promo-product promo-product--trophy">
          </span>
         </div>
-        <svg aria-hidden="true" class="sync-journey sync-journey--desktop" preserveaspectratio="none">
+        <svg aria-hidden="true" class="sync-journey sync-journey--desktop" preserveAspectRatio="none">
          <path class="sync-journey__path" id="syncJourneyDesktopPath">
          </path>
          <circle class="sync-journey__dot sync-journey__dot--lime" r="7">
@@ -475,7 +581,7 @@
          <span class="promo-product promo-product--usb">
          </span>
         </div>
-        <svg aria-hidden="true" class="sync-journey sync-journey--mobile" preserveaspectratio="none">
+        <svg aria-hidden="true" class="sync-journey sync-journey--mobile" preserveAspectRatio="none">
          <path class="sync-journey__path" id="syncJourneyMobilePath">
          </path>
          <circle class="sync-journey__dot sync-journey__dot--lime" r="7">
@@ -550,7 +656,7 @@
      <div aria-label="Trust indicators" class="hero-trust-card-grid">
       <div aria-label="Shopify Partner" class="hero-trust-card hero-trust-card--shopify">
        <div class="hero-trust-card__logo hero-trust-card__logo--shopify">
-        <svg aria-hidden="true" role="img" viewbox="0 0 170 58">
+        <svg aria-hidden="true" role="img" viewBox="0 0 170 58">
          <g transform="translate(0,1)">
           <path d="M21.3 12.9h29.4l3 34.6H18.3l3-34.6z" fill="#95BF47">
           </path>
@@ -578,7 +684,7 @@
       </div>
       <div aria-label="PPAI Member" class="hero-trust-card hero-trust-card--ppai">
        <div class="hero-trust-card__logo hero-trust-card__logo--ppai">
-        <svg aria-hidden="true" role="img" viewbox="0 0 160 58">
+        <svg aria-hidden="true" role="img" viewBox="0 0 160 58">
          <text fill="#3242A8" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="28" font-weight="900" letter-spacing="-1.1" x="0" y="30">
           PPAI
          </text>
@@ -602,7 +708,7 @@
       <div aria-label="Trustpilot 4.6 rating" class="hero-trust-card hero-trust-card--trustpilot">
        <div class="hero-trust-card__logo hero-trust-card__logo--trustpilot">
         <div class="hero-trustpilot-wordmark">
-         <svg aria-hidden="true" viewbox="0 0 24 24">
+         <svg aria-hidden="true" viewBox="0 0 24 24">
           <path d="M12 1.8l3.15 6.37 7.03 1.02-5.09 4.96 1.2 7.01L12 17.86 5.71 21.16l1.2-7.01L1.82 9.19l7.03-1.02L12 1.8z" fill="#00B67A">
           </path>
          </svg>
@@ -692,9 +798,7 @@
          Problem
         </strong>
        </span>
-       <span aria-hidden="true" class="page-nav-toggle__icon" style="margin: unset;"  >
-        +
-       </span>
+       <span aria-hidden="true" class="page-nav-toggle__icon"></span>
       </button>
       <div class="page-nav" id="pageNavLinks">
        <a href="#problem">
@@ -927,7 +1031,7 @@
       </div>
       <article class="outcome-item" data-reveal="">
        <span class="outcome-icon">
-        <svg viewbox="0 0 24 24">
+        <svg viewBox="0 0 24 24">
          <path d="M5 18V9m7 9V5m7 13v-6">
          </path>
         </svg>
@@ -943,7 +1047,7 @@
       </article>
       <article class="outcome-item" data-reveal="">
        <span class="outcome-icon">
-        <svg viewbox="0 0 24 24">
+        <svg viewBox="0 0 24 24">
          <path d="M4 12h16M12 4v16">
          </path>
         </svg>
@@ -959,7 +1063,7 @@
       </article>
       <article class="outcome-item" data-reveal="">
        <span class="outcome-icon">
-        <svg viewbox="0 0 24 24">
+        <svg viewBox="0 0 24 24">
          <path d="M5 19h14V5H5zM8 9h8M8 13h5">
          </path>
         </svg>
@@ -992,9 +1096,9 @@
       </p>
      </div>
      <div class="process-rail" id="processRail">
-      <svg aria-hidden="true" class="process-connectors" id="processConnectors" preserveaspectratio="none">
+      <svg aria-hidden="true" class="process-connectors" id="processConnectors" preserveAspectRatio="none">
        <defs>
-        <marker id="processArrow" markerheight="5.5" markerwidth="5.5" orient="auto" refx="5.2" refy="3" viewbox="0 0 6 6">
+        <marker id="processArrow" markerHeight="5.5" markerWidth="5.5" orient="auto" refX="5.2" refY="3" viewBox="0 0 6 6">
          <path d="M0 0 6 3 0 6Z">
          </path>
         </marker>
@@ -1093,7 +1197,7 @@
      <div class="use-case-grid">
       <article class="use-case-card" data-reveal="">
        <span class="use-case-icon">
-        <svg aria-hidden="true" viewbox="0 0 24 24">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
          <path d="M4 5h16v14H4zM8 9h8M8 13h5">
          </path>
         </svg>
@@ -1107,7 +1211,7 @@
       </article>
       <article class="use-case-card" data-reveal="">
        <span class="use-case-icon">
-        <svg aria-hidden="true" viewbox="0 0 24 24">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
          <path d="M5 19V7l7-3 7 3v12M9 19v-5h6v5">
          </path>
         </svg>
@@ -1121,7 +1225,7 @@
       </article>
       <article class="use-case-card" data-reveal="">
        <span class="use-case-icon">
-        <svg aria-hidden="true" viewbox="0 0 24 24">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
          <path d="M5 6h6v6H5zM13 12h6v6h-6zM13 5h6M5 18h6">
          </path>
         </svg>
@@ -1135,7 +1239,7 @@
       </article>
       <article class="use-case-card" data-reveal="">
        <span class="use-case-icon">
-        <svg aria-hidden="true" viewbox="0 0 24 24">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
          <path d="M4 12h16M12 4v16">
          </path>
         </svg>
@@ -1149,7 +1253,7 @@
       </article>
       <article class="use-case-card" data-reveal="">
        <span class="use-case-icon">
-        <svg aria-hidden="true" viewbox="0 0 24 24">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
          <path d="M4 18 10 12l4 4 6-8">
          </path>
         </svg>
@@ -1163,7 +1267,7 @@
       </article>
       <article class="use-case-card" data-reveal="">
        <span class="use-case-icon">
-        <svg aria-hidden="true" viewbox="0 0 24 24">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
          <path d="M5 19h14V5H5zM8 9h8M8 13h5">
          </path>
         </svg>

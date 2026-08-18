@@ -1177,7 +1177,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
     .page-nav-shell{padding:0;border-radius:20px;overflow:hidden;backdrop-filter:none}
     .page-nav-toggle{width:100%;min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 16px;border:0;background:transparent;text-align:left}
     .page-nav-toggle small,.page-nav-toggle strong{display:block}.page-nav-toggle small{color:var(--muted);font-size:.52rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em}.page-nav-toggle strong{margin-top:2px;font-size:.73rem}
-    .page-nav-toggle__icon{font-size:1rem;transition:transform .2s ease}.page-nav-shell.is-open .page-nav-toggle__icon{transform:rotate(45deg)}
+    .page-nav-toggle__icon{width:20px;height:20px;display:grid;place-items:center;flex:0 0 auto;font-size:0;line-height:1;transition:transform .2s ease}.page-nav-toggle__icon::before{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg)}.page-nav-shell.is-open .page-nav-toggle__icon{transform:rotate(180deg)}
     .page-nav{display:none;padding:0 7px 7px}.page-nav-shell.is-open .page-nav{display:grid}.page-nav a{width:100%;min-height:40px;border-radius:12px}.page-nav__cta{margin-left:0!important;margin-top:3px;justify-content:center}
     .site-header.is-nav-connected .modern-nav{border-radius:20px 20px 0 0}.page-nav-wrap.is-stuck .page-nav-shell{border-radius:0 0 20px 20px}
     .problem-signals{grid-template-columns:1fr;margin-top:28px}.problem-signal:last-child{grid-column:auto}.problem-signal{min-height:0;padding:18px}.problem-question{margin-top:28px}
@@ -1389,7 +1389,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
     <div class="page-shell">
       <nav aria-label="On this page" class="page-nav-shell" id="pageNavShell">
         <button aria-controls="pageNavLinks" aria-expanded="false" class="page-nav-toggle" id="pageNavToggle" type="button">
-          <span><small>On this page</small><strong id="pageNavCurrent">The Problem</strong></span><span aria-hidden="true" class="page-nav-toggle__icon">+</span>
+          <span><small>On this page</small><strong id="pageNavCurrent">The Problem</strong></span><span aria-hidden="true" class="page-nav-toggle__icon"></span>
         </button>
         <div class="page-nav" id="pageNavLinks">
           <a href="#problem">The Problem</a>

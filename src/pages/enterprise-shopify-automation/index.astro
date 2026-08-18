@@ -843,8 +843,9 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
         .page-nav-toggle strong { display: block; }
         .page-nav-toggle small { color: var(--muted); font-size: .55rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
         .page-nav-toggle strong { margin-top: 2px; font-size: .75rem; }
-        .page-nav-toggle__icon { font-size: 1rem; transition: transform .2s ease; }
-        .page-nav-shell.is-open .page-nav-toggle__icon { transform: rotate(45deg); }
+        .page-nav-toggle__icon { width: 20px; height: 20px; display: grid; place-items: center; flex: 0 0 auto; font-size: 0; line-height: 1; transition: transform .2s ease; }
+        .page-nav-toggle__icon::before { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); }
+        .page-nav-shell.is-open .page-nav-toggle__icon { transform: rotate(180deg); }
         .page-nav { display: grid; grid-template-rows: 0fr; padding: 0 7px; overflow: hidden; transition: grid-template-rows .25s var(--ease), padding .25s ease; }
         .page-nav::before { content: ""; overflow: hidden; }
         .page-nav-shell.is-open .page-nav { grid-template-rows: none; display: grid; padding: 0 7px 7px; }
@@ -4365,7 +4366,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   <div class="page-nav-wrap" id="pageNavWrap">
   <div class="page-shell">
   <nav aria-label="Page navigation" class="page-nav-shell" id="pageNavShell">
-  <button aria-controls="pageNavLinks" aria-expanded="false" class="page-nav-toggle" id="pageNavToggle" type="button"><span><small>On this page</small><strong id="pageNavCurrent">Problem</strong></span><span aria-hidden="true" class="page-nav-toggle__icon">+</span></button>
+  <button aria-controls="pageNavLinks" aria-expanded="false" class="page-nav-toggle" id="pageNavToggle" type="button"><span><small>On this page</small><strong id="pageNavCurrent">Problem</strong></span><span aria-hidden="true" class="page-nav-toggle__icon"></span></button>
   <div class="page-nav" id="pageNavLinks"><a href="#problem">Problem</a><a href="#platform">Base Platform</a><a href="#architecture">Platform + Add-ons</a><a href="#workflow">Order Flow</a><a href="#systems">Integrations</a><a href="#success-story">Success Story</a><a href="#process">Onboarding</a><a href="#faq">FAQs</a><a class="page-nav__cta" data-analytics-event="secondary_nav_automation_cta" href="../book-demo/?service=enterprise-company-store-automation&amp;intent=automation">Automate My Company</a></div>
   </nav>
   </div>

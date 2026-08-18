@@ -10190,7 +10190,15 @@ html.save-data .soar-earth-revolve__surface{
     }
 
     .solution-cta span:last-child {
-      font-size: .93rem;
+      width: 24px;
+      height: 24px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 24px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 950;
+      line-height: 1;
       transition: transform .2s ease;
     }
 
@@ -10975,13 +10983,18 @@ html.save-data .soar-earth-revolve__surface{
       }
 
       .solution-scene--enterprise {
-        min-height: 500px;
+        min-height: 520px;
+      }
+
+      .enterprise-map {
+        inset: 0 0 116px;
       }
 
       .enterprise-node {
-        min-width: 116px;
+        min-width: 104px;
         grid-template-columns: 28px 1fr;
-        padding: 8px 9px;
+        gap: 1px 7px;
+        padding: 8px;
       }
 
       .enterprise-node__icon {
@@ -10992,6 +11005,14 @@ html.save-data .soar-earth-revolve__surface{
       .enterprise-core {
         width: 118px;
         height: 118px;
+      }
+
+      .enterprise-node--workflow {
+        bottom: 0;
+      }
+
+      .enterprise-proof {
+        min-height: 74px;
       }
     }
 
@@ -11050,24 +11071,29 @@ html.save-data .soar-earth-revolve__surface{
       }
 
       .enterprise-node--shopify {
-        left: 2%;
+        left: 3%;
       }
 
       .enterprise-node--punchout {
-        right: 1%;
+        right: 3%;
       }
 
       .enterprise-node--accounting {
-        left: 1%;
+        left: 3%;
       }
 
       .enterprise-node--suppliers {
-        right: 0;
+        right: 3%;
+      }
+
+      .enterprise-node--workflow {
+        bottom: 18%;
       }
 
       .enterprise-proof {
         align-items: flex-start;
         flex-direction: column;
+        bottom: 16px;
       }
 
       .enterprise-proof > div {
@@ -12160,8 +12186,13 @@ html.save-data .soar-earth-revolve__surface{
   height: 34px;
   display: grid;
   place-items: center;
+  flex: 0 0 34px;
   border-radius: 50%;
   background: rgba(255,255,255,.72);
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1;
   transition: transform .25s ease;
 }
 
@@ -12402,16 +12433,135 @@ html.save-data .soar-earth-revolve__surface{
   }
   .punchout-store-stack span,
   .punchout-connections span { padding: 8px 4px; font-size: .47rem; }
-  .platform-product-visual--apps-new { grid-template-columns: 104px 1fr; gap: 12px; padding: 16px; }
+  .platform-product-visual--apps-new { grid-template-columns: 104px minmax(0,1fr); gap: 12px; padding: 16px; }
   .rocket-app-count { width: 100px; height: 100px; box-shadow: 0 0 0 10px rgba(255,255,255,.28); }
   .rocket-app-count strong { font-size: 2.7rem; }
-  .rocket-app-grid { grid-template-columns: repeat(2, 1fr); }
+  .rocket-app-grid {
+    grid-template-columns: repeat(2, 48px);
+    grid-auto-rows: 48px;
+    align-content: center;
+    justify-content: end;
+    gap: 7px;
+  }
+  .rocket-app-grid span {
+    width: 48px;
+    height: 48px;
+    aspect-ratio: auto;
+    border-radius: 11px;
+  }
   .platform-product-visual--xecutor { gap: 24px; padding: 20px 14px; }
   .xecutor-workflow { gap: 4px; }
   .xecutor-workflow span { padding: 7px 6px; font-size: .45rem; }
   .xecutor-status div { padding: 11px 7px; }
   .xecutor-status small { font-size: .43rem; }
   .xecutor-status strong { font-size: 1.05rem; }
+}
+
+@media (max-width: 420px) {
+  .solution-scene--enterprise {
+    min-height: 445px;
+  }
+
+  .enterprise-map {
+    inset: 4px 0 104px;
+  }
+
+  .enterprise-core {
+    width: 102px;
+    height: 102px;
+  }
+
+  .enterprise-core span {
+    font-size: .42rem;
+  }
+
+  .enterprise-core strong {
+    font-size: .72rem;
+  }
+
+  .enterprise-node {
+    min-width: 94px;
+    grid-template-columns: 24px 1fr;
+    gap: 1px 6px;
+    padding: 7px;
+    border-radius: 12px;
+  }
+
+  .enterprise-node__icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    font-size: .56rem;
+  }
+
+  .enterprise-node small {
+    font-size: .34rem;
+  }
+
+  .enterprise-node strong {
+    font-size: .46rem;
+  }
+
+  .enterprise-node--workflow {
+    bottom: 11%;
+  }
+
+  .enterprise-proof {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    min-height: 74px;
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .enterprise-proof > div {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .enterprise-proof strong {
+    padding: 6px 9px;
+  }
+
+  .platform-product-card__cta > span {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+
+  .platform-product-visual--apps-new {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 10px;
+    height: 238px;
+    min-height: 238px;
+    padding: 14px;
+  }
+
+  .rocket-app-count {
+    width: 84px;
+    height: 84px;
+  }
+
+  .rocket-app-count strong {
+    font-size: 2.25rem;
+  }
+
+  .rocket-app-count span {
+    max-width: 68px;
+    font-size: .47rem;
+  }
+
+  .rocket-app-grid {
+    grid-template-columns: repeat(2, 44px);
+    grid-auto-rows: 44px;
+    gap: 6px;
+  }
+
+  .rocket-app-grid span {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

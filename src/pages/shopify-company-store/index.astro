@@ -6876,6 +6876,35 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
       }
       .pain-section .pain-card:last-child { grid-column: auto !important; }
     }
+
+    @media (max-width: 900px) {
+      .page-nav-wrap,
+      .page-nav-wrap.is-stuck {
+        pointer-events: auto !important;
+      }
+
+      .page-nav-shell,
+      .page-nav-shell.is-open {
+        position: relative !important;
+        overflow: visible !important;
+        pointer-events: auto !important;
+      }
+
+      .page-nav-shell .page-nav {
+        pointer-events: none !important;
+      }
+
+      .page-nav-shell.is-open .page-nav {
+        display: grid !important;
+        max-height: min(68vh, 520px) !important;
+        padding: 10px !important;
+        overflow-y: auto !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transform: translateY(0) scale(1) !important;
+      }
+    }
   </style>
   <main>
   <section class="hero" id="top">
