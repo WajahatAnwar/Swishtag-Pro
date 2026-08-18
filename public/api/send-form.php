@@ -140,6 +140,44 @@ function clean_string($value, int $max = 2000): string
     return substr($value, 0, $max);
 }
 
+function normalize_website_url($value): string
+{
+    $value = clean_string($value, 300);
+    if ($value === '') {
+        return '';
+    }
+
+    if (preg_match('/\s/', $value)) {
+        return '';
+    }
+
+    if (!preg_match('/^[a-z][a-z0-9+.-]*:\/\//i', $value)) {
+        $value = 'https://' . $value;
+    }
+
+    $parts = parse_url($value);
+    if (!is_array($parts)) {
+        return '';
+    }
+
+    $scheme = strtolower((string) ($parts['scheme'] ?? ''));
+    $host = strtolower((string) ($parts['host'] ?? ''));
+    if (!in_array($scheme, ['http', 'https'], true) || $host === '' || strpos($host, '.') === false) {
+        return '';
+    }
+
+    if (filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+        return '';
+    }
+
+    return $value;
+}
+
+function html_escape(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
 function require_fields(array $data, array $fields): array
 {
     $missing = [];
@@ -174,7 +212,60 @@ function smtp_command($socket, string $command, array $accepted): string
     return $response;
 }
 
-function smtp_send_mail(array $config, string $to, string $subject, string $body, string $replyTo): void
+function render_text_email(array $fields): string
+{
+    $lines = [];
+    foreach ($fields as $label => $value) {
+        $lines[] = $label . ': ' . ($value === '' ? '-' : $value);
+    }
+    return implode("\r\n", $lines);
+}
+
+function render_field_row(string $label, string $value): string
+{
+    $displayValue = $value === '' ? '-' : $value;
+    $safeValue = html_escape($displayValue);
+    if (filter_var($displayValue, FILTER_VALIDATE_URL)) {
+        $safeHref = html_escape($displayValue);
+        $safeValue = '<a href="' . $safeHref . '" style="color:#202124;text-decoration:underline;">' . $safeValue . '</a>';
+    }
+
+    return '<tr>'
+        . '<td style="padding:12px 14px;border-bottom:1px solid #ecece8;color:#6c6e73;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;width:34%;vertical-align:top;">' . html_escape($label) . '</td>'
+        . '<td style="padding:12px 14px;border-bottom:1px solid #ecece8;color:#202124;font-size:14px;line-height:1.45;vertical-align:top;">' . nl2br($safeValue) . '</td>'
+        . '</tr>';
+}
+
+function render_html_email(string $heading, string $summary, array $fields): string
+{
+    $rows = '';
+    foreach ($fields as $label => $value) {
+        $rows .= render_field_row((string) $label, (string) $value);
+    }
+
+    return '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        . '<body style="margin:0;padding:0;background:#f5f5f3;font-family:Arial,Helvetica,sans-serif;color:#202124;">'
+        . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f5f3;padding:28px 12px;"><tr><td align="center">'
+        . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;background:#ffffff;border:1px solid #ecece8;border-radius:18px;overflow:hidden;">'
+        . '<tr><td style="background:#202124;color:#ffffff;padding:24px 28px;">'
+        . '<div style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c2ff02;margin-bottom:10px;">Swishtag Website</div>'
+        . '<h1 style="margin:0;font-size:24px;line-height:1.2;font-weight:900;">' . html_escape($heading) . '</h1>'
+        . '<p style="margin:10px 0 0;color:#f5f5f3;font-size:14px;line-height:1.5;">' . html_escape($summary) . '</p>'
+        . '</td></tr>'
+        . '<tr><td style="padding:20px 22px 8px;">'
+        . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #ecece8;border-radius:12px;overflow:hidden;border-collapse:separate;border-spacing:0;">'
+        . $rows
+        . '</table>'
+        . '</td></tr>'
+        . '<tr><td style="padding:14px 28px 26px;color:#6c6e73;font-size:12px;line-height:1.5;">'
+        . 'This message was sent from the Swishtag website form. Reply directly to follow up with the lead.'
+        . '</td></tr>'
+        . '</table>'
+        . '</td></tr></table>'
+        . '</body></html>';
+}
+
+function smtp_send_mail(array $config, string $to, string $subject, string $textBody, string $htmlBody, string $replyTo): void
 {
     $host = $config['host'];
     $port = (int) $config['port'];
@@ -217,18 +308,33 @@ function smtp_send_mail(array $config, string $to, string $subject, string $body
 
         $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
         $safeFromName = addcslashes($fromName, "\\\"");
+        $boundary = 'swishtag_' . bin2hex(random_bytes(12));
         $headers = [
             'From: "' . $safeFromName . '" <' . $fromAddress . '>',
             'To: <' . $to . '>',
             'Subject: ' . $encodedSubject,
             'Reply-To: <' . $replyTo . '>',
             'MIME-Version: 1.0',
-            'Content-Type: text/plain; charset=UTF-8',
-            'Content-Transfer-Encoding: 8bit',
+            'Content-Type: multipart/alternative; boundary="' . $boundary . '"',
             'X-Mailer: Swishtag Website Form'
         ];
 
-        $message = implode("\r\n", $headers) . "\r\n\r\n" . $body;
+        $messageBody = [
+            '--' . $boundary,
+            'Content-Type: text/plain; charset=UTF-8',
+            'Content-Transfer-Encoding: base64',
+            '',
+            rtrim(chunk_split(base64_encode($textBody))),
+            '--' . $boundary,
+            'Content-Type: text/html; charset=UTF-8',
+            'Content-Transfer-Encoding: base64',
+            '',
+            rtrim(chunk_split(base64_encode($htmlBody))),
+            '--' . $boundary . '--',
+            '',
+        ];
+
+        $message = implode("\r\n", $headers) . "\r\n\r\n" . implode("\r\n", $messageBody);
         $message = preg_replace('/^\./m', '..', $message) ?? $message;
         smtp_command($socket, $message . "\r\n.", [250]);
         smtp_command($socket, 'QUIT', [221]);
@@ -285,6 +391,15 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     respond(422, ['ok' => false, 'message' => 'Please enter a valid work email address.']);
 }
 
+$website = '';
+if ($source === 'book-demo') {
+    $rawWebsite = clean_string($data['website'] ?? '', 300);
+    $website = normalize_website_url($rawWebsite);
+    if ($rawWebsite !== '' && $website === '') {
+        respond(422, ['ok' => false, 'message' => 'Please enter a valid website like google.com or www.google.com.']);
+    }
+}
+
 $config = [
     'host' => config_value($privateConfig, 'host', 'MAIL_HOST'),
     'port' => config_value($privateConfig, 'port', 'MAIL_PORT', '465'),
@@ -334,7 +449,7 @@ if ($source === 'book-demo') {
         'Full name' => clean_string($data['fullName'] ?? '', 160),
         'Work email' => $email,
         'Company' => clean_string($data['companyName'] ?? '', 160),
-        'Website' => clean_string($data['website'] ?? '', 300),
+        'Website' => $website,
         'Solution interest' => clean_string($data['solutionInterest'] ?? '', 180),
         'Service' => clean_string($data['service'] ?? '', 120),
         'Intent' => clean_string($data['intent'] ?? '', 120),
@@ -364,15 +479,18 @@ if ($source === 'book-demo') {
     ];
 }
 
-$lines = [];
-foreach ($fields as $label => $value) {
-    $lines[] = $label . ': ' . ($value === '' ? '-' : $value);
-}
-$body = implode("\r\n", $lines);
+$body = render_text_email($fields);
+$htmlBody = render_html_email(
+    $source === 'book-demo' ? 'New Book Demo Request' : 'New Custom Software Idea',
+    $source === 'book-demo'
+        ? 'A lead submitted the Book Demo form and selected a meeting slot.'
+        : 'A lead submitted the Custom Software & Automation form.',
+    $fields
+);
 
 try {
     foreach ($toList as $recipient) {
-        smtp_send_mail($config, $recipient, $subject, $body, $email);
+        smtp_send_mail($config, $recipient, $subject, $body, $htmlBody, $email);
     }
 } catch (Throwable $exception) {
     error_log('Swishtag form mail error: ' . $exception->getMessage());

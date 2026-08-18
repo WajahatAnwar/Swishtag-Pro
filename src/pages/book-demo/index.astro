@@ -287,7 +287,7 @@ const robots = "index,follow";
                     </div>
                     <div class="field">
                       <label for="website">Website <span class="optional">(optional)</span></label>
-                      <input id="website" name="website" type="url" placeholder="https://">
+                      <input id="website" name="website" type="text" inputmode="url" autocomplete="url" placeholder="example.com">
                     </div>
                     <div class="field sr-only" aria-hidden="true">
                       <label for="nickname">Leave this empty</label>
@@ -476,6 +476,22 @@ const robots = "index,follow";
     error.classList.add('show');
   }
 
+  function normalizeWebsite(value){
+    const trimmed = value.trim();
+    if(!trimmed) return '';
+    if(/\s/.test(trimmed)) return '';
+
+    const candidate = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+    try {
+      const url = new URL(candidate);
+      if(!['http:', 'https:'].includes(url.protocol)) return '';
+      if(!url.hostname || !url.hostname.includes('.')) return '';
+      return url.href;
+    } catch {
+      return '';
+    }
+  }
+
   function validateStep(step){
     if(step === 1){
       const required = ['fullName','workEmail','companyName'];
@@ -486,7 +502,11 @@ const robots = "index,follow";
       const email = document.getElementById('workEmail');
       if(!email.checkValidity()) { email.focus(); showError(1,'Please enter a valid work email address.'); return false; }
       const website = document.getElementById('website');
-      if(website.value.trim() && !website.checkValidity()) { website.focus(); showError(1,'If you add a website, please use a valid URL.'); return false; }
+      if(website.value.trim()){
+        const normalizedWebsite = normalizeWebsite(website.value);
+        if(!normalizedWebsite) { website.focus(); showError(1,'If you add a website, please enter a valid domain like google.com or www.google.com.'); return false; }
+        website.value = normalizedWebsite;
+      }
       return true;
     }
     if(step === 2){
