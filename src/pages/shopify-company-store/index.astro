@@ -2956,66 +2956,75 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
       }
   
       .hero-trust-rail {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        margin-top: 12px;
+        grid-template-columns: 1fr;
+        margin-top: 14px;
         border-radius: 20px;
       }
   
       .hero-trust-rail .official-trust-badge {
-        min-height: 78px;
-        flex-direction: column;
-        gap: 4px;
-        padding: 8px 5px;
-        text-align: center;
+        width: 100%;
+        min-width: 0;
+        min-height: 72px;
+        flex-direction: row;
+        justify-content: center;
+        gap: 14px;
+        padding: 13px 18px;
+        text-align: left;
+      }
+
+      .hero-trust-rail .official-trust-badge + .official-trust-badge {
+        border-left: 0;
+        border-top: 1px solid rgba(32,33,36,.08);
       }
   
       .hero-trust-rail .official-trust-logo {
-        width: 70px;
-        min-width: 70px;
-        height: 39px;
-        margin-inline: auto;
+        width: 96px;
+        min-width: 96px;
+        height: 44px;
+        margin-inline: 0;
       }
   
       .hero-trust-rail .official-trust-logo--shopify {
-        align-items: center;
+        align-items: flex-start;
       }
   
       .hero-trust-rail .official-trust-logo--shopify img {
-        width: 70px;
-        height: 23px;
+        width: 92px;
+        height: 28px;
       }
   
       .hero-trust-rail .official-trust-logo--shopify > span {
-        padding-left: 0;
-        font-size: .4rem;
+        padding-left: 24px;
+        font-size: .48rem;
       }
   
       .hero-trust-rail .official-trust-logo--trustpilot {
-        align-items: center;
+        align-items: flex-start;
       }
   
-      .hero-trust-rail .trustpilot-wordmark strong { font-size: .64rem; }
-      .hero-trust-rail .trustpilot-wordmark svg { width: 15px; height: 15px; }
+      .hero-trust-rail .trustpilot-wordmark strong { font-size: .76rem; }
+      .hero-trust-rail .trustpilot-wordmark svg { width: 18px; height: 18px; }
       .hero-trust-rail .trustpilot-stars span {
-        width: 12px;
-        height: 12px;
-        font-size: .44rem;
+        width: 14px;
+        height: 14px;
+        font-size: .52rem;
       }
   
       .hero-trust-rail .official-trust-logo--delivery {
-        width: 38px;
-        min-width: 38px;
+        width: 96px;
+        min-width: 96px;
+        justify-content: center;
       }
   
       .hero-trust-rail .official-trust-logo--delivery > span {
-        width: 34px;
-        height: 34px;
-        font-size: .9rem;
-        box-shadow: 0 0 0 4px rgba(194,255,2,.11);
+        width: 40px;
+        height: 40px;
+        font-size: 1.05rem;
+        box-shadow: 0 0 0 6px rgba(194,255,2,.11);
       }
   
       .hero-trust-rail .official-trust-copy strong {
-        font-size: .55rem;
+        font-size: .72rem;
         white-space: nowrap;
       }
   
@@ -3061,7 +3070,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
       }
   
       .hero-trust-rail .official-trust-copy strong {
-        font-size: .5rem;
+        font-size: .68rem;
       }
   
       .proof-intro strong {

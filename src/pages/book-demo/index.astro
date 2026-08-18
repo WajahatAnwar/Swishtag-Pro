@@ -50,7 +50,7 @@ const robots = "index,follow";
       .book-demo-page::before{width:430px;height:430px;left:-250px;top:61%;background:rgba(194,255,2,.12)}
       .book-demo-page::after{width:560px;height:560px;right:-315px;top:9%;background:rgba(217,214,253,.25);filter:blur(1px)}
       .book-demo-page.shell{width:100%;max-width:none;margin:0}
-      .book-demo-page .hero{width:min(980px,calc(100% - 32px));text-align:center;max-width:980px;margin:0 auto 22px}
+      .book-demo-page .hero{display:block;min-height:0;padding:0;width:min(980px,calc(100% - 32px));text-align:center;max-width:980px;margin:0 auto 22px;align-items:initial;isolation:auto}
       .book-demo-page .eyebrow{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:calc(100vw - 32px);gap:8px;margin:0 auto;padding:8px 14px;border:1px solid rgba(32,33,36,.08);background:rgba(255,255,255,.86);border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 18px rgba(32,33,36,.04)}
       .book-demo-page .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 5px rgba(194,255,2,.16)}
       .book-demo-page h1{margin:18px auto 12px;max-width:920px;font-size:clamp(3rem,5.6vw,5.05rem);line-height:.96;letter-spacing:-.06em;text-wrap:balance}
@@ -123,7 +123,7 @@ const robots = "index,follow";
       .book-demo-page .btn-primary{background:var(--ink);color:#fff;box-shadow:0 10px 24px rgba(32,33,36,.14)}
       .book-demo-page .btn-primary b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--lime);color:var(--ink)}
       .book-demo-page .btn-light{background:#fff;color:var(--ink);border:1px solid #dcddda;box-shadow:var(--shadow-sm)}
-      .book-demo-page .btn-ghost{background:transparent;color:#686a70;padding-left:0;padding-right:0}
+      .book-demo-page .btn-ghost{color:#686a70;}
       .book-demo-page .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none !important}
       .fine-print{font-size:.78rem;line-height:1.55;color:#8b8d92;max-width:340px}
       .error{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,189,155,.18);border:1px solid rgba(188,123,88,.16);font-size:.82rem;color:#7b5f52;display:none}
@@ -256,7 +256,7 @@ const robots = "index,follow";
       </section>
   
       <section class="form-shell">
-        <div class="card" id="demoCard">
+        <div class="card" id="demoCard" style="box-shadow: unset;" >
           <div class="card-inner">
             <div id="bookingFlow">
               <div class="stepper" aria-label="Booking steps">
@@ -326,7 +326,7 @@ const robots = "index,follow";
                   </div>
                   <div class="error" data-error></div>
                   <div class="actions">
-                    <button class="btn btn-ghost" type="button" data-back>Back</button>
+                    <button class="btn btn-ghost"  style="border-color: #4b5563; border-width: 2px;" type="button" data-back>Back</button>
                     <button class="btn btn-primary" type="button" data-next>Choose a meeting time <b>→</b></button>
                   </div>
                 </div>

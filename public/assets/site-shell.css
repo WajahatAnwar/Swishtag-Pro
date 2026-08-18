@@ -96,6 +96,88 @@
   .site-header .mega-menu__primary-links{display:grid!important;gap:8px!important}
 }
 
+/* Keep the mobile menu above standalone page content, including Insights. */
+body.mobile-menu-lock .site-header{
+  z-index:2147483000!important;
+  pointer-events:auto!important;
+}
+body.mobile-menu-lock .site-header .mobile-menu,
+.site-header .mobile-menu.is-open{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483000!important;
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+.site-header .mobile-menu.is-open .mobile-menu__backdrop{
+  opacity:1!important;
+}
+.site-header .mobile-menu.is-open .mobile-menu__panel{
+  position:fixed!important;
+  inset:0!important;
+  z-index:1!important;
+  opacity:1!important;
+  visibility:visible!important;
+  transform:none!important;
+}
+
+/* Canonical mobile hamburger: three clean lines, no legacy pseudo-lines. */
+.site-header .modern-menu-toggle{
+  position:relative!important;
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  display:none!important;
+  place-items:center!important;
+  align-content:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding:0!important;
+  border:1px solid rgba(32,33,36,.10)!important;
+  border-radius:50%!important;
+  color:#202124!important;
+  background:rgba(255,255,255,.78)!important;
+  box-shadow:0 9px 22px rgba(32,33,36,.08),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.site-header .modern-menu-toggle::before,
+.site-header .modern-menu-toggle::after{
+  content:none!important;
+  display:none!important;
+}
+.site-header .modern-menu-toggle .modern-menu-toggle__line{
+  display:block!important;
+  width:19px!important;
+  height:2px!important;
+  margin:0!important;
+  border-radius:999px!important;
+  background:currentColor!important;
+  opacity:1!important;
+  transform:none!important;
+  transform-origin:center!important;
+  transition:transform .22s ease,opacity .16s ease!important;
+}
+.site-header .modern-menu-toggle .modern-menu-toggle__line:nth-child(2){
+  width:19px!important;
+  justify-self:auto!important;
+}
+.site-header .modern-menu-toggle[aria-expanded="true"] .modern-menu-toggle__line:nth-child(1){
+  transform:translateY(6px) rotate(45deg)!important;
+}
+.site-header .modern-menu-toggle[aria-expanded="true"] .modern-menu-toggle__line:nth-child(2){
+  opacity:0!important;
+}
+.site-header .modern-menu-toggle[aria-expanded="true"] .modern-menu-toggle__line:nth-child(3){
+  transform:translateY(-6px) rotate(-45deg)!important;
+}
+@media (max-width:820px){
+  .site-header .modern-menu-toggle{
+    display:grid!important;
+  }
+}
+
 /* Canonical home-page mega menu treatment for every standalone header. */
 @media (min-width:821px){
   .site-header .desktop-nav__item{position:static!important}
