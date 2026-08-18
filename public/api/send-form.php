@@ -34,6 +34,16 @@ function contains_text(string $value, string $needle): bool
     return $needle === '' || strpos($value, $needle) !== false;
 }
 
+function load_php_config_file(string $path): array
+{
+    if (!is_readable($path)) {
+        return [];
+    }
+
+    $config = require $path;
+    return is_array($config) ? $config : [];
+}
+
 function load_env_file(string $path): void
 {
     if (!is_readable($path)) {
@@ -89,10 +99,34 @@ foreach (array_unique($envPaths) as $envPath) {
     load_env_file($envPath);
 }
 
+$privateConfigPaths = [
+    dirname(__DIR__, 2) . '/swishtag-mail-config.php',
+];
+if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+    $documentRoot = rtrim((string) $_SERVER['DOCUMENT_ROOT'], '/\\');
+    $privateConfigPaths[] = dirname($documentRoot) . '/swishtag-mail-config.php';
+}
+
+$privateConfig = [];
+foreach (array_unique($privateConfigPaths) as $configPath) {
+    $privateConfig = load_php_config_file($configPath);
+    if ($privateConfig !== []) {
+        break;
+    }
+}
+
 function env_value(string $key, string $default = ''): string
 {
     $value = getenv($key);
     return $value === false ? $default : trim((string) $value);
+}
+
+function config_value(array $config, string $key, string $envKey, string $default = ''): string
+{
+    if (array_key_exists($key, $config) && is_scalar($config[$key])) {
+        return trim((string) $config[$key]);
+    }
+    return env_value($envKey, $default);
 }
 
 function clean_string($value, int $max = 2000): string
@@ -252,21 +286,21 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 $config = [
-    'host' => env_value('MAIL_HOST'),
-    'port' => env_value('MAIL_PORT', '465'),
-    'username' => env_value('MAIL_USERNAME'),
-    'password' => env_value('MAIL_PASSWORD'),
-    'encryption' => env_value('MAIL_ENCRYPTION', 'ssl'),
-    'from_address' => env_value('MAIL_FROM_ADDRESS'),
-    'from_name' => env_value('MAIL_FROM_NAME', env_value('APP_NAME', 'Swishtag')),
+    'host' => config_value($privateConfig, 'host', 'MAIL_HOST'),
+    'port' => config_value($privateConfig, 'port', 'MAIL_PORT', '465'),
+    'username' => config_value($privateConfig, 'username', 'MAIL_USERNAME'),
+    'password' => config_value($privateConfig, 'password', 'MAIL_PASSWORD'),
+    'encryption' => config_value($privateConfig, 'encryption', 'MAIL_ENCRYPTION', 'ssl'),
+    'from_address' => config_value($privateConfig, 'from_address', 'MAIL_FROM_ADDRESS'),
+    'from_name' => config_value($privateConfig, 'from_name', 'MAIL_FROM_NAME', config_value($privateConfig, 'app_name', 'APP_NAME', 'Swishtag')),
 ];
 
 if ($config['from_name'] === '' || $config['from_name'] === '${APP_NAME}') {
-    $config['from_name'] = env_value('APP_NAME', 'Swishtag');
+    $config['from_name'] = config_value($privateConfig, 'app_name', 'APP_NAME', 'Swishtag');
 }
 
-$to = env_value('MAIL_TO', 'hello@swishtag.com');
-$mailer = env_value('MAIL_MAILER', 'smtp');
+$to = config_value($privateConfig, 'to', 'MAIL_TO', 'hello@swishtag.com');
+$mailer = config_value($privateConfig, 'mailer', 'MAIL_MAILER', 'smtp');
 
 foreach (['host', 'username', 'password', 'from_address'] as $key) {
     if ($config[$key] === '') {
