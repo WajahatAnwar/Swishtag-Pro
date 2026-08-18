@@ -1,3 +1,26 @@
+---
+const solutionCtas: Record<string, { label: string; href: string }> = {
+  '/shopify-company-store/': {
+    label: 'Launch a Company Store',
+    href: '/book-demo/?service=company-store-launch&intent=launch',
+  },
+  '/shopify-sage-connect-integration/': {
+    label: 'Check My SAGE Integration Fit',
+    href: '/book-demo/?service=sage-connected-company-store&intent=integration-fit',
+  },
+  '/enterprise-shopify-automation/': {
+    label: 'Automate My Company',
+    href: '/book-demo/?service=enterprise-company-store-automation&intent=automation',
+  },
+};
+
+const normalizedPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const headerCta = solutionCtas[normalizedPath] ?? {
+  label: 'Book a Demo',
+  href: '/book-demo/',
+};
+---
+
 <header class="site-header" id="siteHeader" data-nav-native="1">
 <nav aria-label="Primary navigation" class="nav modern-nav" id="mainNav">
 <a aria-label="Swishtag home" class="brand modern-nav__brand" href="/">
@@ -210,8 +233,8 @@
 <a class="desktop-nav__direct" href="/insights/">Insights</a>
 <a class="desktop-nav__direct" href="/company/">Company</a>
 </div>
-<a class="btn btn--primary modern-nav__cta" href="/book-demo/">
-<span>Book a Demo</span><span aria-hidden="true">↗</span>
+<a class="btn btn--primary modern-nav__cta" href={headerCta.href}>
+<span>{headerCta.label}</span><span aria-hidden="true">↗</span>
 </a>
 <button aria-controls="mobileMenu" aria-expanded="false" aria-label="Open menu" class="menu-toggle modern-menu-toggle" id="menuToggle" type="button">
 <span aria-hidden="true" class="modern-menu-toggle__line"></span><span aria-hidden="true" class="modern-menu-toggle__line"></span><span aria-hidden="true" class="modern-menu-toggle__line"></span>
@@ -268,7 +291,7 @@
 </a>
 </div>
 <div class="mobile-menu__footer">
-<a class="btn btn--primary" data-mobile-link="" href="/book-demo/"><span>Book a Demo</span><span aria-hidden="true">↗</span></a><span>swishtag.com</span>
+<a class="btn btn--primary" data-mobile-link="" href={headerCta.href}><span>{headerCta.label}</span><span aria-hidden="true">↗</span></a><span>swishtag.com</span>
 </div>
 </div>
 </div>

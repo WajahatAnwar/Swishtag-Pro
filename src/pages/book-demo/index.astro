@@ -307,10 +307,10 @@ const robots = "index,follow";
                     <p>Pick the option that best matches what you want to see in the demo.</p>
                   </div>
                   <div class="choices" role="radiogroup" aria-label="What would you like help with?">
-                    <div class="choice"><input type="radio" id="need-launch" name="solutionInterest" value="Launch a company store"><label for="need-launch"><strong>Launch a company store</strong><span>I need a Shopify company store for a client program.</span></label></div>
-                    <div class="choice"><input type="radio" id="need-connect" name="solutionInterest" value="Connect SAGE + Shopify"><label for="need-connect"><strong>Connect SAGE + Shopify</strong><span>I want to use SAGE product data inside Shopify.</span></label></div>
-                    <div class="choice"><input type="radio" id="need-scale" name="solutionInterest" value="Automate multiple stores"><label for="need-scale"><strong>Automate multiple stores</strong><span>I need centralized workflows and automation.</span></label></div>
-                    <div class="choice"><input type="radio" id="need-unsure" name="solutionInterest" value="Not sure yet"><label for="need-unsure"><strong>Not sure yet</strong><span>Help me figure out the right path for my operation.</span></label></div>
+                    <div class="choice"><input type="radio" id="need-launch" name="solutionInterest" value="Company Store Launch" data-service="company-store-launch" data-intent="launch"><label for="need-launch"><strong>Company Store Launch</strong><span>Launch a Shopify company store for a client program.</span></label></div>
+                    <div class="choice"><input type="radio" id="need-connect" name="solutionInterest" value="SAGE Connected Company Store" data-service="sage-connected-company-store" data-intent="integration-fit"><label for="need-connect"><strong>SAGE Connected Company Store</strong><span>Connect SAGE product data with a modern Shopify storefront.</span></label></div>
+                    <div class="choice"><input type="radio" id="need-scale" name="solutionInterest" value="Enterprise Company Store Automation" data-service="enterprise-company-store-automation" data-intent="automation"><label for="need-scale"><strong>Enterprise Company Store Automation</strong><span>Centralize multi-store operations, approvals, orders, and automation.</span></label></div>
+                    <div class="choice"><input type="radio" id="need-unsure" name="solutionInterest" value="Not sure yet" data-service="not-sure-yet"><label for="need-unsure"><strong>Not sure yet</strong><span>Help me figure out the right path for my operation.</span></label></div>
                   </div>
                   <div class="field" style="margin-top:16px">
                     <label>How many company stores are you managing? <span class="optional">optional</span></label>
@@ -413,6 +413,22 @@ const robots = "index,follow";
 
   const state = { step: 1, selectedDate: '', selectedDateISO: '', selectedTime: '', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local time' };
   timezoneText.textContent = state.timezone;
+
+  function applyQuerySelection(){
+    const params = new URLSearchParams(window.location.search);
+    const service = params.get('service') || '';
+    const intent = params.get('intent') || '';
+    if(!service) return;
+
+    const options = [...form.querySelectorAll('input[name="solutionInterest"][data-service]')];
+    const match = options.find(option => {
+      const serviceMatches = option.dataset.service === service;
+      const intentMatches = !intent || option.dataset.intent === intent;
+      return serviceMatches && intentMatches;
+    });
+
+    if(match) match.checked = true;
+  }
 
   const slotTimes = ['09:00', '10:30', '12:00', '13:30', '15:00'];
   const dateOptions = [];
@@ -586,9 +602,12 @@ const robots = "index,follow";
     const fullName = document.getElementById('fullName').value.trim();
     const email = document.getElementById('workEmail').value.trim();
     const company = document.getElementById('companyName').value.trim();
-    const focus = form.querySelector('input[name="solutionInterest"]:checked').value;
+    const selectedInterest = form.querySelector('input[name="solutionInterest"]:checked');
+    const focus = selectedInterest.value;
     const payload = Object.fromEntries(new FormData(form).entries());
     payload.form_source = 'book-demo';
+    payload.service = selectedInterest.dataset.service || '';
+    payload.intent = selectedInterest.dataset.intent || '';
     payload.selectedDate = state.selectedDate;
     payload.selectedDateISO = state.selectedDateISO;
     payload.selectedTime = state.selectedTime;
@@ -623,6 +642,7 @@ const robots = "index,follow";
     window.scrollTo({top:0, behavior:'smooth'});
   });
 
+  applyQuerySelection();
   renderDates();
 })();
   </script>

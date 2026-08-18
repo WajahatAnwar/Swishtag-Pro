@@ -336,6 +336,8 @@ if ($source === 'book-demo') {
         'Company' => clean_string($data['companyName'] ?? '', 160),
         'Website' => clean_string($data['website'] ?? '', 300),
         'Solution interest' => clean_string($data['solutionInterest'] ?? '', 180),
+        'Service' => clean_string($data['service'] ?? '', 120),
+        'Intent' => clean_string($data['intent'] ?? '', 120),
         'Store count' => clean_string($data['storeCount'] ?? '', 80),
         'Selected date' => clean_string($data['selectedDate'] ?? '', 120),
         'Selected time' => clean_string($data['selectedTime'] ?? '', 120),
