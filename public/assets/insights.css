@@ -732,6 +732,7 @@ button, input { font: inherit; }
   line-height: 1.15;
   letter-spacing: -.04em;
   margin: 68px 0 20px;
+  scroll-margin-top: 138px;
 }
 .article-body h3 {
   color: var(--ink);
@@ -920,6 +921,7 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #
   .toc-mobile summary { padding: 16px 18px; font-weight: 700; cursor: pointer; }
   .toc-mobile div { padding: 0 18px 16px; display: grid; gap: 10px; }
   .toc-mobile a { color: var(--muted); font-size: 14px; }
+  .toc-mobile a.active { color: var(--brand); }
   .article-body { font-size: 17px; }
   .article-body h2 { font-size: 32px; margin-top: 54px; }
   .article-body h3 { font-size: 23px; }

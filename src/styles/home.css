@@ -13694,3 +13694,85 @@ body.mobile-menu-lock .site-header .mobile-menu,
   visibility: visible !important;
   transform: none !important;
 }
+
+/* Mobile clarity pass for the Shopify solution mockups. */
+@media (max-width: 680px) {
+  .solution-scene {
+    isolation: isolate;
+  }
+
+  .launch-storefront,
+  .sage-catalog {
+    transform: none !important;
+    box-shadow: 0 16px 34px rgba(32,33,36,.12);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
+
+  .launch-storefront__bar span,
+  .sage-catalog__bar span {
+    font-size: .58rem;
+  }
+
+  .launch-storefront__hero small {
+    font-size: .56rem;
+  }
+
+  .launch-storefront__hero strong {
+    max-width: 240px;
+    font-size: clamp(1.45rem, 7vw, 1.85rem);
+    letter-spacing: -.035em;
+  }
+
+  .launch-storefront__hero > span {
+    font-size: .58rem;
+  }
+
+  .launch-product small,
+  .sage-catalog__grid small {
+    color: #4e5562;
+    font-size: .54rem;
+    font-weight: 800;
+  }
+
+  .launch-fulfillment-card,
+  .sage-sync-status {
+    background: rgba(255,255,255,.96);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .launch-fulfillment-card small,
+  .sage-sync-status small {
+    font-size: .52rem;
+  }
+
+  .launch-fulfillment-card strong,
+  .sage-sync-status strong {
+    font-size: .68rem;
+  }
+
+  .sage-source small {
+    font-size: .54rem;
+  }
+
+  .site-footer {
+    padding-top: 42px;
+  }
+}
+
+@media (max-width: 460px) {
+  .launch-storefront {
+    left: 4%;
+    width: 88%;
+  }
+
+  .sage-catalog {
+    right: 1%;
+    width: 60%;
+  }
+
+  .site-footer {
+    padding-top: 34px;
+  }
+}

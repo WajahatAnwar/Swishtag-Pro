@@ -40,7 +40,7 @@ const robots = "index,follow";
       }
       button,input,textarea,select{font:inherit}
       .book-demo-page a{color:inherit}
-      .book-demo-page{position:relative;isolation:isolate;min-height:100vh;overflow:hidden;padding:100px 0 66px;background:
+      .book-demo-page{position:relative;isolation:isolate;min-height:100vh;overflow:visible;padding:88px 0 42px;background:
         radial-gradient(circle at 4% 0%, rgba(255,189,155,.30), transparent 26rem),
         radial-gradient(circle at 96% 0%, rgba(217,214,253,.48), transparent 31rem),
         linear-gradient(180deg,rgba(255,253,249,.94),rgba(255,255,255,.94) 54%,rgba(251,250,247,.96))}
@@ -50,19 +50,19 @@ const robots = "index,follow";
       .book-demo-page::before{width:430px;height:430px;left:-250px;top:61%;background:rgba(194,255,2,.12)}
       .book-demo-page::after{width:560px;height:560px;right:-315px;top:9%;background:rgba(217,214,253,.25);filter:blur(1px)}
       .book-demo-page.shell{width:100%;max-width:none;margin:0}
-      .book-demo-page .hero{display:block;min-height:0;padding:0;width:min(980px,calc(100% - 32px));text-align:center;max-width:980px;margin:0 auto 22px;align-items:initial;isolation:auto}
+      .book-demo-page .hero{display:block;min-height:0;padding:0;width:min(900px,calc(100% - 32px));text-align:center;max-width:900px;margin:0 auto 14px;align-items:initial;isolation:auto}
       .book-demo-page .eyebrow{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:calc(100vw - 32px);gap:8px;margin:0 auto;padding:8px 14px;border:1px solid rgba(32,33,36,.08);background:rgba(255,255,255,.86);border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 18px rgba(32,33,36,.04)}
       .book-demo-page .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 5px rgba(194,255,2,.16)}
-      .book-demo-page h1{margin:18px auto 12px;max-width:920px;font-size:clamp(3rem,5.6vw,5.05rem);line-height:.96;letter-spacing:-.06em;text-wrap:balance}
-      .book-demo-page .hero p{margin:0 auto;max-width:760px;color:var(--muted);font-size:1.03rem;line-height:1.5}
-      .book-demo-page .hero-note{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+      .book-demo-page h1{margin:14px auto 10px;max-width:780px;font-size:clamp(2.35rem,4.35vw,4rem);line-height:.98;letter-spacing:-.055em;text-wrap:balance}
+      .book-demo-page .hero p{margin:0 auto;max-width:620px;color:var(--muted);font-size:.96rem;line-height:1.48}
+      .book-demo-page .hero-note{margin-top:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
       .book-demo-page .hero-note span{display:inline-flex;align-items:center;min-height:34px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(32,33,36,.07);font-size:.75rem;font-weight:700;color:#67696f}
   
-      .form-shell{width:min(920px,calc(100% - 32px));max-width:920px;margin:18px auto 0}
+      .form-shell{width:min(920px,calc(100% - 32px));max-width:920px;margin:12px auto 0}
       .card{position:relative;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow);overflow:hidden}
       .card::before{content:"";display:block;height:5px;background:linear-gradient(90deg,var(--lime),var(--mint),var(--lav),var(--peach))}
-      .card-inner{padding:34px}
-      .stepper{display:grid;grid-template-columns:repeat(3,1fr);gap:0;max-width:560px;margin:0 auto 28px;position:relative}
+      .card-inner{padding:28px 32px}
+      .stepper{display:grid;grid-template-columns:repeat(3,1fr);gap:0;max-width:560px;margin:0 auto 22px;position:relative}
       .stepper::before{content:"";position:absolute;left:15%;right:15%;top:22px;height:2px;background:#e7e8e6}
       .step{position:relative;z-index:1;text-align:center;color:#a1a2a8}
       .step-badge{width:44px;height:44px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:#f5f5f1;border:1px solid #e4e5e1;font-size:.92rem;font-weight:900;transition:.2s ease}
@@ -73,7 +73,7 @@ const robots = "index,follow";
       .panel{display:none}
       .panel.active{display:block;animation:fadeIn .22s ease}
       @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-      .panel-head{text-align:center;max-width:620px;margin:0 auto 26px}
+      .panel-head{text-align:center;max-width:620px;margin:0 auto 20px}
       .panel-head h2{margin:0 0 8px;font-size:clamp(1.65rem,3vw,2.2rem);line-height:1.08;letter-spacing:-.04em}
       .panel-head p{margin:0;color:var(--muted);font-size:.95rem;line-height:1.65}
       .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -246,8 +246,8 @@ const robots = "index,follow";
   <main class="book-demo-page shell">
       <section class="hero">
         <span class="eyebrow"><i></i> Book a Demo</span>
-        <h1>Book the right Shopify demo for your company-store workflow.</h1>
-        <p>Tell us who you are, choose what you want help with, then pick a time that works for you. We'll tailor the conversation for promotional products distributors.</p>
+        <h1>Book a Shopify demo for your workflow.</h1>
+        <p>Tell us what you need, then pick a time. We'll tailor the demo for promotional products distributors.</p>
         <div class="hero-note">
           <span>30-minute tailored demo</span>
           <span>Built for promo distributors</span>

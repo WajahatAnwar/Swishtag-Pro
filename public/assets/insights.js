@@ -16,6 +16,8 @@ const FILTER_FALLBACK_SEARCH = {
 const EXCLUDED_CATEGORY_SLUGS = new Set(['uncategorized']);
 let categoryCache;
 let tocObserver;
+let tocScrollHandler;
+let tocResizeHandler;
 
 function decodeHtml(value = '') {
   const element = document.createElement('textarea');
@@ -674,17 +676,67 @@ if (progress) {
 // TOC active state
 function initTocObserver() {
   if (tocObserver) tocObserver.disconnect();
-  const tocLinks = $$('.toc a');
-  const sections = tocLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+  if (tocScrollHandler) window.removeEventListener('scroll', tocScrollHandler);
+  if (tocResizeHandler) window.removeEventListener('resize', tocResizeHandler);
+  const tocLinks = $$('.toc a, .toc-mobile a');
+  const sections = [...new Set(tocLinks.map(link => link.getAttribute('href')))]
+    .map(href => document.querySelector(href))
+    .filter(Boolean);
   if (!sections.length) return;
 
-  tocObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      tocLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+  const setActiveSection = id => {
+    tocLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
     });
-  }, { rootMargin: '-28% 0px -62% 0px', threshold: 0.01 });
+  };
+
+  const getHeaderOffset = () => {
+    const header = document.querySelector('header');
+    return (header?.getBoundingClientRect().height || 90) + 34;
+  };
+
+  const updateActiveSection = () => {
+    const activationLine = Math.max(getHeaderOffset() + 64, window.innerHeight * 0.3);
+    const activeSection = sections.reduce((current, section) => {
+      const top = section.getBoundingClientRect().top;
+      if (top <= activationLine) return section;
+      return current;
+    }, sections[0]);
+
+    setActiveSection(activeSection.id);
+  };
+
+  let ticking = false;
+  const requestActiveUpdate = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      updateActiveSection();
+      ticking = false;
+    });
+  };
+
+  tocLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const id = link.getAttribute('href')?.slice(1);
+      if (id) {
+        setActiveSection(id);
+        window.setTimeout(updateActiveSection, 350);
+      }
+    });
+  });
+
+  tocScrollHandler = requestActiveUpdate;
+  tocResizeHandler = requestActiveUpdate;
+  window.addEventListener('scroll', tocScrollHandler, { passive: true });
+  window.addEventListener('resize', tocResizeHandler);
+
+  tocObserver = new IntersectionObserver(requestActiveUpdate, {
+    rootMargin: `-${getHeaderOffset()}px 0px -55% 0px`,
+    threshold: 0
+  });
   sections.forEach(section => tocObserver.observe(section));
+  updateActiveSection();
 }
 initTocObserver();
 
