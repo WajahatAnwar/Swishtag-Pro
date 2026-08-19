@@ -21,6 +21,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
@@ -301,6 +302,35 @@ button, input { font: inherit; }
   object-fit: cover;
 }
 .featured-visual > img { position: absolute; inset: 0; }
+.insights-image-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #f3f5fb, #e9edf7);
+}
+.insights-image-placeholder--loading {
+  background:
+    linear-gradient(100deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.7) 50%, rgba(255,255,255,0) 70%),
+    linear-gradient(135deg, #f3f5fb, #e9edf7);
+  background-size: 220% 100%, 100% 100%;
+  animation: insightsLoadingSweep 1.35s ease-in-out infinite;
+}
+.insights-image-placeholder--large {
+  position: absolute;
+  inset: 0;
+  min-height: 510px;
+  border-radius: 0;
+}
+.featured-card.is-loading .featured-content h2,
+.featured-card.is-loading .featured-content p,
+.featured-card.is-loading .featured-content .meta {
+  max-width: 92%;
+}
+@keyframes insightsLoadingSweep {
+  0% { background-position: 140% 0, 0 0; }
+  100% { background-position: -80% 0, 0 0; }
+}
 .featured-visual .window {
   position: absolute;
   width: 72%;
@@ -483,6 +513,26 @@ button, input { font: inherit; }
 }
 .card-arrow { transition: transform .2s ease; color: var(--brand); font-weight: 800; }
 .load-row { text-align: center; margin-top: 56px; }
+.load-row .btn-secondary {
+  min-height: 54px;
+  min-width: 220px;
+  padding: 0 30px;
+  border: 2px solid #151a2c;
+
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, .08);
+}
+.load-row .btn-secondary:hover {
+  background: #151a2c;
+  color: #fff;
+  box-shadow: 0 16px 34px rgba(17, 24, 39, .14);
+}
+.load-row .btn-secondary:disabled {
+  cursor: wait;
+  opacity: .72;
+  transform: none;
+}
 .insights-state {
   grid-column: 1 / -1;
   border: 1px solid var(--line);
@@ -492,10 +542,28 @@ button, input { font: inherit; }
   background: #fbfbff;
   text-align: center;
 }
+.insights-state--loading {
+  position: relative;
+}
+.insights-state--loading::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: -4px;
+  border-radius: 50%;
+  border: 2px solid #d9def0;
+  border-top-color: var(--brand);
+  animation: insightsSpin .75s linear infinite;
+}
 .insights-state--error {
   color: #8a3b3b;
   background: #fff7f7;
   border-color: #f1d4d4;
+}
+@keyframes insightsSpin {
+  to { transform: rotate(360deg); }
 }
 
 .editor-pick {

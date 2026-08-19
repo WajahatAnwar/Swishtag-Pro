@@ -39,15 +39,15 @@ const robots = 'index,follow';
     </section>
 
     <section class="container insights-container featured-wrap">
-      <a class="featured-card" data-wp-featured-card data-loading-link aria-disabled="true" tabindex="-1">
+      <a class="featured-card is-loading" data-wp-featured-card data-loading-link aria-disabled="true" tabindex="-1" aria-busy="true">
         <div class="featured-visual" aria-hidden="true">
-          <div class="window"><div class="window-top"><i></i><i></i><i></i></div><div class="window-body"><div class="window-kicker"></div><div class="window-title"></div><div class="window-title short"></div><div class="window-chart"></div></div></div>
+          <div class="insights-image-placeholder insights-image-placeholder--large insights-image-placeholder--loading"></div>
         </div>
         <div class="featured-content">
-          <div class="eyebrow">MIGRATION</div>
-          <h2>Shopify Migration Checklist: 12 Steps for 2026</h2>
-          <p>A practical checklist for moving products, customers, SEO, orders and operations to Shopify without creating unnecessary problems.</p>
-          <div class="meta"><span>August 3, 2026</span><span>8 min read</span></div>
+          <div class="eyebrow">LOADING</div>
+          <h2>Loading featured insight...</h2>
+          <p>Fetching the latest posts.</p>
+          <div class="meta"><span>Please wait</span></div>
           <span class="text-link">Read insight <span class="arrow">-&gt;</span></span>
         </div>
       </a>
@@ -55,16 +55,8 @@ const robots = 'index,follow';
 
     <section class="container insights-container latest-section">
       <div class="section-head"><div><div class="eyebrow">LATEST</div><h2>Latest insights</h2><p>Useful ideas for teams building, moving and automating commerce.</p></div></div>
-      <div class="article-grid" data-wp-posts-grid aria-live="polite">
-        <article class="article-card" data-category="migration"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art a"></div></div><div class="card-category">Migration</div><h3>Shopify Checkout Migration Guide: All Steps, Cost & Tips</h3><p>What changes during checkout migration, what should stay untouched, and where projects usually go wrong.</p><div class="card-bottom"><div class="meta"><span>Jul 29</span><span>7 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="migration"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art b"></div></div><div class="card-category">Migration</div><h3>Shopify SEO Migration Guide 2026: Protect Your Rankings</h3><p>A practical framework for redirects, metadata, internal links and search visibility before launch day.</p><div class="card-bottom"><div class="meta"><span>Jul 24</span><span>9 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="shopify"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art c"></div></div><div class="card-category">Shopify</div><h3>How to Choose a Shopify Migration Agency</h3><p>Questions that quickly expose whether an agency understands architecture, data and operations, not only design.</p><div class="card-bottom"><div class="meta"><span>Jul 20</span><span>6 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="promotional-products"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art d"></div></div><div class="card-category">Promotional Products</div><h3>Migrating to Shopify POS: A Guide for Promo Brands in 2026</h3><p>How promotional product businesses can connect retail activity, catalogs and customer data without creating duplicate systems.</p><div class="card-bottom"><div class="meta"><span>Jul 15</span><span>8 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="commerce"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art e"></div></div><div class="card-category">Commerce</div><h3>The Future of Promotional Product E-commerce Platforms</h3><p>Why the next generation of promo commerce will be more connected, composable and automation-first.</p><div class="card-bottom"><div class="meta"><span>Jul 10</span><span>10 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="automation"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art f"></div></div><div class="card-category">Automation</div><h3>7 Ways to Improve Order Fulfillment for Custom Products</h3><p>Reduce handoffs, status chasing and production errors by designing a cleaner fulfillment workflow.</p><div class="card-bottom"><div class="meta"><span>Jul 7</span><span>5 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="shopify"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art g"></div></div><div class="card-category">Shopify</div><h3>Shopify Customer Migration for B2B & Promo Brands</h3><p>Customer records are simple until price lists, permissions, locations and account history enter the picture.</p><div class="card-bottom"><div class="meta"><span>Jul 2</span><span>8 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="company-stores"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art h"></div></div><div class="card-category">Company Stores</div><h3>Complete Guide to Promotional Product Order Management</h3><p>From client storefront to supplier handoff, understand the systems that keep multi-store programs under control.</p><div class="card-bottom"><div class="meta"><span>Jun 28</span><span>11 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
-        <article class="article-card" data-category="integrations"><a data-loading-link aria-disabled="true" tabindex="-1"><div class="article-image"><div class="art i"></div></div><div class="card-category">Integrations</div><h3>How Shopify Integrations Improve Promotional Product Workflows</h3><p>Where integrations actually remove work, and where adding another connector can make operations worse.</p><div class="card-bottom"><div class="meta"><span>Jun 23</span><span>7 min</span></div><span class="card-arrow">-&gt;</span></div></a></article>
+      <div class="article-grid" data-wp-posts-grid aria-live="polite" aria-busy="true">
+        <div class="insights-state insights-state--loading">Loading insights...</div>
       </div>
       <div class="load-row"><button class="btn btn-secondary" data-wp-load-more>Load more insights</button></div>
     </section>
@@ -85,5 +77,5 @@ const robots = 'index,follow';
     </section>
   </main>
 
-  <script slot="scripts" is:inline src="/assets/insights.js?v=20260819-toc-scrollspy"></script>
+  <script slot="scripts" is:inline src="/assets/insights.js?v=20260819-loadmore-state"></script>
 </BaseLayout>

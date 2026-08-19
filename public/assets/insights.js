@@ -128,7 +128,7 @@ function enableLink(link, href) {
   return true;
 }
 
-function setImage(target, imageUrl, altText, fallbackClass = 'a') {
+function setImage(target, imageUrl, altText) {
   if (!target) return;
   target.innerHTML = '';
   if (imageUrl) {
@@ -141,7 +141,8 @@ function setImage(target, imageUrl, altText, fallbackClass = 'a') {
   }
 
   const fallback = document.createElement('div');
-  fallback.className = `art ${fallbackClass}`;
+  fallback.className = 'insights-image-placeholder';
+  fallback.setAttribute('aria-hidden', 'true');
   target.appendChild(fallback);
 }
 
@@ -163,7 +164,7 @@ function createCard(post, index) {
 
   const imageWrap = document.createElement('div');
   imageWrap.className = 'article-image';
-  setImage(imageWrap, getFeaturedImage(post), htmlToText(post?.title?.rendered), String.fromCharCode(97 + (index % 10)));
+  setImage(imageWrap, getFeaturedImage(post), htmlToText(post?.title?.rendered));
 
   const categoryLabel = document.createElement('div');
   categoryLabel.className = 'card-category';
@@ -199,11 +200,22 @@ function createCard(post, index) {
 
 function renderFeaturedPost(post) {
   const featured = $('[data-wp-featured-card]');
-  if (!featured || !post) return;
+  if (!featured) return;
+
+  const featuredWrap = featured.closest('.featured-wrap');
+  featured.classList.remove('is-loading');
+  featured.removeAttribute('aria-busy');
+
+  if (!post) {
+    if (featuredWrap) featuredWrap.hidden = true;
+    return;
+  }
+
+  if (featuredWrap) featuredWrap.hidden = false;
 
   const category = getCategory(post);
   enableLink(featured, buildPostUrl(post));
-  setImage($('.featured-visual', featured), getFeaturedImage(post), htmlToText(post?.title?.rendered), 'a');
+  setImage($('.featured-visual', featured), getFeaturedImage(post), htmlToText(post?.title?.rendered));
   $('.featured-content .eyebrow', featured).textContent = category.name;
   $('.featured-content h2', featured).textContent = decodeHtml(htmlToText(post?.title?.rendered));
   $('.featured-content p', featured).textContent = getPostExcerpt(post, 210);
@@ -219,14 +231,21 @@ function renderFeaturedPost(post) {
   }
 }
 
-function setListingState(message, isError = false) {
+function setListingState(message, isError = false, isLoading = false) {
   const grid = $('[data-wp-posts-grid]');
   if (!grid) return;
-  grid.innerHTML = `<div class="insights-state${isError ? ' insights-state--error' : ''}">${message}</div>`;
+  const state = document.createElement('div');
+  state.className = `insights-state${isError ? ' insights-state--error' : ''}${isLoading ? ' insights-state--loading' : ''}`;
+  state.textContent = message;
+
+  grid.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+  grid.replaceChildren(state);
 }
 
 function setLoadMoreState(loadMore, { hidden = false, disabled = false, text = 'Load more insights' } = {}) {
   if (!loadMore) return;
+  const loadRow = loadMore.closest('.load-row');
+  if (loadRow) loadRow.hidden = hidden;
   loadMore.hidden = hidden;
   loadMore.disabled = disabled;
   loadMore.textContent = text;
@@ -354,7 +373,12 @@ async function fetchPosts({ page = 1, filter = 'all', query = '', signal } = {})
   }
 
   const response = await fetch(url, { signal });
-  if (!response.ok) throw new Error(`WordPress returned ${response.status}`);
+  if (!response.ok) {
+    if (response.status === 400 && page > 1) {
+      return { posts: [], totalPages: page };
+    }
+    throw new Error(`WordPress returned ${response.status}`);
+  }
   return {
     posts: await response.json(),
     totalPages: Number(response.headers.get('X-WP-TotalPages') || page)
@@ -375,6 +399,7 @@ async function loadListingPosts() {
   let activeFilter = $('.filter-pill.active')?.dataset.filter || 'all';
   let searchQuery = (searchInput?.value || '').trim();
   let requestId = 0;
+  let canLoadMore = true;
   let abortController;
 
   const renderPage = async append => {
@@ -386,7 +411,7 @@ async function loadListingPosts() {
     if (!append) {
       page = 1;
       totalPages = 1;
-      setListingState('Loading insights...');
+      setListingState('Loading insights...', false, true);
       setLoadMoreState(loadMore, { hidden: true, disabled: true, text: 'Loading...' });
     } else {
       setLoadMoreState(loadMore, { hidden: false, disabled: true, text: 'Loading...' });
@@ -400,14 +425,17 @@ async function loadListingPosts() {
     });
 
     if (currentRequest !== requestId) return;
+    const posts = Array.isArray(result.posts) ? result.posts : [];
     totalPages = result.totalPages;
 
     if (!append) {
-      renderFeaturedPost(result.posts[0]);
+      renderFeaturedPost(posts[0]);
       grid.innerHTML = '';
     }
 
-    result.posts.forEach((post, index) => grid.appendChild(createCard(post, grid.children.length + index)));
+    posts.forEach((post, index) => grid.appendChild(createCard(post, grid.children.length + index)));
+    grid.setAttribute('aria-busy', 'false');
+    canLoadMore = posts.length === POSTS_PER_PAGE;
 
     if (!grid.children.length) {
       const emptyFilter = activeFilter === 'all'
@@ -418,7 +446,7 @@ async function loadListingPosts() {
     }
 
     setLoadMoreState(loadMore, {
-      hidden: !result.posts.length || page >= totalPages,
+      hidden: !canLoadMore,
       disabled: false,
       text: 'Load more insights'
     });
@@ -427,6 +455,7 @@ async function loadListingPosts() {
   const resetAndLoad = async () => {
     activeFilter = $('.filter-pill.active')?.dataset.filter || 'all';
     searchQuery = (searchInput?.value || '').trim();
+    canLoadMore = true;
     try {
       await renderPage(false);
     } catch (error) {
@@ -458,7 +487,7 @@ async function loadListingPosts() {
     } catch (error) {}
     await renderPage(false);
     loadMore?.addEventListener('click', async () => {
-      if (page >= totalPages) {
+      if (!canLoadMore) {
         setLoadMoreState(loadMore, { hidden: true, disabled: false });
         return;
       }

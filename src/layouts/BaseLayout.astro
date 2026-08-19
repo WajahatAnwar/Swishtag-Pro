@@ -1,29 +1,37 @@
 ---
-import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
-import HeaderBehavior from '../components/layout/HeaderBehavior.astro';
-import '../styles/home.css';
-import '../styles/header.css';
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import HeaderBehavior from "../components/layout/HeaderBehavior.astro";
+import "../styles/home.css";
+import "../styles/header.css";
 
 const {
-  title = 'Swishtag',
-  description = '',
+  title = "Swishtag",
+  description = "",
   canonical,
-  robots = 'index,follow',
+  robots = "index,follow",
 } = Astro.props;
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="theme-color" content="#FFFFFF" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <meta name="color-scheme" content="light" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="preconnect" href="https://cdn.shopify.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="/assets/promo-products/pen.svg" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {canonical && <link rel="canonical" href={canonical} />}
@@ -49,22 +57,22 @@ const {
 
         .site-header.is-nav-connected .modern-nav {
           border-radius: 24px 24px 0 0 !important;
-          border-color: rgba(32,33,36,.08) !important;
+          border-color: rgba(32, 33, 36, 0.08) !important;
           border-bottom-color: transparent !important;
-          background: rgba(255,255,255,.97) !important;
+          background: rgba(255, 255, 255, 0.97) !important;
           box-shadow: none !important;
         }
 
         .page-nav-wrap.is-stuck {
           padding-top: 0 !important;
-          filter: drop-shadow(0 22px 42px rgba(32,33,36,.11));
+          filter: drop-shadow(0 22px 42px rgba(32, 33, 36, 0.11));
         }
 
         .page-nav-wrap.is-stuck .page-nav-shell {
           margin-top: -1px !important;
           border-top-color: transparent !important;
           border-radius: 0 0 24px 24px !important;
-          background: rgba(255,255,255,.97) !important;
+          background: rgba(255, 255, 255, 0.97) !important;
           box-shadow: none !important;
         }
       }
@@ -93,24 +101,35 @@ const {
           left: 50% !important;
           width: min(1160px, calc(100vw - 42px)) !important;
           display: grid !important;
-          grid-template-columns: minmax(230px, .78fr) minmax(380px, 1.25fr) minmax(280px, .92fr) !important;
+          grid-template-columns: minmax(230px, 0.78fr) minmax(
+              380px,
+              1.25fr
+            ) minmax(280px, 0.92fr) !important;
           gap: 18px !important;
           padding: 18px !important;
-          border: 1px solid rgba(32,33,36,.075) !important;
+          border: 1px solid rgba(32, 33, 36, 0.075) !important;
           border-radius: 30px !important;
           background:
-            radial-gradient(circle at 82% 8%, rgba(153,254,237,.20), transparent 28%),
-            radial-gradient(circle at 14% 100%, rgba(217,214,253,.24), transparent 30%),
-            rgba(255,255,255,.97) !important;
+            radial-gradient(
+              circle at 82% 8%,
+              rgba(153, 254, 237, 0.2),
+              transparent 28%
+            ),
+            radial-gradient(
+              circle at 14% 100%,
+              rgba(217, 214, 253, 0.24),
+              transparent 30%
+            ),
+            rgba(255, 255, 255, 0.97) !important;
           box-shadow:
-            0 30px 90px rgba(32,33,36,.16),
-            inset 0 1px 0 rgba(255,255,255,.96) !important;
+            0 30px 90px rgba(32, 33, 36, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
           -webkit-backdrop-filter: blur(22px) !important;
           backdrop-filter: blur(22px) !important;
           opacity: 0 !important;
           visibility: hidden !important;
           pointer-events: none !important;
-          transform: translate(-50%, 12px) scale(.985) !important;
+          transform: translate(-50%, 12px) scale(0.985) !important;
           transform-origin: top center !important;
         }
 
@@ -144,9 +163,17 @@ const {
           padding: 25px 23px !important;
           color: #202124 !important;
           background:
-            radial-gradient(circle at 88% 12%, rgba(194,255,2,.18), transparent 28%),
-            linear-gradient(145deg, rgba(248,248,245,.98), rgba(255,255,255,.98)) !important;
-          border: 1px solid rgba(32,33,36,.065) !important;
+            radial-gradient(
+              circle at 88% 12%,
+              rgba(194, 255, 2, 0.18),
+              transparent 28%
+            ),
+            linear-gradient(
+              145deg,
+              rgba(248, 248, 245, 0.98),
+              rgba(255, 255, 255, 0.98)
+            ) !important;
+          border: 1px solid rgba(32, 33, 36, 0.065) !important;
           box-shadow: none !important;
         }
 
@@ -157,7 +184,7 @@ const {
           bottom: -58px !important;
           width: 160px !important;
           height: 160px !important;
-          border: 1px dashed rgba(32,33,36,.12) !important;
+          border: 1px dashed rgba(32, 33, 36, 0.12) !important;
           border-radius: 50% !important;
           pointer-events: none !important;
         }
@@ -165,10 +192,10 @@ const {
         .site-header .mega-menu__eyebrow {
           display: block !important;
           margin: 0 0 18px !important;
-          color: #696A6D !important;
-          font-size: .62rem !important;
+          color: #696a6d !important;
+          font-size: 0.62rem !important;
           font-weight: 800 !important;
-          letter-spacing: .13em !important;
+          letter-spacing: 0.13em !important;
           text-transform: uppercase !important;
         }
 
@@ -178,14 +205,14 @@ const {
           color: #202124 !important;
           font-size: 1.55rem;
           line-height: 1.02 !important;
-          letter-spacing: -.05em !important;
+          letter-spacing: -0.05em !important;
           font-weight: 800 !important;
         }
 
         .site-header .mega-menu__intro p {
           margin: 17px 0 0 !important;
-          color: #696A6D !important;
-          font-size: .78rem !important;
+          color: #696a6d !important;
+          font-size: 0.78rem !important;
           line-height: 1.58 !important;
         }
 
@@ -198,7 +225,7 @@ const {
           padding-top: 25px !important;
           border-top: 0 !important;
           color: #202124 !important;
-          font-size: .72rem !important;
+          font-size: 0.72rem !important;
           font-weight: 760 !important;
         }
 
@@ -208,14 +235,14 @@ const {
           display: grid !important;
           place-items: center !important;
           border-radius: 50% !important;
-          background: #C2FF02 !important;
+          background: #c2ff02 !important;
         }
 
         .site-header .mega-menu__content,
         .site-header .mega-products,
         .site-header .mega-industries {
-          background: rgba(250,250,248,.92) !important;
-          border: 1px solid rgba(32,33,36,.055) !important;
+          background: rgba(250, 250, 248, 0.92) !important;
+          border: 1px solid rgba(32, 33, 36, 0.055) !important;
         }
 
         .site-header .mega-menu__content {
