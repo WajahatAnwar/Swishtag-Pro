@@ -8,10 +8,34 @@
       const pageNavToggle = document.getElementById('pageNavToggle');
       const pageNavCurrent = document.getElementById('pageNavCurrent');
       const pageLinks = [...document.querySelectorAll('#pageNavLinks a[href^="#"]')];
+      const pageTargets = pageLinks.map(link => document.getElementById(link.getAttribute('href').slice(1))).filter(Boolean);
+      let sectionsStabilized = false;
       let frame = 0;
       let naturalPageNavTop = pageNavWrap
         ? pageNavWrap.getBoundingClientRect().top + window.scrollY
         : 0;
+
+      const stabilizePageNavSections = () => {
+        if (sectionsStabilized || !pageTargets.length) return;
+        sectionsStabilized = true;
+
+        pageTargets.forEach(section => {
+          const style = window.getComputedStyle(section);
+          if (style.contentVisibility === 'auto') {
+            section.style.contentVisibility = 'visible';
+            section.style.containIntrinsicSize = 'none';
+          }
+        });
+      };
+
+      window.__swishtagStabilizePageNavSections = stabilizePageNavSections;
+
+      const getPageNavOffset = () => {
+        const navTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--page-nav-top')) || 96;
+        const pageNavHeight = pageNavShell ? pageNavShell.getBoundingClientRect().height : 58;
+        const breathingRoom = window.innerWidth <= 680 ? 14 : 22;
+        return Math.ceil(navTop + pageNavHeight + breathingRoom);
+      };
 
       const syncNavigationStack = () => {
         frame = 0;
@@ -64,6 +88,7 @@
       const setActiveLink = id => {
         pageLinks.forEach(link => {
           const active = link.getAttribute('href') === `#${id}`;
+          link.classList.toggle('is-active', active);
           if (active) link.setAttribute('aria-current', 'location');
           else link.removeAttribute('aria-current');
         });
@@ -74,8 +99,8 @@
       const updateActiveSection = () => {
         activeFrame = 0;
         if (!sections.length) return;
-        const navOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--page-nav-top')) || 96;
-        const probe = navOffset + 150;
+        stabilizePageNavSections();
+        const probe = getPageNavOffset() + 8;
         let active = sections[0];
         sections.forEach(section => {
           if (section.getBoundingClientRect().top <= probe) active = section;
@@ -215,23 +240,39 @@
    ========================================================================== */
 (() => {
     const links = [...document.querySelectorAll('#pageNavLinks a[href^="#"]')];
+    const getTarget = link => {
+      const href = link.getAttribute('href');
+      return href && href.startsWith('#') ? document.getElementById(href.slice(1)) : null;
+    };
     const getOffset = () => {
-      const header = document.getElementById('siteHeader');
       const pageNav = document.getElementById('pageNavShell');
-      const headerHeight = header ? header.getBoundingClientRect().height : 82;
+      const navTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--page-nav-top')) || 96;
       const pageNavHeight = pageNav ? pageNav.getBoundingClientRect().height : 58;
-      return headerHeight + pageNavHeight + 22;
+      const breathingRoom = window.innerWidth <= 680 ? 14 : 22;
+      return Math.ceil(navTop + pageNavHeight + breathingRoom);
+    };
+    const scrollToTarget = (target, behavior = 'smooth') => {
+      const top = Math.max(0, window.scrollY + target.getBoundingClientRect().top - getOffset());
+      window.scrollTo({ top, behavior });
+    };
+    const correctTarget = target => {
+      const drift = target.getBoundingClientRect().top - getOffset();
+      if (Math.abs(drift) > 2) window.scrollTo({ top: Math.max(0, window.scrollY + drift), behavior: 'auto' });
     };
 
     links.forEach(link => {
       link.addEventListener('click', event => {
-        const id = link.getAttribute('href').slice(1);
-        const target = document.getElementById(id);
+        const target = getTarget(link);
         if (!target) return;
         event.preventDefault();
-        const top = Math.max(0, window.scrollY + target.getBoundingClientRect().top - getOffset());
-        window.scrollTo({ top, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-        history.replaceState(null, '', `#${id}`);
+        window.__swishtagStabilizePageNavSections?.();
+        const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+        requestAnimationFrame(() => {
+          scrollToTarget(target, behavior);
+          history.replaceState(null, '', `#${target.id}`);
+          window.setTimeout(() => correctTarget(target), behavior === 'auto' ? 40 : 580);
+          window.setTimeout(() => correctTarget(target), behavior === 'auto' ? 90 : 860);
+        });
       }, { capture: true });
     });
 
@@ -240,9 +281,10 @@
       if (!location.hash) return;
       const target = document.getElementById(location.hash.slice(1));
       if (!target) return;
+      window.__swishtagStabilizePageNavSections?.();
       requestAnimationFrame(() => {
-        const top = Math.max(0, window.scrollY + target.getBoundingClientRect().top - getOffset());
-        window.scrollTo({ top, behavior: 'auto' });
+        scrollToTarget(target, 'auto');
+        correctTarget(target);
       });
     }, { once: true });
   })();

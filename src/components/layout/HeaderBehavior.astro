@@ -175,13 +175,40 @@
   const pageNavShell = document.getElementById("pageNavShell");
   const pageNavToggle = document.getElementById("pageNavToggle");
   const pageNavCurrent = document.getElementById("pageNavCurrent");
-  const pageNavLinks = pageNavShell
-    ? [...pageNavShell.querySelectorAll('.page-nav a[href^="#"]:not(.page-nav__cta)')]
+  const pageNavHashLinks = pageNavShell
+    ? [...pageNavShell.querySelectorAll('.page-nav a[href^="#"]')]
     : [];
+  const pageNavLinks = pageNavHashLinks.filter(link => !link.classList.contains("page-nav__cta"));
+  const getHashTarget = href => {
+    if (!href || href.length < 2 || !href.startsWith("#")) return null;
+    const rawId = href.slice(1);
+    try {
+      return document.getElementById(decodeURIComponent(rawId));
+    } catch {
+      return document.getElementById(rawId);
+    }
+  };
+  const pageNavTargets = pageNavHashLinks
+    .map(link => getHashTarget(link.getAttribute("href")))
+    .filter(Boolean);
   const navSections = pageNavLinks
-    .map(link => document.querySelector(link.getAttribute("href")))
+    .map(link => getHashTarget(link.getAttribute("href")))
     .filter(Boolean);
   let pageNavStart = pageNavWrap?.offsetTop || 0;
+  let sectionsStabilized = false;
+
+  const stabilizePageNavSections = () => {
+    if (sectionsStabilized || !pageNavTargets.length) return;
+    sectionsStabilized = true;
+
+    pageNavTargets.forEach(section => {
+      const style = window.getComputedStyle(section);
+      if (style.contentVisibility === "auto") {
+        section.style.contentVisibility = "visible";
+        section.style.containIntrinsicSize = "none";
+      }
+    });
+  };
 
   const setPageNavOpen = open => {
     if (!pageNavShell || !pageNavToggle) return;
@@ -192,7 +219,65 @@
   pageNavToggle?.addEventListener("click", () => {
     setPageNavOpen(!pageNavShell?.classList.contains("is-open"));
   });
-  pageNavLinks.forEach(link => link.addEventListener("click", () => setPageNavOpen(false)));
+
+  const getPageNavOffset = () => {
+    const fallbackTop = window.innerWidth <= 680 ? 64 : window.innerWidth <= 900 ? 68 : 70;
+    const stickyTop = pageNavWrap ? parseFloat(window.getComputedStyle(pageNavWrap).top) : fallbackTop;
+    const pageNavTop = Number.isFinite(stickyTop) ? stickyTop : fallbackTop;
+    const pageNavHeight = pageNavShell?.getBoundingClientRect().height || 0;
+    const breathingRoom = window.innerWidth <= 680 ? 14 : 22;
+    return Math.ceil(pageNavTop + pageNavHeight + breathingRoom);
+  };
+
+  const setActivePageNavSection = current => {
+    if (!current) return;
+
+    const currentId = `#${current.id}`;
+    pageNavLinks.forEach(link => {
+      const isActive = link.getAttribute("href") === currentId;
+      link.classList.toggle("is-active", isActive);
+      if (isActive) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+
+    if (pageNavCurrent) {
+      pageNavCurrent.textContent =
+        current.dataset.navLabel || current.querySelector(".eyebrow")?.textContent || "Section";
+    }
+  };
+
+  const scrollToPageNavTarget = (target, behavior = "smooth") => {
+    const top = Math.max(0, window.scrollY + target.getBoundingClientRect().top - getPageNavOffset());
+    window.scrollTo({ top, behavior });
+  };
+
+  const correctPageNavTarget = target => {
+    const drift = target.getBoundingClientRect().top - getPageNavOffset();
+    if (Math.abs(drift) > 2) window.scrollTo({ top: Math.max(0, window.scrollY + drift), behavior: "auto" });
+  };
+
+  pageNavHashLinks.forEach(link => {
+    link.addEventListener("click", event => {
+      const target = getHashTarget(link.getAttribute("href"));
+      if (!target) return;
+
+      event.preventDefault();
+      stabilizePageNavSections();
+      setPageNavOpen(false);
+      if (!link.classList.contains("page-nav__cta")) setActivePageNavSection(target);
+
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+      window.requestAnimationFrame(() => {
+        scrollToPageNavTarget(target, behavior);
+        history.replaceState(null, "", `#${target.id}`);
+        window.setTimeout(() => correctPageNavTarget(target), behavior === "auto" ? 40 : 580);
+        window.setTimeout(() => {
+          correctPageNavTarget(target);
+          updateSecondaryNav();
+        }, behavior === "auto" ? 90 : 860);
+      });
+    }, { capture: true });
+  });
 
   const updateSecondaryNav = () => {
     if (!pageNavWrap) {
@@ -200,27 +285,19 @@
       return;
     }
 
+    stabilizePageNavSections();
     const stickyTop = window.innerWidth <= 680 ? 64 : window.innerWidth <= 900 ? 68 : 70;
     const isStuck = window.scrollY >= Math.max(0, pageNavStart - stickyTop - 2);
     pageNavWrap.classList.toggle("is-stuck", isStuck);
     header.classList.toggle("is-nav-connected", isStuck);
 
     let current = navSections[0];
-    const markerY = stickyTop + 105;
+    const markerY = getPageNavOffset() + 8;
     navSections.forEach(section => {
       if (section.getBoundingClientRect().top <= markerY) current = section;
     });
 
-    if (current) {
-      const currentId = `#${current.id}`;
-      pageNavLinks.forEach(link => {
-        link.classList.toggle("is-active", link.getAttribute("href") === currentId);
-      });
-      if (pageNavCurrent) {
-        pageNavCurrent.textContent =
-          current.dataset.navLabel || current.querySelector(".eyebrow")?.textContent || "Section";
-      }
-    }
+    setActivePageNavSection(current);
   };
 
   const refreshPageNavStart = () => {
@@ -245,7 +322,17 @@
   };
 
   window.addEventListener("scroll", scheduleScrollUpdate, { passive: true });
-  window.addEventListener("load", refreshPageNavStart, { once: true });
+  window.addEventListener("load", () => {
+    stabilizePageNavSections();
+    refreshPageNavStart();
+    const target = getHashTarget(location.hash);
+    if (target) {
+      window.requestAnimationFrame(() => {
+        scrollToPageNavTarget(target, "auto");
+        setActivePageNavSection(target);
+      });
+    }
+  }, { once: true });
   window.addEventListener("resize", () => {
     if (desktopQuery.matches && mobileOpen) closeMobileMenu();
     refreshPageNavStart();
