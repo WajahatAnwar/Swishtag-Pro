@@ -702,6 +702,27 @@ button, input { font: inherit; }
     linear-gradient(135deg, #14172f, #252b61 55%, #3c459f);
   position: relative;
 }
+.featured-article-image.is-loading {
+  background: #f3f5fb;
+}
+.featured-article-image.is-loading .migration-map {
+  display: none;
+}
+.featured-article-image > .insights-image-placeholder {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  border-radius: 0;
+}
+.featured-article-image__media {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .24s ease;
+}
+.featured-article-image__media.is-loaded {
+  opacity: 1;
+}
 .featured-article-image .migration-map {
   position: absolute;
   inset: 14% 11%;

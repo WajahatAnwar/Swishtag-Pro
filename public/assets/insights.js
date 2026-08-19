@@ -231,6 +231,54 @@ function renderFeaturedPost(post) {
   }
 }
 
+function renderFeaturedArticleImage(imageUrl, altText) {
+  const featuredImage = $('.featured-article-image');
+  if (!featuredImage) return;
+
+  featuredImage.innerHTML = '';
+  featuredImage.setAttribute('role', 'img');
+  featuredImage.setAttribute('aria-label', altText || 'Featured article image');
+
+  const placeholder = document.createElement('div');
+  placeholder.className = 'insights-image-placeholder';
+  placeholder.setAttribute('aria-hidden', 'true');
+  featuredImage.appendChild(placeholder);
+
+  if (!imageUrl) {
+    featuredImage.classList.remove('is-loading');
+    featuredImage.removeAttribute('aria-busy');
+    return;
+  }
+
+  featuredImage.classList.add('is-loading');
+  featuredImage.setAttribute('aria-busy', 'true');
+  placeholder.classList.add('insights-image-placeholder--loading');
+
+  const img = document.createElement('img');
+  img.className = 'featured-article-image__media';
+  img.alt = altText || '';
+  img.decoding = 'async';
+  img.loading = 'eager';
+  if ('fetchPriority' in img) img.fetchPriority = 'high';
+
+  img.addEventListener('load', () => {
+    placeholder.remove();
+    img.classList.add('is-loaded');
+    featuredImage.classList.remove('is-loading');
+    featuredImage.removeAttribute('aria-busy');
+  }, { once: true });
+
+  img.addEventListener('error', () => {
+    img.remove();
+    placeholder.classList.remove('insights-image-placeholder--loading');
+    featuredImage.classList.remove('is-loading');
+    featuredImage.removeAttribute('aria-busy');
+  }, { once: true });
+
+  featuredImage.appendChild(img);
+  img.src = imageUrl;
+}
+
 function setListingState(message, isError = false, isLoading = false) {
   const grid = $('[data-wp-posts-grid]');
   if (!grid) return;
@@ -583,15 +631,7 @@ async function loadSinglePost() {
     });
   }
 
-  const image = getFeaturedImage(post);
-  const featuredImage = $('.featured-article-image');
-  if (featuredImage && image) {
-    featuredImage.innerHTML = '';
-    const img = document.createElement('img');
-    img.src = image;
-    img.alt = htmlToText(post.title.rendered);
-    featuredImage.appendChild(img);
-  }
+  renderFeaturedArticleImage(getFeaturedImage(post), htmlToText(post.title.rendered));
 
   const dynamicWrapper = document.createElement('div');
   dynamicWrapper.innerHTML = stripWordPressShortcodes(post.content.rendered);
@@ -610,6 +650,7 @@ function renderSinglePostError(message) {
     $('h1', hero).textContent = 'Insight unavailable';
     $('.article-dek', hero).textContent = message;
   }
+  renderFeaturedArticleImage('', 'Insight unavailable');
   if (body) body.innerHTML = `<div class="takeaway"><strong>Sorry about that.</strong>${message}</div>`;
 }
 

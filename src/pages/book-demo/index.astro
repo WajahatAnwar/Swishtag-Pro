@@ -495,9 +495,14 @@ const robots = "index,follow";
   function validateStep(step){
     if(step === 1){
       const required = ['fullName','workEmail','companyName'];
+      const missingMessages = {
+        fullName: 'Please enter your full name before continuing.',
+        workEmail: 'Please enter your work email before continuing.',
+        companyName: 'Please enter your company before continuing.'
+      };
       for(const id of required){
         const field = document.getElementById(id);
-        if(!field.value.trim()) { field.focus(); showError(1,'Please complete your name, work email, and company before continuing.'); return false; }
+        if(!field.value.trim()) { field.focus(); showError(1, missingMessages[id]); return false; }
       }
       const email = document.getElementById('workEmail');
       if(!email.checkValidity()) { email.focus(); showError(1,'Please enter a valid work email address.'); return false; }
