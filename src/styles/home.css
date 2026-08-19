@@ -6728,12 +6728,12 @@
     .story-clients-window {
       position: relative;
       overflow: hidden;
-      padding: 20px 70px;
+      padding: 20px 48px;
       border: 1px solid rgba(32,33,36,.08);
       border-radius: 26px;
       background: #FFFFFF;
       box-shadow:
-        0 16px 40px rgba(32,33,36,.055),
+        0 12px 30px rgba(32,33,36,.045),
         inset 0 1px 0 rgba(255,255,255,.96);
       outline: none;
     }
@@ -6745,7 +6745,7 @@
       z-index: 5;
       top: 0;
       bottom: 0;
-      width: 90px;
+      width: 46px;
       pointer-events: none;
     }
 
@@ -6754,8 +6754,8 @@
       background: linear-gradient(
         90deg,
         #FFFFFF 0%,
-        rgba(255,255,255,.96) 34%,
-        rgba(255,255,255,.62) 68%,
+        rgba(255,255,255,.84) 42%,
+        rgba(255,255,255,.28) 76%,
         transparent 100%
       );
     }
@@ -6765,8 +6765,8 @@
       background: linear-gradient(
         270deg,
         #FFFFFF 0%,
-        rgba(255,255,255,.96) 34%,
-        rgba(255,255,255,.62) 68%,
+        rgba(255,255,255,.84) 42%,
+        rgba(255,255,255,.28) 76%,
         transparent 100%
       );
     }
@@ -6813,7 +6813,7 @@
       object-fit: contain;
       object-position: center;
       opacity: 0;
-      filter: grayscale(1) saturate(0) contrast(1.08);
+      filter: grayscale(.85) saturate(.35) contrast(1.18);
       transition:
         opacity .28s ease,
         filter .28s ease,
@@ -6822,7 +6822,7 @@
 
     .story-client-logo.is-loaded img,
     .customer-story__clients.is-ready .story-client-logo img {
-      opacity: .66;
+      opacity: .94;
     }
 
     .story-client-logo:hover {
