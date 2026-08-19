@@ -13695,6 +13695,22 @@ body.mobile-menu-lock .site-header .mobile-menu,
   transform: none !important;
 }
 
+@media (min-width: 821px) {
+  #megaSolutions .mega-menu__stacked-title {
+    margin: 0 !important;
+    max-width: 230px;
+    font-size: clamp(1.95rem, 2.45vw, 2.72rem) !important;
+    line-height: .98 !important;
+    letter-spacing: -.058em !important;
+    text-wrap: balance;
+  }
+
+  #megaSolutions .mega-menu__stacked-title span {
+    display: block;
+    white-space: nowrap;
+  }
+}
+
 /* Mobile clarity pass for the Shopify solution mockups. */
 @media (max-width: 680px) {
   .solution-scene {
