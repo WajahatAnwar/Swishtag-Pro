@@ -1,16 +1,19 @@
 ---
-const target = '/contact/';
+const target = "/contact/";
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/assets/promo-products/pen.svg" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <meta name="robots" content="noindex,follow" />
     <link rel="canonical" href="https://swishtag.com/contact/" />
     <meta http-equiv="refresh" content={`0; url=${target}`} />
     <title>Redirecting...</title>
-    <script is:inline>location.replace('/contact/' + location.search + location.hash);</script>
+    <script is:inline>
+      location.replace("/contact/" + location.search + location.hash);
+    </script>
   </head>
   <body>
     <p>Redirecting to <a href="/contact/">/contact/</a></p>
