@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const wordpressPostsApi = 'https://swishtag.com/wp-json/wp/v2/posts';
+  const reservedRootSlugs = new Set([
+    '404',
+    'book-demo',
+    'company',
+    'contact',
+    'contact-us',
+    'cookie-policy',
+    'custom-software-automation',
+    'enterprise-shopify-automation',
+    'industries',
+    'insights',
+    'platform',
+    'privacy-policy',
+    'promo-plus',
+    'promotional-products-decorators',
+    'promotional-products-distributors',
+    'promotional-products-suppliers',
+    'punchout-central',
+    'rocket-apps',
+    'security',
+    'shopify-apps-for-promotional-products',
+    'shopify-company-store',
+    'shopify-print-on-demand-company-store',
+    'shopify-sage-connect-integration',
+    'shopify-solutions',
+    'solutions',
+    'terms',
+    'thank-you',
+    'xecutor',
+  ]);
+  const slugs = new Set();
+  let page = 1;
+  let totalPages = 1;
+
+  do {
+    const url = new URL(wordpressPostsApi);
+    url.searchParams.set('per_page', '100');
+    url.searchParams.set('page', String(page));
+    url.searchParams.set('_fields', 'slug');
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`WordPress posts returned ${response.status}`);
+
+    const posts = await response.json();
+    posts.forEach(post => {
+      if (post?.slug && !reservedRootSlugs.has(post.slug)) slugs.add(post.slug);
+    });
+
+    totalPages = Number(response.headers.get('X-WP-TotalPages') || page);
+    page += 1;
+  } while (page <= totalPages);
+
+  return [...slugs].map(slug => ({ params: { slug } }));
+}
+
+const slug = Astro.params.slug;
+const title = 'Insight | Swishtag';
+const description = 'A practical Swishtag insight for Shopify, promotional products, integrations, automation and commerce teams.';
+const canonical = `https://swishtag.com/${slug}/`;
+const robots = 'index,follow';
+---
+<BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
+  <link slot="head" rel="stylesheet" href="/assets/insights.css" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Insight | Swishtag" />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <script slot="head" is:inline type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Insight | Swishtag","author":{"@type":"Organization","name":"Swishtag"},"publisher":{"@type":"Organization","name":"Swishtag"}}</script>
+
+  <div class="progress" aria-hidden="true"></div>
+  <main>
+    <section class="container article-hero">
+      <div class="breadcrumbs"><a href="/insights/">Insights</a><span>/</span><a href="/insights/">Blog</a><span>/</span><span>Loading insight</span></div>
+      <div class="article-hero-main"><div class="eyebrow">INSIGHTS</div><h1>Loading insight...</h1><p class="article-dek">Fetching the latest article from Swishtag.</p><div class="hero-meta"><span>Swishtag Team</span><span>Loading</span></div></div>
+    </section>
+
+    <div class="featured-article-image is-loading" role="img" aria-label="Loading featured article image" aria-busy="true">
+      <div class="insights-image-placeholder insights-image-placeholder--loading" aria-hidden="true"></div>
+    </div>
+
+    <section class="container article-layout">
+      <aside class="share-rail" aria-label="Share this article">
+        <button class="share-btn" aria-label="Share on LinkedIn"><a href="https://www.linkedin.com/company/helloswishtag/posts/" target="_blank">in</a></button>
+      </aside>
+      <article class="article-body">
+        <details class="toc-mobile" hidden><summary>In this insight</summary><div></div></details>
+        <div class="insights-state insights-state--loading">Loading insight...</div>
+      </article>
+      <aside class="toc" aria-label="Table of contents" hidden><h4>In this insight</h4></aside>
+    </section>
+
+    <section class="container cta-section"><div class="cta-panel"><div class="eyebrow">NEED HELP?</div><h2>Building something complicated?</h2><p>Tell us what you're trying to connect, automate or move. We'll help you figure out the cleanest way to build it.</p><div class="cta-actions"><a class="btn btn-primary" href="/book-demo/">Book a demo</a></div></div></section>
+  </main>
+
+  <script slot="scripts" is:inline src="/assets/insights.js?v=20260821-root-blog-slugs"></script>
+</BaseLayout>

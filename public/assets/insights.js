@@ -108,7 +108,7 @@ function getCategory(post) {
 
 function buildPostUrl(post) {
   const slug = post?.slug || '';
-  return slug ? `/insights/blog/?slug=${encodeURIComponent(slug)}` : '';
+  return slug ? `/${encodeURIComponent(slug)}/` : '';
 }
 
 function disableLoadingLinks(scope = document) {
@@ -562,13 +562,15 @@ async function loadSinglePost() {
   if (!body || !hero) return;
 
   const params = new URLSearchParams(location.search);
-  const isDynamicBlogPage = location.pathname.includes('/insights/blog/');
+  const isLegacyBlogPage = location.pathname.includes('/insights/blog/');
+  const isLegacyChecklistPage = location.pathname.includes('/insights/shopify-migration-checklist-2026/');
   const slug = params.get('slug') || location.pathname.split('/').filter(Boolean).at(-1);
-  if (!isDynamicBlogPage && !location.pathname.includes('/insights/shopify-migration-checklist-2026/')) return;
+  const currentPath = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
   if (!slug || slug === 'blog') {
     renderSinglePostError('No blog post was selected.');
     return;
   }
+  if (!isLegacyBlogPage && !isLegacyChecklistPage && currentPath !== buildPostUrl({ slug })) return;
 
   let response = await fetch(`${WORDPRESS_POSTS_API}?_embed&slug=${encodeURIComponent(slug)}`);
   if (!response.ok) throw new Error(`WordPress returned ${response.status}`);
@@ -584,16 +586,20 @@ async function loadSinglePost() {
   }
 
   const category = getCategory(post);
+  const cleanPostUrl = `${location.origin}${buildPostUrl(post)}`;
+  if (location.href !== cleanPostUrl) {
+    window.history.replaceState({}, '', cleanPostUrl);
+  }
   document.title = `${htmlToText(post.title.rendered)} | Swishtag`;
   const postExcerpt = getPostExcerpt(post, 220);
   const description = $('meta[name="description"]');
   if (description) description.setAttribute('content', postExcerpt);
   const canonical = $('link[rel="canonical"]');
-  if (canonical) canonical.setAttribute('href', `${location.origin}/insights/blog/?slug=${encodeURIComponent(post.slug)}`);
+  if (canonical) canonical.setAttribute('href', cleanPostUrl);
   const metaUpdates = {
     'og:title': htmlToText(post.title.rendered),
     'og:description': postExcerpt,
-    'og:url': `${location.origin}/insights/blog/?slug=${encodeURIComponent(post.slug)}`
+    'og:url': cleanPostUrl
   };
   Object.entries(metaUpdates).forEach(([property, content]) => {
     const tag = $(`meta[property="${property}"]`);
@@ -609,7 +615,7 @@ async function loadSinglePost() {
       dateModified: post.modified,
       author: { '@type': 'Organization', name: 'Swishtag' },
       publisher: { '@type': 'Organization', name: 'Swishtag' },
-      mainEntityOfPage: `${location.origin}/insights/blog/?slug=${encodeURIComponent(post.slug)}`
+      mainEntityOfPage: cleanPostUrl
     });
   }
 
@@ -689,7 +695,11 @@ function prepareArticleContent(wrapper) {
       const url = new URL(link.getAttribute('href'), location.href);
       if (url.hostname === 'swishtag.com' && url.pathname.startsWith('/blogs/')) {
         const slug = url.pathname.split('/').filter(Boolean).at(-1);
-        if (slug) link.href = `/insights/blog/?slug=${encodeURIComponent(slug)}`;
+        if (slug) link.href = `/${encodeURIComponent(slug)}/`;
+      }
+      if (url.pathname.startsWith('/insights/blog/')) {
+        const slug = url.searchParams.get('slug');
+        if (slug) link.href = `/${encodeURIComponent(slug)}/`;
       }
     } catch (error) {}
   });
