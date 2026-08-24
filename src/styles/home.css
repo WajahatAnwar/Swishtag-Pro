@@ -7304,11 +7304,11 @@
 /* Lightweight global loading and mobile rendering */
 main>section:not(.reference-hero):not(.credibility){
   content-visibility:auto;
-  contain-intrinsic-size:820px;
+  contain-intrinsic-size:auto 640px;
 }
 img{max-width:100%}
 @media(max-width:720px){
-  main>section:not(.reference-hero):not(.credibility){contain-intrinsic-size:680px}
+  main>section:not(.reference-hero):not(.credibility){contain-intrinsic-size:auto 520px}
   .solution-card,.product-card,.industry-card,.system-group,.faq-item,.customer-story{
     box-shadow:none;
   }
@@ -12763,10 +12763,14 @@ strong {
 }
 
 @supports (content-visibility: auto) {
-  main > section:not(.reference-hero):not(.credibility),
-  .site-footer {
+  main > section:not(.reference-hero):not(.credibility) {
     content-visibility: auto;
-    contain-intrinsic-size: auto 900px;
+    contain-intrinsic-size: auto 640px;
+  }
+
+  .site-footer {
+    content-visibility: visible;
+    contain-intrinsic-size: none;
   }
 }
 
@@ -13838,7 +13842,7 @@ body.mobile-menu-lock .site-header .mobile-menu,
 
 /* Homepage compact scale pass. */
 #home .section {
-  padding-block: clamp(84px, 8vw, 112px);
+  padding-block: clamp(74px, 7vw, 96px);
 }
 
 #home .section-title,
@@ -13903,9 +13907,36 @@ body.mobile-menu-lock .site-header .mobile-menu,
   font-size: clamp(1.9rem, 3.35vw, 3.35rem);
 }
 
+#home .systems-section {
+  padding-bottom: clamp(62px, 6vw, 82px);
+}
+
+#home .industries-section,
+#home .faq-section,
+#home .final-space-cta-section {
+  padding-top: clamp(62px, 6vw, 84px);
+}
+
+#home .systems-marquee {
+  margin-top: 34px;
+}
+
+#home .system-groups {
+  margin-top: 28px;
+}
+
+#home .systems-section > .page-shell > .section-copy:last-child {
+  margin-top: 24px;
+}
+
+.site-footer {
+  content-visibility: visible !important;
+  contain-intrinsic-size: none !important;
+}
+
 @media (max-width: 900px) {
   #home .section {
-    padding-block: clamp(68px, 10vw, 92px);
+    padding-block: clamp(56px, 9vw, 76px);
   }
 
   #home .section-title,
@@ -13930,6 +13961,13 @@ body.mobile-menu-lock .site-header .mobile-menu,
   #home .solution-card {
     min-height: auto;
   }
+
+  #home .systems-section,
+  #home .industries-section,
+  #home .faq-section,
+  #home .final-space-cta-section {
+    padding-block: clamp(52px, 9vw, 70px);
+  }
 }
 
 @media (max-width: 520px) {
@@ -13951,5 +13989,13 @@ body.mobile-menu-lock .site-header .mobile-menu,
 
   #home .pain-clean-layout {
     padding: 34px 20px;
+  }
+
+  #home .systems-marquee {
+    margin-top: 24px;
+  }
+
+  #home .system-groups {
+    margin-top: 20px;
   }
 }

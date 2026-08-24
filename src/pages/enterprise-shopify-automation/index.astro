@@ -1901,11 +1901,10 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
     display: grid;
     grid-template-columns: 1.05fr .95fr;
     gap: 18px;
-    align-items: stretch;
+    align-items: start;
   }
   .customer-story-v5__quote-card,
   .customer-story-v5__proof {
-    min-height: 640px;
     border: 1px solid rgba(32,33,36,.075);
     border-radius: 34px;
     overflow: hidden;
@@ -1913,6 +1912,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   }
   .customer-story-v5__quote-card {
     position: relative;
+    min-height: 0;
     padding: 52px;
     background:
       radial-gradient(circle at 88% 7%, rgba(194,255,2,.20), transparent 23%),
@@ -1928,7 +1928,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   .customer-story-v5__mark svg { width:100%; height:100%; }
   .customer-story-v5__attribution strong,.customer-story-v5__attribution span { display:block; }
   .customer-story-v5__attribution span { margin-top:4px; color:var(--muted); font-size:.75rem; }
-  .customer-story-v5__proof { display:flex; flex-direction:column; padding:36px; background:linear-gradient(145deg,#f2f0ff 0%,#effbf8 52%,#fff7f2 100%); }
+  .customer-story-v5__proof { display:flex; flex-direction:column; min-height:0; padding:36px; background:linear-gradient(145deg,#f2f0ff 0%,#effbf8 52%,#fff7f2 100%); }
   .customer-story-v5__proof-head span { display:block; color:var(--muted); font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; }
   .customer-story-v5__proof-head strong { display:block; max-width:520px; margin-top:12px; font-size:clamp(1.65rem,2.7vw,2.9rem); line-height:1.04; letter-spacing:-.045em; }
   .customer-story-v5__metric-grid { display:grid; gap:10px; margin-top:30px; }
@@ -4151,10 +4151,14 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   #success-story,
   #process,
   #faq,
-  .final-cta-section,
-  .site-footer {
+  .final-cta-section {
     content-visibility: auto;
-    contain-intrinsic-size: 900px;
+    contain-intrinsic-size: auto 640px;
+  }
+
+  .site-footer {
+    content-visibility: visible;
+    contain-intrinsic-size: none;
   }
   
   /* The picture element must behave like the original image. */
