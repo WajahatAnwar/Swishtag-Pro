@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const title = "Solutions for Promotional Products Distributors | Swishtag";
 const description = "Compare four solution paths for promotional products distributors: Company Store Launch, SAGE Connected Company Store, Enterprise Company Store Automation, and Custom Software & Automation.";
-const canonical = "https://swishtag.com/shopify-solutions/";
+const canonical = "https://swishtag.com/solutions/";
 const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
 ---
 <BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
@@ -12,7 +12,7 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
       "@context":"https://schema.org",
       "@type":"CollectionPage",
       "name":"Solutions for Promotional Products Distributors",
-      "url":"https://swishtag.com/shopify-solutions/",
+      "url":"https://swishtag.com/solutions/",
       "description":"Four solution paths for promotional products distributors: launch a company store, connect SAGE product data, automate multi-store operations, or build custom software and integrations.",
       "mainEntity":{
         "@type":"ItemList",
@@ -415,25 +415,25 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   .hero-mascot__prompt{right:0;top:20px;max-width:112px;padding:7px 9px;font-size:.49rem}
   }
   @media (min-width:901px){
-  .shopify-solutions-page .hero{padding-top:clamp(164px,10vw,190px);padding-bottom:82px}
-  .shopify-solutions-page .hero-head{grid-template-columns:minmax(0,1fr) minmax(320px,390px);max-width:1180px}
-  .shopify-solutions-page .hero-mascot{margin-top:88px;margin-left:-44px;height:400px;width:360px}
-  .shopify-solutions-page .hero-mascot img{height:clamp(330px,23vw,390px)}
-  .shopify-solutions-page .hero-mascot__prompt{top:44px;right:-8px}
-  .shopify-solutions-page .hero-guide{max-width:calc(var(--page) - 28px);margin-top:34px}
-  .shopify-solutions-page .solutions{margin-top:18px}
-  .shopify-solutions-page .launch-preview-browser{left:8%;right:6%;top:32px}
-  .shopify-solutions-page .launch-preview-browser img{object-position:top center}
-  .shopify-solutions-page .enterprise-preview-browser{left:16%;right:16%;top:76px}
-  .shopify-solutions-page .enterprise-preview-browser img{object-position:top center}
+  .solutions-page .hero{padding-top:clamp(164px,10vw,190px);padding-bottom:82px}
+  .solutions-page .hero-head{grid-template-columns:minmax(0,1fr) minmax(320px,390px);max-width:1180px}
+  .solutions-page .hero-mascot{margin-top:88px;margin-left:-44px;height:400px;width:360px}
+  .solutions-page .hero-mascot img{height:clamp(330px,23vw,390px)}
+  .solutions-page .hero-mascot__prompt{top:44px;right:-8px}
+  .solutions-page .hero-guide{max-width:calc(var(--page) - 28px);margin-top:34px}
+  .solutions-page .solutions{margin-top:18px}
+  .solutions-page .launch-preview-browser{left:8%;right:6%;top:32px}
+  .solutions-page .launch-preview-browser img{object-position:top center}
+  .solutions-page .enterprise-preview-browser{left:16%;right:16%;top:76px}
+  .solutions-page .enterprise-preview-browser img{object-position:top center}
   }
   @media (min-width:901px) and (max-width:1120px){
-  .shopify-solutions-page .hero{padding-top:150px}
-  .shopify-solutions-page .hero-mascot{margin-top:76px;margin-left:-36px}
+  .solutions-page .hero{padding-top:150px}
+  .solutions-page .hero-mascot{margin-top:76px;margin-left:-36px}
   }
   @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
-  <main class="shopify-solutions-page">
+  <main class="solutions-page">
   <section class="hero" data-active="launch" id="top">
   <div class="page-shell">
   <div class="hero-head">
@@ -588,16 +588,16 @@ const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-pr
   <div class="page-shell">
   <div class="final-cta">
   <div><p class="eyebrow">Not sure which one fits?</p><h2>Tell us how your company stores work today.</h2><p>We will help you identify whether you need to launch, connect, automate, or build something custom.</p></div>
-  <a class="btn btn--dark" href="../book-demo/?interest=shopify-solutions">Book a Demo <span aria-hidden="true">↗</span></a>
+  <a class="btn btn--dark" href="../book-demo/?interest=solutions">Book a Demo <span aria-hidden="true">↗</span></a>
   </div>
   </div>
   </section>
   </main>
   <script slot="scripts" is:inline>
   (() => {
-    const hero = document.querySelector('.shopify-solutions-page .hero');
-    const solutionCards = [...document.querySelectorAll('.shopify-solutions-page [data-solution-card]')];
-    const solutionWords = [...document.querySelectorAll('.shopify-solutions-page .hero-word[data-solution]')];
+    const hero = document.querySelector('.solutions-page .hero');
+    const solutionCards = [...document.querySelectorAll('.solutions-page [data-solution-card]')];
+    const solutionWords = [...document.querySelectorAll('.solutions-page .hero-word[data-solution]')];
     const mascotPrompt = document.getElementById('heroMascotPrompt');
     const prompts = {
       launch: 'Starting a client store?',

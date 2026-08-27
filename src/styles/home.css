@@ -9924,7 +9924,7 @@ html.save-data .soar-earth-revolve__surface{
        Solutions v2: Launch, Connect, Scale
        ========================================================== */
 
-    .shopify-solutions-v2 {
+    .solutions-v2 {
       position: relative;
       overflow: hidden;
       background:
@@ -9934,7 +9934,7 @@ html.save-data .soar-earth-revolve__surface{
         #FFFFFF;
     }
 
-    .shopify-solutions-v2::before {
+    .solutions-v2::before {
       content: "";
       position: absolute;
       left: -96px;
@@ -9966,7 +9966,7 @@ html.save-data .soar-earth-revolve__surface{
       align-items: stretch;
     }
 
-    .shopify-solutions-v2 .solution-card {
+    .solutions-v2 .solution-card {
       min-height: 760px;
       display: flex;
       flex-direction: column;
@@ -9983,7 +9983,7 @@ html.save-data .soar-earth-revolve__surface{
         border-color .32s ease;
     }
 
-    .shopify-solutions-v2 .solution-card:hover {
+    .solutions-v2 .solution-card:hover {
       transform: translateY(-7px);
       border-color: rgba(32,33,36,.11);
       box-shadow: 0 34px 86px rgba(32,33,36,.11);
@@ -10002,7 +10002,7 @@ html.save-data .soar-earth-revolve__surface{
         linear-gradient(145deg, #FFFFFF, #F5F4FF);
     }
 
-    .shopify-solutions-v2 .solution-card--enterprise {
+    .solutions-v2 .solution-card--enterprise {
       color: #FFFFFF;
       background:
         radial-gradient(circle at 85% 4%, rgba(153,254,237,.16), transparent 27%),
@@ -10074,7 +10074,7 @@ html.save-data .soar-earth-revolve__surface{
       background: rgba(255,255,255,.045);
     }
 
-    .shopify-solutions-v2 .solution-copy {
+    .solutions-v2 .solution-copy {
       min-height: 0;
       flex: 0 0 auto;
     }
@@ -10090,7 +10090,7 @@ html.save-data .soar-earth-revolve__surface{
       opacity: .53 !important;
     }
 
-    .shopify-solutions-v2 .solution-title {
+    .solutions-v2 .solution-title {
       min-height: 0;
       max-width: 620px;
       margin: 0;
@@ -10099,7 +10099,7 @@ html.save-data .soar-earth-revolve__surface{
       letter-spacing: -.062em;
     }
 
-    .shopify-solutions-v2 .solution-copy > p:not(.solution-kicker) {
+    .solutions-v2 .solution-copy > p:not(.solution-kicker) {
       max-width: 610px;
       margin-top: 20px;
       font-size: .91rem;
@@ -10864,7 +10864,7 @@ html.save-data .soar-earth-revolve__surface{
     }
 
     @media (max-width: 1100px) {
-      .shopify-solutions-v2 .solution-card {
+      .solutions-v2 .solution-card {
         min-height: 735px;
       }
 
@@ -10895,7 +10895,7 @@ html.save-data .soar-earth-revolve__surface{
     }
 
     @media (max-width: 680px) {
-      .shopify-solutions-v2 .solution-card {
+      .solutions-v2 .solution-card {
         min-height: 0;
         padding: 27px;
         border-radius: 29px;
@@ -10916,7 +10916,7 @@ html.save-data .soar-earth-revolve__surface{
         line-height: 1.25;
       }
 
-      .shopify-solutions-v2 .solution-title {
+      .solutions-v2 .solution-title {
         font-size: clamp(2.35rem, 10.8vw, 3.55rem);
       }
 
@@ -11017,7 +11017,7 @@ html.save-data .soar-earth-revolve__surface{
     }
 
     @media (max-width: 460px) {
-      .shopify-solutions-v2 .solution-card {
+      .solutions-v2 .solution-card {
         padding: 23px;
       }
 
