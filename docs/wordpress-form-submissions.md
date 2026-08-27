@@ -1,0 +1,170 @@
+# Astro to WordPress Form Submissions
+
+This project now includes a custom WordPress plugin at:
+
+`wordpress-plugin/swishtag-astro-form-submissions/`
+
+It registers:
+
+- REST endpoint: `POST /wp-json/astro-form/v1/submit`
+- Custom Post Type: `Form Submissions`
+- Admin dashboard list, search, view, and delete support
+- Email notification to the WordPress admin email
+
+## 1. Install The WordPress Plugin
+
+1. Zip the folder `wordpress-plugin/swishtag-astro-form-submissions`.
+2. In WordPress Admin, go to `Plugins -> Add New -> Upload Plugin`.
+3. Upload the zip file and activate `Swishtag Astro Form Submissions`.
+4. Confirm that `Form Submissions` appears in the WordPress admin menu.
+
+Recommended `wp-config.php` configuration:
+
+```php
+define('ASTRO_FORM_TOKEN', 'replace-with-a-long-random-token');
+define('ASTRO_FORM_ALLOWED_ORIGINS', 'https://swishtag.com,https://www.swishtag.com');
+```
+
+Use the same token in Astro as `PUBLIC_ASTRO_FORM_TOKEN`.
+
+If you do not define `ASTRO_FORM_TOKEN`, the plugin generates a token on activation and stores it in the WordPress option `swishtag_astro_form_token`. You can read it with WP-CLI:
+
+```bash
+wp option get swishtag_astro_form_token
+```
+
+## 2. Configure Astro Environment
+
+Add these values to the Astro deployment environment:
+
+```env
+PUBLIC_WORDPRESS_FORM_ENDPOINT=https://swishtag.com/wp-json/astro-form/v1/submit
+PUBLIC_ASTRO_FORM_TOKEN=replace-with-the-same-token-used-by-wordpress
+```
+
+Then rebuild and deploy the Astro site:
+
+```bash
+npm run build
+```
+
+## 3. Exact Astro Form Changes
+
+The existing form UI, field names, validation, success states, and styling remain unchanged.
+
+The two form `action` values were changed from the old PHP endpoint:
+
+```html
+action="/api/send-form.php"
+```
+
+to the WordPress REST endpoint:
+
+```astro
+action={wordpressFormEndpoint}
+data-form-token={wordpressFormToken}
+```
+
+The submit JavaScript now sends the same JSON payload to WordPress and includes:
+
+```js
+headers["X-Astro-Form-Token"] = formToken;
+payload.form_loaded_at = formLoadedAt;
+```
+
+Updated Astro files:
+
+- `src/pages/book-demo/index.astro`
+- `src/pages/solutions/custom-software-automation/index.astro`
+
+## 4. Stored Fields
+
+The plugin currently accepts the existing Swishtag fields only.
+
+Book Demo:
+
+- `form_source`
+- `fullName`
+- `workEmail`
+- `companyName`
+- `website`
+- `solutionInterest`
+- `service`
+- `intent`
+- `storeCount`
+- `notes`
+- `selectedDate`
+- `selectedDateISO`
+- `selectedTime`
+- `timezone`
+- `page`
+- `form_loaded_at`
+
+Custom Software:
+
+- `form_source`
+- `name`
+- `email`
+- `project_type`
+- `stage`
+- `problem`
+- `integrations`
+- `budget`
+- `page`
+- `form_loaded_at`
+
+Each accepted field is saved as post metadata using the key pattern:
+
+```text
+astro_form_field_{field_name}
+```
+
+The full sanitized payload is also stored in:
+
+```text
+astro_form_payload
+```
+
+## 5. Security And Spam Protection
+
+The endpoint uses:
+
+- WordPress REST permission callback
+- Required `X-Astro-Form-Token`
+- Exact CORS origin allowlist
+- Honeypot fields: `nickname` and `_gotcha`
+- Per-IP/email/source rate limiting
+- Minimum submit-time check when `form_loaded_at` is present
+- Field whitelist by form source
+- Required field validation
+- Email and URL validation
+- Text sanitization and max lengths
+- Link-count spam rejection
+- JSON success/error responses
+
+Important: `PUBLIC_ASTRO_FORM_TOKEN` is sent by browser JavaScript, so it is a public site token, not a private server secret. Keep the CORS allowlist, rate limiting, honeypots, and validation enabled.
+
+## 6. Testing The Endpoint
+
+After the plugin is active and the env values are deployed, submit both live forms:
+
+- `/book-demo/`
+- `/solutions/custom-software-automation/`
+
+Expected success response:
+
+```json
+{
+  "ok": true,
+  "message": "Thanks. Your demo request has been sent to Swishtag.",
+  "submission_id": 123,
+  "email_sent": true
+}
+```
+
+Expected admin result:
+
+- A new item appears under `Form Submissions`
+- Submitted fields are visible on the edit/view screen
+- The admin list can search by title, email, name, company, or submitted metadata
+- The item can be deleted or moved to Trash like other WordPress admin records

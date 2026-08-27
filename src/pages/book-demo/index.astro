@@ -5,6 +5,8 @@ const title = "Book a Demo | Swishtag";
 const description = "Book a Swishtag demo for company stores, SAGE + Shopify, or enterprise company-store automation.";
 const canonical = "https://swishtag.com/book-demo/";
 const robots = "index,follow";
+const wordpressFormEndpoint = import.meta.env.PUBLIC_WORDPRESS_FORM_ENDPOINT ?? "https://swishtag.com/wp-json/astro-form/v1/submit";
+const wordpressFormToken = import.meta.env.PUBLIC_ASTRO_FORM_TOKEN ?? "";
 ---
 <BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
   <style is:inline slot="head">
@@ -265,7 +267,7 @@ const robots = "index,follow";
                 <div class="step" data-step-indicator="3"><div class="step-badge">3</div><strong>Pick a time</strong></div>
               </div>
   
-              <form id="demoForm" action="/api/send-form.php" method="post" novalidate>
+              <form id="demoForm" action={wordpressFormEndpoint} method="post" data-form-token={wordpressFormToken} novalidate>
                 <input type="hidden" name="form_source" value="book-demo">
                 <div class="panel active" data-step="1">
                   <div class="panel-head">
@@ -377,7 +379,7 @@ const robots = "index,follow";
                     <div class="success-note">Bring the messy workflow. We'll bring the ideas. You can keep exploring solutions or book another session if someone else from your team should join.</div>
                   </div>
                   <div class="success-actions">
-                    <a class="btn btn-primary" href="../shopify-solutions/">Back to Shopify Solutions <b>&#8599;</b></a>
+                    <a class="btn btn-primary" href="../shopify-solutions/">Back to Solutions <b>&#8599;</b></a>
                     <button class="btn btn-light" type="button" id="bookAnotherBtn">Book another demo</button>
                   </div>
                 </div>
@@ -410,6 +412,8 @@ const robots = "index,follow";
   const bookingSummary = document.getElementById('bookingSummary');
   const timezoneText = document.getElementById('timezoneText');
   const submitBtn = document.getElementById('submitBtn');
+  const formToken = form.dataset.formToken || '';
+  const formLoadedAt = Date.now().toString();
 
   const state = { step: 1, selectedDate: '', selectedDateISO: '', selectedTime: '', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local time' };
   timezoneText.textContent = state.timezone;
@@ -600,17 +604,20 @@ const robots = "index,follow";
   }
 
   async function postForm(payload){
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    };
+    if(formToken) headers['X-Astro-Form-Token'] = formToken;
+
     const response = await fetch(form.action, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify(payload)
     });
     const contentType = response.headers.get('content-type') || '';
     if(!contentType.includes('application/json')){
-      throw new Error('The mail service returned an unexpected response. Please try again or email hello@swishtag.com directly.');
+      throw new Error('The form service returned an unexpected response. Please try again or email hello@swishtag.com directly.');
     }
     const result = await response.json().catch(() => ({}));
     if(!response.ok || !result.ok){
@@ -638,6 +645,7 @@ const robots = "index,follow";
     payload.selectedTime = state.selectedTime;
     payload.timezone = state.timezone;
     payload.page = window.location.href;
+    payload.form_loaded_at = formLoadedAt;
 
     try {
       setSubmitting(true);
@@ -651,7 +659,7 @@ const robots = "index,follow";
       success.classList.add('show');
       success.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (error) {
-      showError(3, error.message || 'We could not send the email right now. Please try again.');
+      showError(3, error.message || 'We could not send your request right now. Please try again.');
     } finally {
       setSubmitting(false);
     }
