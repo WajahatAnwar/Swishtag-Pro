@@ -38,9 +38,15 @@ wp option get swishtag_astro_form_token
 Add these values to the Astro deployment environment:
 
 ```env
+PUBLIC_FORM_SUBMISSION_MODE=wordpress
+PUBLIC_DIRECT_FORM_ENDPOINT=/api/send-form.php
 PUBLIC_WORDPRESS_FORM_ENDPOINT=https://swishtag.com/wp-json/astro-form/v1/submit
 PUBLIC_ASTRO_FORM_TOKEN=replace-with-the-same-token-used-by-wordpress
 ```
+
+Use `PUBLIC_FORM_SUBMISSION_MODE=direct` when you want the forms to submit to the existing PHP email endpoint.
+
+Use `PUBLIC_FORM_SUBMISSION_MODE=wordpress` when you want the forms to submit to WordPress and save entries as `Form Submissions`.
 
 Then rebuild and deploy the Astro site:
 
@@ -52,20 +58,26 @@ npm run build
 
 The existing form UI, field names, validation, success states, and styling remain unchanged.
 
-The two form `action` values were changed from the old PHP endpoint:
+The two form `action` values now use the selected environment mode.
+
+Direct email mode:
 
 ```html
 action="/api/send-form.php"
 ```
 
-to the WordPress REST endpoint:
+WordPress mode:
 
 ```astro
-action={wordpressFormEndpoint}
-data-form-token={wordpressFormToken}
+action={formEndpoint}
+data-form-token={formToken}
 ```
 
-The submit JavaScript now sends the same JSON payload to WordPress and includes:
+`formEndpoint` resolves to `PUBLIC_DIRECT_FORM_ENDPOINT` in direct mode and `PUBLIC_WORDPRESS_FORM_ENDPOINT` in WordPress mode.
+
+On Hostinger, direct PHP mode only works if the PHP endpoint has a public URL. It is fine for private mail configuration files to live outside `public_html`, but the endpoint file itself must be reachable by the browser, for example `/api/send-form.php`, or routed to by the server.
+
+The submit JavaScript sends the same JSON payload in both modes. In WordPress mode, it also includes:
 
 ```js
 headers["X-Astro-Form-Token"] = formToken;

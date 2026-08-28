@@ -5,8 +5,11 @@ const title = "Custom Software & Business Automation Solutions | Swishtag";
 const description = "Have an ecommerce, integration, automation, SaaS or AI idea? Swishtag turns business problems into working systems with discovery, development, QA, deployment, documentation and training.";
 const canonical = "https://swishtag.com/solutions/custom-software-automation/";
 const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
+const formSubmissionMode = (import.meta.env.PUBLIC_FORM_SUBMISSION_MODE ?? "direct").toLowerCase();
+const directFormEndpoint = import.meta.env.PUBLIC_DIRECT_FORM_ENDPOINT ?? "/api/send-form.php";
 const wordpressFormEndpoint = import.meta.env.PUBLIC_WORDPRESS_FORM_ENDPOINT ?? "https://swishtag.com/wp-json/astro-form/v1/submit";
-const wordpressFormToken = import.meta.env.PUBLIC_ASTRO_FORM_TOKEN ?? "";
+const formEndpoint = formSubmissionMode === "wordpress" ? wordpressFormEndpoint : directFormEndpoint;
+const formToken = formSubmissionMode === "wordpress" ? (import.meta.env.PUBLIC_ASTRO_FORM_TOKEN ?? "") : "";
 ---
 <BaseLayout title={title} description={description} canonical={canonical} robots={robots}>
   <meta slot="head" property="og:type" content="website">
@@ -1638,7 +1641,7 @@ const wordpressFormToken = import.meta.env.PUBLIC_ASTRO_FORM_TOKEN ?? "";
         <p class="section-copy" style="font-size:1rem">If the project looks like a fit, the next step is to understand the workflow, define requirements and map the development path before coding begins.</p>
       </div>
   
-      <form class="form-card" id="ideaForm" action={wordpressFormEndpoint} method="post" data-form-token={wordpressFormToken} data-reveal novalidate>
+      <form class="form-card" id="ideaForm" action={formEndpoint} method="post" data-form-token={formToken} data-reveal novalidate>
         <input type="hidden" name="form_source" value="custom-software">
         <div class="field sr-only" aria-hidden="true">
           <label for="idea-gotcha">Leave this empty</label>
