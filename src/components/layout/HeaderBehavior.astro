@@ -43,6 +43,8 @@
     const trigger = item.querySelector(".desktop-nav__trigger");
 
     trigger?.addEventListener("click", event => {
+      if (trigger instanceof HTMLAnchorElement) return;
+
       event.stopPropagation();
       const willOpen = !item.classList.contains("is-open");
       closeMegaMenus(willOpen ? item : null);

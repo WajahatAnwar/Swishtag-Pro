@@ -29,10 +29,10 @@ const headerCta = solutionCtas[normalizedPath] ?? {
 <div aria-label="Desktop navigation" class="desktop-nav">
 <a class="desktop-nav__direct" href="/">Home</a>
 <div class="desktop-nav__item" data-mega-item="">
-<button aria-controls="megaSolutions" aria-expanded="false" class="desktop-nav__trigger" type="button">
+<a aria-controls="megaSolutions" aria-expanded="false" class="desktop-nav__trigger" href="/solutions/">
 <span>Solutions</span>
 <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"></path></svg>
-</button>
+</a>
 <section aria-label="Swishtag solutions menu" class="mega-menu mega-menu--solutions" id="megaSolutions">
 <div class="mega-menu__intro">
 <span class="mega-menu__eyebrow">Commerce, software &amp; automation</span>
@@ -121,10 +121,10 @@ const headerCta = solutionCtas[normalizedPath] ?? {
 </section>
 </div>
 <div class="desktop-nav__item" data-mega-item="">
-<button aria-controls="megaPlatform" aria-expanded="false" class="desktop-nav__trigger" type="button">
+<a aria-controls="megaPlatform" aria-expanded="false" class="desktop-nav__trigger" href="/platform/">
 <span>Platforms</span>
 <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"></path></svg>
-</button>
+</a>
 <section aria-label="Swishtag platforms menu" class="mega-menu mega-menu--platform" id="megaPlatform">
 <div class="mega-menu__intro">
 <span class="mega-menu__eyebrow">Swishtag platforms</span>
@@ -183,10 +183,10 @@ const headerCta = solutionCtas[normalizedPath] ?? {
 </section>
 </div>
 <div class="desktop-nav__item" data-mega-item="">
-<button aria-controls="megaIndustries" aria-expanded="false" class="desktop-nav__trigger" type="button">
+<a aria-controls="megaIndustries" aria-expanded="false" class="desktop-nav__trigger" href="/industries/">
 <span>Industries</span>
 <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"></path></svg>
-</button>
+</a>
 <section aria-label="Promotional products industries menu" class="mega-menu mega-menu--industries" id="megaIndustries">
 <div class="mega-menu__intro">
 <span class="mega-menu__eyebrow">Built inside the industry</span>
@@ -261,32 +261,9 @@ const headerCta = solutionCtas[normalizedPath] ?? {
 </div>
 <nav aria-label="Mobile navigation" class="mobile-nav">
 <a class="mobile-nav__direct" data-mobile-link="" href="/"><span class="mobile-nav__index">01</span><span>Home</span><span aria-hidden="true">↗</span></a>
-<div class="mobile-nav__group">
-<button aria-expanded="false" class="mobile-nav__toggle" type="button"><span class="mobile-nav__index">02</span><span>Solutions</span><span aria-hidden="true" class="mobile-nav__plus"></span></button>
-<div class="mobile-nav__panel"><div>
-<a data-mobile-link="" href="/shopify-company-store/"><strong>Company Store Launch</strong><small>Launch a Shopify print on demand company store.</small></a>
-<a data-mobile-link="" href="/shopify-sage-connect-integration/"><strong>SAGE Powered Company Store</strong><small>Connect a modern Shopify storefront with SAGE.</small></a>
-<a data-mobile-link="" href="/enterprise-shopify-automation/"><strong>Enterprise Company Store Automation</strong><small>Scale multi store, PunchOut, PO, and accounting workflows.</small></a>
-<a data-mobile-link="" href="/solutions/custom-software-automation/"><strong>Custom Software &amp; Automation</strong><small>Build custom software, integrations, SaaS and automation around the way your business works.</small></a>
-</div></div>
-</div>
-<div class="mobile-nav__group mobile-nav__group--platform">
-<button aria-expanded="false" class="mobile-nav__toggle" type="button"><span class="mobile-nav__index">03</span><span>Platforms</span><span aria-hidden="true" class="mobile-nav__plus"></span></button>
-<div class="mobile-nav__panel"><div>
-<a class="mobile-platform-card mobile-platform-card--punchout" data-mobile-link="" href="/punchout-central/"><strong>PunchOut Central</strong><small>Shopify PunchOut and enterprise procurement.</small></a>
-<a class="mobile-platform-card mobile-platform-card--promo" data-mobile-link="" href="/promo-plus/"><strong>Promo Plus</strong><small>Artwork approvals and production ready files.</small></a>
-<a class="mobile-platform-card mobile-platform-card--xecutor" data-mobile-link="" href="/xecutor/"><strong>Xecutor</strong><small>Decorator production and fulfillment workflows.</small></a>
-<a class="mobile-platform-card mobile-platform-card--rocket" data-mobile-link="" href="/shopify-apps-for-promotional-products/"><strong>Rocket Apps</strong><small>Shopify apps for promotional products stores.</small></a>
-</div></div>
-</div>
-<div class="mobile-nav__group">
-<button aria-expanded="false" class="mobile-nav__toggle" type="button"><span class="mobile-nav__index">04</span><span>Industries</span><span aria-hidden="true" class="mobile-nav__plus"></span></button>
-<div class="mobile-nav__panel"><div>
-<a data-mobile-link="" href="/promotional-products-distributors/"><strong>Promotional Products Distributors</strong><small>Connected company stores and order workflows.</small></a>
-<a data-mobile-link="" href="/promotional-products-suppliers/"><strong>Promotional Products Suppliers</strong><small>Product data and order connectivity.</small></a>
-<a data-mobile-link="" href="/promotional-products-decorators/"><strong>Promotional Products Decorators</strong><small>Artwork, production, and fulfillment.</small></a>
-</div></div>
-</div>
+<a class="mobile-nav__direct" data-mobile-link="" href="/solutions/"><span class="mobile-nav__index">02</span><span>Solutions</span><span aria-hidden="true">↗</span></a>
+<a class="mobile-nav__direct" data-mobile-link="" href="/platform/"><span class="mobile-nav__index">03</span><span>Platforms</span><span aria-hidden="true">↗</span></a>
+<a class="mobile-nav__direct" data-mobile-link="" href="/industries/"><span class="mobile-nav__index">04</span><span>Industries</span><span aria-hidden="true">↗</span></a>
 <a class="mobile-nav__direct" data-mobile-link="" href="/insights/"><span class="mobile-nav__index">05</span><span>Insights</span><span aria-hidden="true">↗</span></a>
 <a class="mobile-nav__direct" data-mobile-link="" href="/company/"><span class="mobile-nav__index">06</span><span>Company</span><span aria-hidden="true">↗</span></a>
 </nav>
