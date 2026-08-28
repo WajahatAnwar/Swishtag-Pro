@@ -1,10 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const wordpressPostsApi = 'https://swishtag.com/wp-json/wp/v2/posts';
   const reservedRootSlugs = new Set([
     '404',
+    'admin',
     'book-demo',
     'company',
     'contact',

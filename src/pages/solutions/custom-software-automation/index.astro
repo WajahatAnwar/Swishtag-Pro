@@ -6,7 +6,7 @@ const description = "Have an ecommerce, integration, automation, SaaS or AI idea
 const canonical = "https://swishtag.com/solutions/custom-software-automation/";
 const robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
 const formSubmissionMode = (import.meta.env.PUBLIC_FORM_SUBMISSION_MODE ?? "direct").toLowerCase();
-const directFormEndpoint = import.meta.env.PUBLIC_DIRECT_FORM_ENDPOINT ?? "/api/send-form.php";
+const directFormEndpoint = import.meta.env.PUBLIC_DIRECT_FORM_ENDPOINT ?? "/api/forms/submit";
 const wordpressFormEndpoint = import.meta.env.PUBLIC_WORDPRESS_FORM_ENDPOINT ?? "https://swishtag.com/wp-json/astro-form/v1/submit";
 const formEndpoint = formSubmissionMode === "wordpress" ? wordpressFormEndpoint : directFormEndpoint;
 const formToken = formSubmissionMode === "wordpress" ? (import.meta.env.PUBLIC_ASTRO_FORM_TOKEN ?? "") : "";

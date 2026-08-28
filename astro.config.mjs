@@ -1,7 +1,11 @@
 import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
 
 export default defineConfig({
-  output: 'static',
+  output: 'server',
+  adapter: node({
+    mode: 'standalone',
+  }),
   redirects: {
     '/services': '/solutions/custom-software-automation/',
     '/shopify-migration-service': '/solutions/custom-software-automation/',
