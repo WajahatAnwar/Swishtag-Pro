@@ -106,9 +106,17 @@ function getCategory(post) {
   return inferred || { name: category?.name || 'Blog', slug: category?.slug || 'blog' };
 }
 
+function getMappedUrl(value) {
+  return window.SwishtagUrlRedirects?.resolve(value) || '';
+}
+
 function buildPostUrl(post) {
+  const mappedPostLink = getMappedUrl(post?.link);
+  if (mappedPostLink) return mappedPostLink;
+
   const slug = post?.slug || '';
-  return slug ? `/${encodeURIComponent(slug)}/` : '';
+  const postUrl = slug ? `/${encodeURIComponent(slug)}/` : '';
+  return getMappedUrl(postUrl) || postUrl;
 }
 
 function disableLoadingLinks(scope = document) {
@@ -691,15 +699,28 @@ function prepareArticleContent(wrapper) {
     image.removeAttribute('data-original');
   });
   $$('a[href]', wrapper).forEach(link => {
+    const href = link.getAttribute('href');
+    const mappedHref = getMappedUrl(href);
+    if (mappedHref) {
+      link.href = mappedHref;
+      return;
+    }
+
     try {
-      const url = new URL(link.getAttribute('href'), location.href);
+      const url = new URL(href, location.href);
       if (url.hostname === 'swishtag.com' && url.pathname.startsWith('/blogs/')) {
         const slug = url.pathname.split('/').filter(Boolean).at(-1);
-        if (slug) link.href = `/${encodeURIComponent(slug)}/`;
+        if (slug) {
+          const postHref = `/${encodeURIComponent(slug)}/`;
+          link.href = getMappedUrl(postHref) || postHref;
+        }
       }
       if (url.pathname.startsWith('/insights/blog/')) {
         const slug = url.searchParams.get('slug');
-        if (slug) link.href = `/${encodeURIComponent(slug)}/`;
+        if (slug) {
+          const postHref = `/${encodeURIComponent(slug)}/`;
+          link.href = getMappedUrl(postHref) || postHref;
+        }
       }
     } catch (error) {}
   });
