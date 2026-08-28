@@ -26,6 +26,13 @@ export function OPTIONS() {
   return new Response(null, { status: 204 });
 }
 
+export function GET() {
+  return json({
+    ok: false,
+    message: "This endpoint is available and only accepts POST form submissions.",
+  }, 405);
+}
+
 export async function POST({ request }) {
   const data = await readPayload(request);
   const result = createSubmissionDocument(data, request);
