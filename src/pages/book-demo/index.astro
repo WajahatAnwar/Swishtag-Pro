@@ -620,10 +620,23 @@ const formToken = formSubmissionMode === "wordpress" ? (import.meta.env.PUBLIC_A
     });
     const contentType = response.headers.get('content-type') || '';
     if(!contentType.includes('application/json')){
+      const responseText = await response.text().catch(() => '');
+      console.error('[Swishtag form] Non-JSON response from form service', {
+        status: response.status,
+        statusText: response.statusText,
+        contentType,
+        endpoint: form.action,
+        responsePreview: responseText.slice(0, 500)
+      });
       throw new Error('The form service returned an unexpected response. Please try again or email hello@swishtag.com directly.');
     }
     const result = await response.json().catch(() => ({}));
     if(!response.ok || !result.ok){
+      console.error('[Swishtag form] JSON error response from form service', {
+        status: response.status,
+        endpoint: form.action,
+        result
+      });
       throw new Error(result.message || 'Something went wrong while sending your request.');
     }
     return result;

@@ -9,7 +9,7 @@ const title = "Admin | Swishtag";
     <meta name="robots" content="noindex,nofollow">
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-    <style>
+    <style is:global>
       :root {
         --ink: #202124;
         --muted: #6f7177;
@@ -251,80 +251,102 @@ const title = "Admin | Swishtag";
         color: var(--white);
       }
 
-      .submissions {
-        display: grid;
-        gap: 12px;
-      }
-
-      .submission-card {
+      .table-shell {
         background: var(--white);
         border: 1px solid var(--line);
         border-radius: var(--radius);
         overflow: hidden;
       }
 
-      .submission-head {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 16px;
-        align-items: start;
-        padding: 16px;
-        border-bottom: 1px solid var(--line);
+      .table-scroll {
+        width: 100%;
+        overflow-x: auto;
       }
 
-      .submission-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
+      .submissions-table {
+        width: 100%;
+        min-width: 1180px;
+        border-collapse: separate;
+        border-spacing: 0;
       }
 
-      .submission-title strong {
-        font-size: 1.05rem;
+      .submissions-table th,
+      .submissions-table td {
+        padding: 13px 14px;
+        border-bottom: 1px solid #eef0eb;
+        border-right: 1px solid #eef0eb;
+        text-align: left;
+        vertical-align: top;
+        line-height: 1.45;
       }
 
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        min-height: 26px;
-        padding: 0 9px;
-        border-radius: 999px;
-        background: #eef8d2;
-        border: 1px solid #dbec9f;
-        font-size: .74rem;
-        font-weight: 850;
-      }
-
-      .submitted-at {
-        color: var(--muted);
-        font-size: .84rem;
+      .submissions-table th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: #fbfcf8;
+        color: #5f6268;
+        font-size: .76rem;
+        font-weight: 900;
+        text-transform: uppercase;
         white-space: nowrap;
       }
 
-      .field-table {
-        display: grid;
-        grid-template-columns: 220px minmax(0, 1fr);
-      }
-
-      .field-label,
-      .field-value {
-        padding: 12px 16px;
-        border-bottom: 1px solid #eef0eb;
-        line-height: 1.55;
-      }
-
-      .field-label {
-        background: #fafbf8;
-        color: #686b70;
-        font-size: .78rem;
-        font-weight: 850;
-        text-transform: uppercase;
-      }
-
-      .field-value {
-        min-width: 0;
+      .submissions-table td {
+        max-width: 260px;
+        color: #2f3136;
+        font-size: .9rem;
         overflow-wrap: anywhere;
         white-space: pre-wrap;
+      }
+
+      .submissions-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .submissions-table th:last-child,
+      .submissions-table td:last-child {
+        border-right: 0;
+      }
+
+      .submissions-table tbody tr:nth-child(even) td {
+        background: #fcfdf9;
+      }
+
+      .submissions-table tbody tr:hover td {
+        background: #f7fbe9;
+      }
+
+      .cell-primary {
+        font-weight: 850;
+        color: var(--ink);
+      }
+
+      .cell-muted {
+        color: var(--muted);
+      }
+
+      .cell-long {
+        min-width: 260px;
+        max-width: 360px;
+      }
+
+      .cell-url {
+        min-width: 220px;
+        max-width: 320px;
+      }
+
+      .cell-date {
+        min-width: 150px;
+        white-space: nowrap !important;
+      }
+
+      .submissions-table a {
+        color: var(--ink);
+        font-weight: 750;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
       }
 
       .empty,
@@ -351,29 +373,18 @@ const title = "Admin | Swishtag";
         }
 
         .topbar,
-        .dashboard-head,
-        .submission-head {
+        .dashboard-head {
           align-items: stretch;
           flex-direction: column;
           display: flex;
         }
 
-        .stats,
-        .field-table {
+        .stats {
           grid-template-columns: 1fr;
         }
 
-        .field-label {
-          border-bottom: 0;
-          padding-bottom: 2px;
-        }
-
-        .field-value {
-          padding-top: 4px;
-        }
-
-        .submitted-at {
-          white-space: normal;
+        .submissions-table {
+          min-width: 980px;
         }
       }
     </style>
@@ -453,37 +464,36 @@ const title = "Admin | Swishtag";
           "discuss-idea": 0
         };
 
-        const fieldLabels = {
-          "book-demo": {
-            fullName: "Full name",
-            workEmail: "Work email",
-            companyName: "Company",
-            website: "Website",
-            solutionInterest: "Solution interest",
-            service: "Service",
-            intent: "Intent",
-            storeCount: "Store count",
-            selectedDate: "Selected date",
-            selectedDateISO: "Selected date ISO",
-            selectedTime: "Selected time",
-            timezone: "Timezone",
-            notes: "Notes"
-          },
-          "discuss-idea": {
-            name: "Name",
-            email: "Work email",
-            project_type: "Project type",
-            stage: "Stage",
-            problem: "Problem",
-            integrations: "Integrations",
-            budget: "Estimated investment"
-          }
-        };
-
-        const metadataLabels = {
-          page: "Page",
-          ipAddress: "IP",
-          userAgent: "User agent"
+        const tableColumns = {
+          "book-demo": [
+            { key: "createdAt", label: "Submitted", type: "date", className: "cell-date" },
+            { key: "fullName", label: "Full name", type: "field", className: "cell-primary" },
+            { key: "workEmail", label: "Work email", type: "field" },
+            { key: "companyName", label: "Company", type: "field", className: "cell-primary" },
+            { key: "website", label: "Website", type: "field", className: "cell-url", url: true },
+            { key: "solutionInterest", label: "Solution interest", type: "field", className: "cell-long" },
+            { key: "service", label: "Service", type: "field" },
+            { key: "intent", label: "Intent", type: "field" },
+            { key: "storeCount", label: "Store count", type: "field" },
+            { key: "selectedDate", label: "Selected date", type: "field" },
+            { key: "selectedTime", label: "Selected time", type: "field" },
+            { key: "timezone", label: "Timezone", type: "field" },
+            { key: "notes", label: "Notes", type: "field", className: "cell-long" },
+            { key: "page", label: "Page", type: "root", className: "cell-url", url: true },
+            { key: "ipAddress", label: "IP", type: "root", className: "cell-muted" }
+          ],
+          "discuss-idea": [
+            { key: "createdAt", label: "Submitted", type: "date", className: "cell-date" },
+            { key: "name", label: "Name", type: "field", className: "cell-primary" },
+            { key: "email", label: "Work email", type: "field" },
+            { key: "project_type", label: "Project type", type: "field", className: "cell-long" },
+            { key: "stage", label: "Stage", type: "field", className: "cell-long" },
+            { key: "problem", label: "Problem", type: "field", className: "cell-long" },
+            { key: "integrations", label: "Integrations", type: "field" },
+            { key: "budget", label: "Estimated investment", type: "field" },
+            { key: "page", label: "Page", type: "root", className: "cell-url", url: true },
+            { key: "ipAddress", label: "IP", type: "root", className: "cell-muted" }
+          ]
         };
 
         function escapeHtml(value) {
@@ -557,40 +567,43 @@ const title = "Admin | Swishtag";
           discussIdeaCount.textContent = cachedCounts["discuss-idea"];
         }
 
-        function renderSubmission(submission) {
-          const labels = fieldLabels[submission.formType] || {};
-          const rows = [];
+        function getColumnValue(submission, column) {
+          if (column.type === "date") return formatDate(submission.createdAt);
+          if (column.type === "field") return submission.fields?.[column.key] || "";
+          return submission[column.key] || "";
+        }
 
-          for (const [key, label] of Object.entries(labels)) {
-            rows.push([label, submission.fields?.[key] || "-"]);
+        function renderCell(value, column) {
+          const displayValue = value || "-";
+          const className = column.className ? ` class="${column.className}"` : "";
+
+          if (column.url && value) {
+            return `<td${className}><a href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">${escapeHtml(value)}</a></td>`;
           }
 
-          for (const [key, label] of Object.entries(metadataLabels)) {
-            rows.push([label, submission[key] || "-"]);
-          }
+          return `<td${className}>${escapeHtml(displayValue)}</td>`;
+        }
 
-          const rowsHtml = rows.map(([label, value]) => `
-            <div class="field-label">${escapeHtml(label)}</div>
-            <div class="field-value">${escapeHtml(value)}</div>
-          `).join("");
+        function renderTable(submissions) {
+          const columns = tableColumns[activeType] || [];
+          const headings = columns.map(column => `<th scope="col">${escapeHtml(column.label)}</th>`).join("");
+          const rows = submissions.map(submission => {
+            const cells = columns
+              .map(column => renderCell(getColumnValue(submission, column), column))
+              .join("");
 
-          const displayName = submission.displayName || submission.email || "Unknown";
-          const company = submission.companyName ? `<span class="pill">${escapeHtml(submission.companyName)}</span>` : "";
+            return `<tr>${cells}</tr>`;
+          }).join("");
 
           return `
-            <article class="submission-card">
-              <div class="submission-head">
-                <div>
-                  <div class="submission-title">
-                    <strong>${escapeHtml(displayName)}</strong>
-                    ${company}
-                  </div>
-                  <div>${escapeHtml(submission.email || "")}</div>
-                </div>
-                <div class="submitted-at">${escapeHtml(formatDate(submission.createdAt))}</div>
+            <div class="table-shell">
+              <div class="table-scroll">
+                <table class="submissions-table">
+                  <thead><tr>${headings}</tr></thead>
+                  <tbody>${rows}</tbody>
+                </table>
               </div>
-              <div class="field-table">${rowsHtml}</div>
-            </article>
+            </div>
           `;
         }
 
@@ -605,7 +618,7 @@ const title = "Admin | Swishtag";
             return;
           }
 
-          submissionsList.innerHTML = submissions.items.map(renderSubmission).join("");
+          submissionsList.innerHTML = renderTable(submissions.items);
         }
 
         async function loadSubmissions(type = activeType) {

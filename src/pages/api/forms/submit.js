@@ -1,4 +1,18 @@
 import { createSubmissionDocument, getSubmissionCollection } from "../../../lib/server/form-submissions.js";
+import { getMongoDebugInfo } from "../../../lib/server/db.js";
+import { randomUUID } from "node:crypto";
+
+function errorDetails(error) {
+  return {
+    name: error?.name,
+    code: error?.code,
+    errno: error?.errno,
+    syscall: error?.syscall,
+    hostname: error?.hostname,
+    message: error?.message,
+    stack: error?.stack,
+  };
+}
 
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -34,30 +48,76 @@ export function GET() {
 }
 
 export async function POST({ request }) {
-  const data = await readPayload(request);
-  const result = createSubmissionDocument(data, request);
+  const requestId = randomUUID();
+  const startedAt = Date.now();
 
-  if (result.skipped) {
-    return json({ ok: true, message: "Thanks. Your request has been received." });
-  }
-
-  if (result.error) {
-    return json({ ok: false, message: result.error.message }, result.error.status);
-  }
+  console.info("[Swishtag form] submit received", {
+    requestId,
+    method: request.method,
+    url: request.url,
+    contentType: request.headers.get("content-type") || "",
+    mongo: getMongoDebugInfo(),
+  });
 
   try {
+    const data = await readPayload(request);
+    const result = createSubmissionDocument(data, request);
+
+    console.info("[Swishtag form] payload parsed", {
+      requestId,
+      source: data?.form_source || data?.source || "",
+      fieldKeys: Object.keys(data || {}),
+      skipped: Boolean(result.skipped),
+      hasValidationError: Boolean(result.error),
+    });
+
+    if (result.skipped) {
+      console.info("[Swishtag form] honeypot submission skipped", { requestId });
+      return json({ ok: true, message: "Thanks. Your request has been received.", requestId });
+    }
+
+    if (result.error) {
+      console.warn("[Swishtag form] validation failed", {
+        requestId,
+        status: result.error.status,
+        message: result.error.message,
+      });
+      return json({ ok: false, message: result.error.message, requestId }, result.error.status);
+    }
+
+    console.info("[Swishtag form] connecting to collection", {
+      requestId,
+      formType: result.document.formType,
+      collection: getMongoDebugInfo().collection,
+    });
+
     const collection = await getSubmissionCollection();
-    await collection.insertOne(result.document);
+    const insertResult = await collection.insertOne(result.document);
+
+    console.info("[Swishtag form] submission saved", {
+      requestId,
+      insertedId: insertResult.insertedId?.toString(),
+      formType: result.document.formType,
+      durationMs: Date.now() - startedAt,
+    });
 
     return json({
       ok: true,
       message: "Thanks. Your request has been sent to Swishtag.",
+      requestId,
     });
   } catch (error) {
-    console.error("Swishtag form database error:", error);
+    console.error("[Swishtag form] submit failed", {
+      requestId,
+      durationMs: Date.now() - startedAt,
+      error: errorDetails(error),
+      mongo: getMongoDebugInfo(),
+    });
+
     return json({
       ok: false,
       message: "We could not save your request right now. Please try again or email hello@swishtag.com directly.",
+      requestId,
     }, 500);
   }
 }

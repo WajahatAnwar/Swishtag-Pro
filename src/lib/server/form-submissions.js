@@ -1,7 +1,4 @@
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const { getDb } = require("../../../db.js");
+import { getDb } from "./db.js";
 
 const COLLECTION_NAME = process.env.FORM_SUBMISSIONS_COLLECTION || "form_submissions";
 
