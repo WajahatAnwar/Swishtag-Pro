@@ -1,5 +1,6 @@
 import { createSubmissionDocument, getSubmissionCollection } from "../../../lib/server/form-submissions.js";
 import { getMongoDebugInfo } from "../../../lib/server/db.js";
+import { getMailDebugInfo, sendSubmissionEmail } from "../../../lib/server/mail.js";
 import { randomUUID } from "node:crypto";
 
 function errorDetails(error) {
@@ -57,6 +58,7 @@ export async function POST({ request }) {
     url: request.url,
     contentType: request.headers.get("content-type") || "",
     mongo: getMongoDebugInfo(),
+    mail: getMailDebugInfo(),
   });
 
   try {
@@ -93,6 +95,7 @@ export async function POST({ request }) {
 
     const collection = await getSubmissionCollection();
     const insertResult = await collection.insertOne(result.document);
+    result.document._id = insertResult.insertedId;
 
     console.info("[Swishtag form] submission saved", {
       requestId,
@@ -101,9 +104,67 @@ export async function POST({ request }) {
       durationMs: Date.now() - startedAt,
     });
 
+    try {
+      console.info("[Swishtag form] sending email notification", {
+        requestId,
+        insertedId: insertResult.insertedId?.toString(),
+        mail: getMailDebugInfo(),
+      });
+
+      const mailResult = await sendSubmissionEmail(result.document);
+      const emailSentAt = new Date();
+
+      await collection.updateOne(
+        { _id: insertResult.insertedId },
+        {
+          $set: {
+            emailStatus: "sent",
+            emailSentAt,
+            emailError: "",
+          },
+        },
+      );
+
+      console.info("[Swishtag form] email notification sent", {
+        requestId,
+        insertedId: insertResult.insertedId?.toString(),
+        recipients: mailResult.recipients,
+        subject: mailResult.subject,
+        durationMs: Date.now() - startedAt,
+      });
+    } catch (mailError) {
+      await collection.updateOne(
+        { _id: insertResult.insertedId },
+        {
+          $set: {
+            emailStatus: "failed",
+            emailError: mailError?.message || "Email failed.",
+          },
+        },
+      ).catch(updateError => {
+        console.error("[Swishtag form] could not update email failure status", {
+          requestId,
+          updateError: errorDetails(updateError),
+        });
+      });
+
+      console.error("[Swishtag form] email notification failed", {
+        requestId,
+        insertedId: insertResult.insertedId?.toString(),
+        error: errorDetails(mailError),
+        mail: getMailDebugInfo(),
+      });
+
+      return json({
+        ok: false,
+        message: "Your request was saved, but we could not send the email notification. Please email hello@swishtag.com directly.",
+        requestId,
+      }, 500);
+    }
+
     return json({
       ok: true,
-      message: "Thanks. Your request has been sent to Swishtag.",
+      message: "Thanks. Your request has been saved and sent to Swishtag.",
       requestId,
     });
   } catch (error) {

@@ -149,6 +149,9 @@ export function createSubmissionDocument(data, request) {
         80,
       ),
       userAgent: cleanString(headers.get("user-agent") ?? "", 500),
+      emailStatus: "pending",
+      emailSentAt: null,
+      emailError: "",
       createdAt: now,
       createdAtISO: now.toISOString(),
     },
@@ -168,6 +171,11 @@ export function serializeSubmission(submission) {
     page: submission.page ?? "",
     ipAddress: submission.ipAddress ?? "",
     userAgent: submission.userAgent ?? "",
+    emailStatus: submission.emailStatus ?? "",
+    emailSentAt: submission.emailSentAt instanceof Date
+      ? submission.emailSentAt.toISOString()
+      : submission.emailSentAt ?? "",
+    emailError: submission.emailError ?? "",
     createdAt: submission.createdAt instanceof Date
       ? submission.createdAt.toISOString()
       : submission.createdAtISO ?? "",
