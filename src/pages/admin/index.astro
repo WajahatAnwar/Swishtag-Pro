@@ -595,17 +595,17 @@ const title = "Admin | Swishtag";
         }
 
         function renderSubmissions(submissions) {
-          cachedCounts[activeType] = submissions.length;
+          cachedCounts[activeType] = Number(submissions.total ?? submissions.items.length);
           renderCounts();
 
-          dashboardSubtitle.textContent = `${submissions.length} ${activeType === "book-demo" ? "book demo" : "discuss idea"} submission${submissions.length === 1 ? "" : "s"}`;
+          dashboardSubtitle.textContent = `${cachedCounts[activeType]} ${activeType === "book-demo" ? "book demo" : "discuss idea"} submission${cachedCounts[activeType] === 1 ? "" : "s"}`;
 
-          if (!submissions.length) {
+          if (!submissions.items.length) {
             submissionsList.innerHTML = '<div class="empty">No submissions found.</div>';
             return;
           }
 
-          submissionsList.innerHTML = submissions.map(renderSubmission).join("");
+          submissionsList.innerHTML = submissions.items.map(renderSubmission).join("");
         }
 
         async function loadSubmissions(type = activeType) {
@@ -615,7 +615,10 @@ const title = "Admin | Swishtag";
 
           try {
             const result = await requestJson(`/api/admin/submissions?type=${encodeURIComponent(type)}`);
-            renderSubmissions(result.submissions || []);
+            renderSubmissions({
+              total: result.total,
+              items: result.submissions || []
+            });
           } catch (error) {
             if (error.message === "Unauthorized.") {
               setLoggedIn(false);
@@ -633,8 +636,8 @@ const title = "Admin | Swishtag";
               requestJson("/api/admin/submissions?type=book-demo"),
               requestJson("/api/admin/submissions?type=discuss-idea")
             ]);
-            cachedCounts["book-demo"] = (bookDemo.submissions || []).length;
-            cachedCounts["discuss-idea"] = (discussIdea.submissions || []).length;
+            cachedCounts["book-demo"] = Number(bookDemo.total ?? (bookDemo.submissions || []).length);
+            cachedCounts["discuss-idea"] = Number(discussIdea.total ?? (discussIdea.submissions || []).length);
             renderCounts();
           } catch {
             renderCounts();

@@ -30,6 +30,7 @@ export async function GET({ request, cookies }) {
 
   try {
     const collection = await getSubmissionCollection();
+    const total = await collection.countDocuments(query);
     const submissions = await collection
       .find(query)
       .sort({ createdAt: -1 })
@@ -38,6 +39,7 @@ export async function GET({ request, cookies }) {
 
     return json({
       ok: true,
+      total,
       submissions: submissions.map(serializeSubmission),
     });
   } catch (error) {
