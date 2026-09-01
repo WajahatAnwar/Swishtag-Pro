@@ -3,11 +3,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const title = "Book a Demo | Swishtag";
 const description = "Book a Swishtag demo for company stores, SAGE + Shopify, or enterprise company-store automation.";
-const canonical = "https://swishtag.com/book-demo/";
+const canonical = "https://cms.swishtag.com/book-demo/";
 const robots = "index,follow";
 const formSubmissionMode = (import.meta.env.PUBLIC_FORM_SUBMISSION_MODE ?? "direct").toLowerCase();
 const directFormEndpoint = import.meta.env.PUBLIC_DIRECT_FORM_ENDPOINT ?? "/api/forms/submit";
-const wordpressFormEndpoint = import.meta.env.PUBLIC_WORDPRESS_FORM_ENDPOINT ?? "https://swishtag.com/wp-json/astro-form/v1/submit";
+const wordpressFormEndpoint = import.meta.env.PUBLIC_WORDPRESS_FORM_ENDPOINT ?? "https://cms.swishtag.com/wp-json/astro-form/v1/submit";
 const formEndpoint = formSubmissionMode === "wordpress" ? wordpressFormEndpoint : directFormEndpoint;
 const formToken = formSubmissionMode === "wordpress" ? (import.meta.env.PUBLIC_ASTRO_FORM_TOKEN ?? "") : "";
 ---

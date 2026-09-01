@@ -22,7 +22,7 @@ Recommended `wp-config.php` configuration:
 
 ```php
 define('ASTRO_FORM_TOKEN', 'replace-with-a-long-random-token');
-define('ASTRO_FORM_ALLOWED_ORIGINS', 'https://swishtag.com,https://www.swishtag.com');
+define('ASTRO_FORM_ALLOWED_ORIGINS', 'https://cms.swishtag.com,https://www.swishtag.com');
 ```
 
 Use the same token in Astro as `PUBLIC_ASTRO_FORM_TOKEN`.
@@ -40,7 +40,7 @@ Add these values to the Astro deployment environment:
 ```env
 PUBLIC_FORM_SUBMISSION_MODE=wordpress
 PUBLIC_DIRECT_FORM_ENDPOINT=/api/send-form.php
-PUBLIC_WORDPRESS_FORM_ENDPOINT=https://swishtag.com/wp-json/astro-form/v1/submit
+PUBLIC_WORDPRESS_FORM_ENDPOINT=https://cms.swishtag.com/wp-json/astro-form/v1/submit
 PUBLIC_ASTRO_FORM_TOKEN=replace-with-the-same-token-used-by-wordpress
 ```
 

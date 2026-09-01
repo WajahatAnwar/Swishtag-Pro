@@ -407,7 +407,7 @@ final class Swishtag_Astro_Form_Submissions
             $origins = [
                 home_url('', 'https'),
                 site_url('', 'https'),
-                'https://swishtag.com',
+                'https://cms.swishtag.com',
                 'https://www.swishtag.com',
             ];
         }
