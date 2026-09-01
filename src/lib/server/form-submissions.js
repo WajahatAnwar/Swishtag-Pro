@@ -1,4 +1,5 @@
 import { getDb } from "./db.js";
+import { getBookDemoMeetingAt } from "./meeting-time.js";
 
 const COLLECTION_NAME = process.env.FORM_SUBMISSIONS_COLLECTION || "form_submissions";
 
@@ -133,28 +134,39 @@ export function createSubmissionDocument(data, request) {
   const now = new Date();
   const headers = request.headers;
 
+  const document = {
+    source,
+    formType: isBookDemo ? formTypes.bookDemo : formTypes.discussIdea,
+    title: isBookDemo ? "Book Demo" : "Discuss Idea",
+    email,
+    displayName: cleanString(isBookDemo ? data.fullName : data.name, 160),
+    companyName: cleanString(data.companyName ?? "", 160),
+    fields,
+    page: cleanString(data.page ?? headers.get("referer") ?? "", 500),
+    formLoadedAt: cleanString(data.form_loaded_at ?? "", 80),
+    ipAddress: cleanString(
+      headers.get("x-forwarded-for")?.split(",")[0] ?? headers.get("x-real-ip") ?? "",
+      80,
+    ),
+    userAgent: cleanString(headers.get("user-agent") ?? "", 500),
+    emailStatus: "pending",
+    emailSentAt: null,
+    emailError: "",
+    reminderStatus: isBookDemo ? "pending" : "not_applicable",
+    reminderSentAt: null,
+    reminderError: "",
+    createdAt: now,
+    createdAtISO: now.toISOString(),
+  };
+
+  if (isBookDemo) {
+    const meetingAt = getBookDemoMeetingAt({ fields });
+    document.meetingAt = meetingAt;
+    document.meetingAtISO = meetingAt?.toISOString() || "";
+  }
+
   return {
-    document: {
-      source,
-      formType: isBookDemo ? formTypes.bookDemo : formTypes.discussIdea,
-      title: isBookDemo ? "Book Demo" : "Discuss Idea",
-      email,
-      displayName: cleanString(isBookDemo ? data.fullName : data.name, 160),
-      companyName: cleanString(data.companyName ?? "", 160),
-      fields,
-      page: cleanString(data.page ?? headers.get("referer") ?? "", 500),
-      formLoadedAt: cleanString(data.form_loaded_at ?? "", 80),
-      ipAddress: cleanString(
-        headers.get("x-forwarded-for")?.split(",")[0] ?? headers.get("x-real-ip") ?? "",
-        80,
-      ),
-      userAgent: cleanString(headers.get("user-agent") ?? "", 500),
-      emailStatus: "pending",
-      emailSentAt: null,
-      emailError: "",
-      createdAt: now,
-      createdAtISO: now.toISOString(),
-    },
+    document,
   };
 }
 
@@ -176,6 +188,14 @@ export function serializeSubmission(submission) {
       ? submission.emailSentAt.toISOString()
       : submission.emailSentAt ?? "",
     emailError: submission.emailError ?? "",
+    reminderStatus: submission.reminderStatus ?? "",
+    reminderSentAt: submission.reminderSentAt instanceof Date
+      ? submission.reminderSentAt.toISOString()
+      : submission.reminderSentAt ?? "",
+    reminderError: submission.reminderError ?? "",
+    meetingAt: submission.meetingAt instanceof Date
+      ? submission.meetingAt.toISOString()
+      : submission.meetingAtISO ?? "",
     createdAt: submission.createdAt instanceof Date
       ? submission.createdAt.toISOString()
       : submission.createdAtISO ?? "",

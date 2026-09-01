@@ -2,6 +2,7 @@ import "dotenv/config";
 import net from "node:net";
 import tls from "node:tls";
 import { randomBytes } from "node:crypto";
+import { formatMeetingDate } from "./meeting-time.js";
 
 const fieldLabels = {
   "book-demo": {
@@ -243,6 +244,34 @@ function createEmailContent(submission) {
   };
 }
 
+function createMeetingReminderContent(submission, meetingAt) {
+  const fields = submission.fields || {};
+  const meetingTime = formatMeetingDate(meetingAt, fields.timezone);
+  const reminderFields = [
+    ["Meeting time", meetingTime],
+    ["Lead", submission.displayName || fields.fullName || ""],
+    ["Work email", submission.email || fields.workEmail || ""],
+    ["Company", submission.companyName || fields.companyName || ""],
+    ["Solution interest", fields.solutionInterest || ""],
+    ["Service", fields.service || ""],
+    ["Intent", fields.intent || ""],
+    ["Notes", fields.notes || ""],
+    ["Page", submission.page || ""],
+  ];
+
+  const leadName = submission.displayName || submission.companyName || "a lead";
+  const subject = `Reminder: demo with ${leadName} in the next 24 hours`;
+  const summary = `${leadName} has a Book Demo meeting scheduled for ${meetingTime}.`;
+
+  return {
+    subject,
+    heading: "Book Demo Meeting Reminder",
+    summary,
+    textBody: renderTextEmail(reminderFields),
+    htmlBody: renderHtmlEmail("Book Demo Meeting Reminder", summary, reminderFields),
+  };
+}
+
 async function sendSmtpMessage(config, recipient, content, replyTo) {
   let socket = createSocket(config);
   socket.setTimeout(20000);
@@ -312,6 +341,27 @@ export async function sendSubmissionEmail(submission) {
 
   for (const recipient of recipients) {
     await sendSmtpMessage(config, recipient, content, submission.email);
+  }
+
+  return {
+    recipients,
+    subject: content.subject,
+  };
+}
+
+export async function sendMeetingReminderEmail(submission, meetingAt) {
+  const config = getMailConfig();
+  validateMailConfig(config);
+
+  const recipients = getRecipients(envValue("MEETING_REMINDER_TO", config.to));
+  if (!recipients.length) {
+    throw new Error("MEETING_REMINDER_TO or MAIL_TO must contain a valid recipient.");
+  }
+
+  const content = createMeetingReminderContent(submission, meetingAt);
+
+  for (const recipient of recipients) {
+    await sendSmtpMessage(config, recipient, content, submission.email || config.fromAddress);
   }
 
   return {

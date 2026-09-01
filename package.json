@@ -4,7 +4,8 @@
     "build": "astro build",
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
-    "preview:php": "npm run build && php -S localhost:8080 -t dist"
+    "preview:php": "npm run build && php -S localhost:8080 -t dist",
+    "reminders:daily": "node ./scripts/send-daily-reminders.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.5",

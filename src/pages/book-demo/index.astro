@@ -548,9 +548,16 @@ const formToken = formSubmissionMode === "wordpress" ? (import.meta.env.PUBLIC_A
     });
   }
 
+  function formatLocalDateISO(date){
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   function selectDate(date, btn, initial){
     state.selectedDate = formatDateLong(date);
-    state.selectedDateISO = date.toISOString().slice(0,10);
+    state.selectedDateISO = formatLocalDateISO(date);
     [...dateList.children].forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     selectedDatePill.hidden = false;
