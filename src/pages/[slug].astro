@@ -1,65 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const wordpressPostsApi = import.meta.env.WORDPRESS_POSTS_API ?? 'https://cms.swishtag.com/wp-json/wp/v2/posts';
-  const reservedRootSlugs = new Set([
-    '404',
-    'admin',
-    'book-demo',
-    'company',
-    'contact',
-    'contact-us',
-    'cookie-policy',
-    'custom-software-automation',
-    'enterprise-shopify-automation',
-    'industries',
-    'insights',
-    'platform',
-    'privacy-policy',
-    'promo-plus',
-    'promotional-products-decorators',
-    'promotional-products-distributors',
-    'promotional-products-suppliers',
-    'punchout-central',
-    'rocket-apps',
-    'security',
-    'shopify-apps-for-promotional-products',
-    'shopify-company-store',
-    'shopify-print-on-demand-company-store',
-    'shopify-sage-connect-integration',
-    'shopify-' + 'solutions',
-    'solutions',
-    'terms',
-    'thank-you',
-    'xecutor',
-  ]);
-  const slugs = new Set();
-  let page = 1;
-  let totalPages = 1;
-
-  do {
-    const url = new URL(wordpressPostsApi);
-    url.searchParams.set('per_page', '100');
-    url.searchParams.set('page', String(page));
-    url.searchParams.set('_fields', 'slug');
-
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`WordPress posts returned ${response.status}`);
-
-    const posts = await response.json();
-    posts.forEach(post => {
-      if (post?.slug && !reservedRootSlugs.has(post.slug)) slugs.add(post.slug);
-    });
-
-    totalPages = Number(response.headers.get('X-WP-TotalPages') || page);
-    page += 1;
-  } while (page <= totalPages);
-
-  return [...slugs].map(slug => ({ params: { slug } }));
-}
+export const prerender = false;
 
 const slug = Astro.params.slug;
 const title = 'Insight | Swishtag';
