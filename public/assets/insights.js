@@ -1,8 +1,8 @@
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
 
-const WORDPRESS_POSTS_API = 'https://swishtag.com/wp-json/wp/v2/posts';
-const WORDPRESS_CATEGORIES_API = 'https://swishtag.com/wp-json/wp/v2/categories';
+const WORDPRESS_POSTS_API = 'https://cms.swishtag.com/wp-json/wp/v2/posts';
+const WORDPRESS_CATEGORIES_API = 'https://cms.swishtag.com/wp-json/wp/v2/categories';
 const POSTS_PER_PAGE = 12;
 const FILTER_FALLBACK_SEARCH = {
   shopify: 'shopify',
