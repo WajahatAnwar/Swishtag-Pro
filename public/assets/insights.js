@@ -3,6 +3,9 @@ const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)]
 
 const WORDPRESS_POSTS_API = 'https://cms.swishtag.com/wp-json/wp/v2/posts';
 const WORDPRESS_CATEGORIES_API = 'https://cms.swishtag.com/wp-json/wp/v2/categories';
+const CMS_MEDIA_HOST = 'cms.swishtag.com';
+const PUBLIC_SITE_HOST = 'swishtag.com';
+const LEGACY_MEDIA_HOSTS = new Set(['swishtag.com', 'www.swishtag.com', 'dei.bcv.mybluehost.me']);
 const POSTS_PER_PAGE = 12;
 const FILTER_FALLBACK_SEARCH = {
   shopify: 'shopify',
@@ -85,7 +88,7 @@ function estimateReadTime(post) {
 function getFeaturedImage(post) {
   const media = post?._embedded?.['wp:featuredmedia']?.[0];
   const sizes = media?.media_details?.sizes || {};
-  return sizes.large?.source_url || sizes.medium_large?.source_url || sizes.full?.source_url || media?.source_url || '';
+  return normalizeCmsMediaUrl(sizes.large?.source_url || sizes.medium_large?.source_url || sizes.full?.source_url || media?.source_url || '');
 }
 
 function getCategory(post) {
@@ -108,6 +111,44 @@ function getCategory(post) {
 
 function getMappedUrl(value) {
   return window.SwishtagUrlRedirects?.resolve(value) || '';
+}
+
+function normalizeCmsMediaUrl(value) {
+  if (!value || String(value).trim().startsWith('data:') || String(value).trim().startsWith('blob:')) return value || '';
+
+  try {
+    const url = new URL(value, location.href);
+    if (!LEGACY_MEDIA_HOSTS.has(url.hostname)) return value;
+    url.protocol = 'https:';
+    url.hostname = CMS_MEDIA_HOST;
+    return url.href;
+  } catch (error) {
+    return value;
+  }
+}
+
+function normalizeCmsSrcset(value) {
+  if (!value) return '';
+  return String(value).split(',').map(candidate => {
+    const parts = candidate.trim().split(/\s+/);
+    if (!parts.length) return candidate;
+    parts[0] = normalizeCmsMediaUrl(parts[0]);
+    return parts.join(' ');
+  }).join(', ');
+}
+
+function normalizePublicSiteUrl(value) {
+  if (!value) return '';
+
+  try {
+    const url = new URL(value, location.href);
+    if (!url.hostname.startsWith('dei.')) return '';
+    url.protocol = 'https:';
+    url.hostname = PUBLIC_SITE_HOST;
+    return url.href;
+  } catch (error) {
+    return '';
+  }
 }
 
 function buildPostUrl(post) {
@@ -141,7 +182,7 @@ function setImage(target, imageUrl, altText) {
   target.innerHTML = '';
   if (imageUrl) {
     const img = document.createElement('img');
-    img.src = imageUrl;
+    img.src = normalizeCmsMediaUrl(imageUrl);
     img.alt = altText || '';
     img.loading = 'lazy';
     target.appendChild(img);
@@ -284,7 +325,7 @@ function renderFeaturedArticleImage(imageUrl, altText) {
   }, { once: true });
 
   featuredImage.appendChild(img);
-  img.src = imageUrl;
+  img.src = normalizeCmsMediaUrl(imageUrl);
 }
 
 function setListingState(message, isError = false, isLoading = false) {
@@ -678,11 +719,13 @@ function prepareArticleContent(wrapper) {
     const currentSrc = image.getAttribute('src') || '';
 
     if (lazySrc && (!currentSrc || currentSrc.startsWith('data:image'))) {
-      image.src = lazySrc;
+      image.src = normalizeCmsMediaUrl(lazySrc);
     }
     if (lazySrcset && !image.getAttribute('srcset')) {
-      image.setAttribute('srcset', lazySrcset);
+      image.setAttribute('srcset', normalizeCmsSrcset(lazySrcset));
     }
+    if (image.getAttribute('src')) image.src = normalizeCmsMediaUrl(image.getAttribute('src'));
+    if (image.getAttribute('srcset')) image.setAttribute('srcset', normalizeCmsSrcset(image.getAttribute('srcset')));
     if (lazySizes && !image.getAttribute('sizes')) {
       const sizes = lazySizes.replace(/^auto,\s*/i, '').trim();
       if (sizes && sizes !== 'auto') image.setAttribute('sizes', sizes);
@@ -698,6 +741,9 @@ function prepareArticleContent(wrapper) {
     image.removeAttribute('data-lazy-srcset');
     image.removeAttribute('data-original');
   });
+  $$('source[srcset]', wrapper).forEach(source => {
+    source.setAttribute('srcset', normalizeCmsSrcset(source.getAttribute('srcset')));
+  });
   $$('a[href]', wrapper).forEach(link => {
     const href = link.getAttribute('href');
     const mappedHref = getMappedUrl(href);
@@ -708,6 +754,12 @@ function prepareArticleContent(wrapper) {
 
     try {
       const url = new URL(href, location.href);
+      const publicHref = normalizePublicSiteUrl(href);
+      if (publicHref) {
+        link.href = publicHref;
+        return;
+      }
+
       if (url.hostname === 'swishtag.com' && url.pathname.startsWith('/blogs/')) {
         const slug = url.pathname.split('/').filter(Boolean).at(-1);
         if (slug) {

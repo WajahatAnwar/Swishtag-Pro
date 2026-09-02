@@ -33,6 +33,7 @@
     "/project/mes/": "/xecutor/"
   });
 
+  const PUBLIC_SITE_ORIGIN = "https://swishtag.com";
   const TRUSTED_HOSTS = new Set(["swishtag.com", "www.swishtag.com"]);
 
   function normalizePath(pathname) {
@@ -50,12 +51,13 @@
   }
 
   function isTrustedHost(url) {
-    return url.hostname === window.location.hostname || TRUSTED_HOSTS.has(url.hostname);
+    return url.hostname === window.location.hostname || TRUSTED_HOSTS.has(url.hostname) || url.hostname.startsWith("dei.");
   }
 
   function withOriginalSuffix(target, sourceUrl) {
     try {
-      const targetUrl = new URL(target, window.location.origin);
+      const targetOrigin = sourceUrl.hostname.startsWith("dei.") ? PUBLIC_SITE_ORIGIN : window.location.origin;
+      const targetUrl = new URL(target, targetOrigin);
       if (!targetUrl.search && sourceUrl.search) targetUrl.search = sourceUrl.search;
       if (!targetUrl.hash && sourceUrl.hash) targetUrl.hash = sourceUrl.hash;
       return targetUrl.origin === window.location.origin
