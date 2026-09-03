@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Swishtag Astro Form Submissions
- * Description: Receives Swishtag Astro form submissions through a secure REST endpoint and stores them as admin-manageable form submissions.
- * Version: 1.0.0
+ * Description: Connects the Swishtag Astro site to WordPress form submissions and published portfolio content.
+ * Version: 1.1.0
  * Author: Swishtag
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -26,6 +26,7 @@ final class Swishtag_Astro_Form_Submissions
 
     public static function init(): void
     {
+        add_filter('register_post_type_args', [self::class, 'expose_portfolio_in_rest'], 10, 2);
         add_action('init', [self::class, 'register_post_type']);
         add_action('rest_api_init', [self::class, 'register_rest_route']);
         add_filter('rest_pre_dispatch', [self::class, 'handle_preflight'], 10, 3);
@@ -35,6 +36,24 @@ final class Swishtag_Astro_Form_Submissions
         add_action('pre_get_posts', [self::class, 'admin_orderby']);
         add_filter('posts_search', [self::class, 'admin_search_meta'], 10, 2);
         add_action('add_meta_boxes', [self::class, 'add_meta_boxes']);
+    }
+
+    /**
+     * Expose Salient's public portfolio post type to the headless Astro site.
+     * WordPress still requires authentication for create, update, and delete requests.
+     */
+    public static function expose_portfolio_in_rest(array $args, string $post_type): array
+    {
+        if ($post_type !== 'portfolio') {
+            return $args;
+        }
+
+        $args['show_in_rest'] = true;
+        $args['rest_base'] = 'portfolio';
+        $args['rest_namespace'] = 'wp/v2';
+        $args['rest_controller_class'] = 'WP_REST_Posts_Controller';
+
+        return $args;
     }
 
     public static function activate(): void

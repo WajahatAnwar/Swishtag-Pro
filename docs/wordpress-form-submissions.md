@@ -1,4 +1,4 @@
-# Astro to WordPress Form Submissions
+# Astro to WordPress Forms and Portfolio Content
 
 This project now includes a custom WordPress plugin at:
 
@@ -10,6 +10,7 @@ It registers:
 - Custom Post Type: `Form Submissions`
 - Admin dashboard list, search, view, and delete support
 - Email notification to the WordPress admin email
+- Read-only REST access for published Salient `portfolio` projects
 
 ## 1. Install The WordPress Plugin
 
@@ -41,6 +42,8 @@ Add these values to the Astro deployment environment:
 PUBLIC_FORM_SUBMISSION_MODE=wordpress
 PUBLIC_DIRECT_FORM_ENDPOINT=/api/send-form.php
 PUBLIC_WORDPRESS_FORM_ENDPOINT=https://cms.swishtag.com/wp-json/astro-form/v1/submit
+WORDPRESS_PROJECTS_ENDPOINT=https://cms.swishtag.com/wp-json/wp/v2/portfolio
+WORDPRESS_CMS_ORIGIN=https://cms.swishtag.com
 PUBLIC_ASTRO_FORM_TOKEN=replace-with-the-same-token-used-by-wordpress
 ```
 
@@ -53,6 +56,38 @@ Then rebuild and deploy the Astro site:
 ```bash
 npm run build
 ```
+
+### Portfolio project routes
+
+Version 1.1.0 of the WordPress plugin exposes Salient's existing `portfolio`
+custom post type through the standard, read-only WordPress REST response. Update
+the installed plugin before deploying the Astro project route.
+
+Confirm a legacy project can be fetched:
+
+```text
+https://cms.swishtag.com/wp-json/wp/v2/portfolio?slug=true-number&_embed=1
+```
+
+The Astro route at `src/pages/project/[slug].astro` uses the final URL segment
+as the WordPress slug, so one dynamic page supports every existing URL such as:
+
+```text
+/project/true-number/
+/project/chatbase/
+/project/tag-analytics/
+```
+
+The page fetches from the same-origin endpoint `/api/projects/{slug}`. This
+automatically resolves to `http://localhost:4321` during local development and
+to the current production domain after deployment. The server endpoint then
+contacts the separately configured WordPress CMS origin. It also supports the
+legacy WordPress project permalink as a temporary fallback while an older
+version of the plugin is still installed.
+
+Only published portfolio entries are returned to unauthenticated visitors.
+WordPress continues to require authentication and the appropriate capabilities
+for create, update, and delete requests.
 
 ## 3. Exact Astro Form Changes
 

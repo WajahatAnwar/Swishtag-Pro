@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.slug ?? '';
+const projectApi = `/api/projects/${encodeURIComponent(slug)}`;
+const canonical = new URL(`/project/${encodeURIComponent(slug)}/`, Astro.url.origin).href;
+const title = 'Project | Swishtag';
+const description = 'Explore a project designed and built by Swishtag.';
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} robots="index,follow">
+  <link slot="head" rel="stylesheet" href="/assets/projects.css?v=20260903-project-layout" />
+  <meta slot="head" property="og:type" content="article" />
+  <meta slot="head" property="og:title" content="Project | Swishtag" />
+  <meta slot="head" property="og:description" content={description} />
+  <meta slot="head" property="og:url" content={canonical} />
+  <meta slot="head" property="og:image" content="" />
+  <meta slot="head" name="twitter:card" content="summary_large_image" />
+  <meta slot="head" name="twitter:image" content="" />
+  <script slot="head" is:inline type="application/ld+json" data-project-schema>{JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: 'Project | Swishtag',
+    url: canonical,
+    creator: { '@type': 'Organization', name: 'Swishtag', url: 'https://swishtag.com/' },
+  })}</script>
+
+  <main
+    class="project-page is-loading"
+    data-project-page
+    data-project-slug={slug}
+    data-project-api={projectApi}
+    aria-busy="true"
+  >
+    <section class="project-hero">
+      <div class="project-shell project-hero__inner">
+        <nav class="project-breadcrumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Projects</span>
+          <span aria-hidden="true">/</span>
+          <span data-project-breadcrumb>Loading project</span>
+        </nav>
+
+        <div class="project-hero__grid">
+          <div class="project-hero__copy">
+            <div class="project-kicker" data-project-type>Swishtag project</div>
+            <h1 data-project-title>Loading project...</h1>
+            <p data-project-summary>Fetching this project from the Swishtag portfolio.</p>
+          </div>
+          <div class="project-hero__media is-loading" data-project-image aria-hidden="true">
+            <div class="project-image-placeholder"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-body-section">
+      <div class="project-state project-shell" data-project-state role="status">
+        Loading project details...
+      </div>
+      <article class="project-content" data-project-content hidden></article>
+    </section>
+
+    <section class="project-cta" data-project-cta hidden>
+      <div class="project-shell project-cta__panel">
+        <div>
+          <div class="project-kicker">Have a project in mind?</div>
+          <h2>Let’s build something that moves your business forward.</h2>
+        </div>
+        <a href="/book-demo/">Talk to Swishtag <span aria-hidden="true">-&gt;</span></a>
+      </div>
+    </section>
+  </main>
+
+  <script slot="scripts" is:inline src="/assets/projects.js?v=20260903-project-layout"></script>
+</BaseLayout>
