@@ -28,9 +28,7 @@
     "/industries/promotional-print-uniforms/": "/promotional-products-distributors/",
     "/industries/industrial-mro/": "/industries/",
     "/industries/lab-scientific/": "/industries/",
-    "/project/pickpack/": "/xecutor/",
-    "/manufacturing-execution-system/": "/xecutor/",
-    "/project/mes/": "/xecutor/"
+    "/manufacturing-execution-system/": "/xecutor/"
   });
 
   const PUBLIC_SITE_ORIGIN = "https://swishtag.com";
