@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"> 
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://swishtag.com/</loc>
 <priority>0.5</priority>
@@ -91,11 +91,6 @@
 <changefreq>hourly</changefreq>
 </url>
 <url>
-<loc>https://swishtag.com/enterprise-shopify-automation/#success-story</loc>
-<priority>0.5</priority>
-<changefreq>hourly</changefreq>
-</url>
-<url>
 <loc>https://swishtag.com/contact/</loc>
 <priority>0.5</priority>
 <changefreq>hourly</changefreq>
@@ -112,36 +107,6 @@
 </url>
 <url>
 <loc>https://swishtag.com/security/</loc>
-<priority>0.5</priority>
-<changefreq>hourly</changefreq>
-</url>
-<url>
-<loc>https://swishtag.com/shopify-company-store/</loc>
-<priority>0.5</priority>
-<changefreq>hourly</changefreq>
-</url>
-<url>
-<loc>https://swishtag.com/shopify-sage-connect-integration/</loc>
-<priority>0.5</priority>
-<changefreq>hourly</changefreq>
-</url>
-<url>
-<loc>https://swishtag.com/enterprise-shopify-automation/</loc>
-<priority>0.5</priority>
-<changefreq>hourly</changefreq>
-</url>
-<url>
-<loc>https://swishtag.com/solutions/custom-software-automation/</loc>
-<priority>0.5</priority>
-<changefreq>hourly</changefreq>
-</url>
-<url>
-<loc>https://swishtag.com/book-demo/</loc>
-<priority>0.5</priority>
-<changefreq>hourly</changefreq>
-</url>
-<url>
-<loc>https://swishtag.com/solutions/#faq</loc>
 <priority>0.5</priority>
 <changefreq>hourly</changefreq>
 </url>
