@@ -4,6 +4,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 export const prerender = false;
 
 const slug = Astro.params.slug;
+const WORDPRESS_POSTS_API = 'https://cms.swishtag.com/wp-json/wp/v2/posts';
+
+async function postExistsForSlug(slug) {
+  if (!slug) return false;
+
+  const url = new URL(WORDPRESS_POSTS_API);
+  url.searchParams.set('slug', slug);
+  url.searchParams.set('_fields', 'id,slug');
+  url.searchParams.set('per_page', '1');
+
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`WordPress returned ${response.status}`);
+
+  const posts = await response.json();
+  return Array.isArray(posts) && posts.length > 0;
+}
+
+async function postExistsForPublicSlug(slug) {
+  if (!slug) return false;
+  if (await postExistsForSlug(slug)) return true;
+  if (slug.endsWith('-2026')) return postExistsForSlug(slug.replace(/-2026$/, ''));
+  return false;
+}
+
+try {
+  if (!(await postExistsForPublicSlug(slug))) {
+    return new Response(null, {
+      status: 404,
+      statusText: 'Not found',
+    });
+  }
+} catch (error) {
+  console.warn(`Unable to verify WordPress post slug "${slug}":`, error);
+}
+
 const title = 'Insight | Swishtag';
 const description = 'A practical Swishtag insight for Shopify, promotional products, integrations, automation and commerce teams.';
 const canonical = `https://cms.swishtag.com/${slug}/`;

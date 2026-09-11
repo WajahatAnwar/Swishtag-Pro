@@ -155,6 +155,14 @@ export function createSubmissionDocument(data, request) {
     reminderStatus: isBookDemo ? "pending" : "not_applicable",
     reminderSentAt: null,
     reminderError: "",
+    zoomStatus: isBookDemo ? "pending" : "not_applicable",
+    zoomError: "",
+    zoomMeeting: null,
+    zoomRegistrant: null,
+    zoomRegistrantError: null,
+    meetingConfirmationStatus: isBookDemo ? "pending" : "not_applicable",
+    meetingConfirmationSentAt: null,
+    meetingConfirmationError: "",
     createdAt: now,
     createdAtISO: now.toISOString(),
   };
@@ -193,6 +201,16 @@ export function serializeSubmission(submission) {
       ? submission.reminderSentAt.toISOString()
       : submission.reminderSentAt ?? "",
     reminderError: submission.reminderError ?? "",
+    zoomStatus: submission.zoomStatus ?? "",
+    zoomError: submission.zoomError ?? "",
+    zoomMeeting: submission.zoomMeeting ?? null,
+    zoomRegistrant: submission.zoomRegistrant ?? null,
+    zoomRegistrantError: submission.zoomRegistrantError ?? null,
+    meetingConfirmationStatus: submission.meetingConfirmationStatus ?? "",
+    meetingConfirmationSentAt: submission.meetingConfirmationSentAt instanceof Date
+      ? submission.meetingConfirmationSentAt.toISOString()
+      : submission.meetingConfirmationSentAt ?? "",
+    meetingConfirmationError: submission.meetingConfirmationError ?? "",
     meetingAt: submission.meetingAt instanceof Date
       ? submission.meetingAt.toISOString()
       : submission.meetingAtISO ?? "",

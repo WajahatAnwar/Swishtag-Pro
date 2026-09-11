@@ -117,6 +117,28 @@ function getRecipients(value) {
     .filter(item => item.includes("@"));
 }
 
+function envFlag(key, fallback = true) {
+  const value = envValue(key);
+  if (!value) return fallback;
+  return ["1", "true", "yes", "on"].includes(value.toLowerCase());
+}
+
+function getZoomMeeting(submission) {
+  const meeting = submission?.zoomMeeting || {};
+  return {
+    id: meeting.id || meeting.meetingId || "",
+    joinUrl: meeting.joinUrl || meeting.join_url || "",
+    startUrl: meeting.startUrl || meeting.start_url || "",
+    password: meeting.password || "",
+  };
+}
+
+function formatSafeMeetingDate(meetingAt, timeZone) {
+  const date = meetingAt instanceof Date ? meetingAt : new Date(meetingAt || "");
+  if (Number.isNaN(date.getTime())) return "Selected meeting time";
+  return formatMeetingDate(date, timeZone);
+}
+
 function createSocket(config) {
   if (config.encryption === "ssl") {
     return tls.connect({
@@ -217,9 +239,16 @@ function renderHtmlEmail(heading, summary, fields) {
 function createEmailContent(submission) {
   const isBookDemo = submission.formType === "book-demo";
   const labels = fieldLabels[submission.formType] || {};
+  const zoomMeeting = getZoomMeeting(submission);
   const fields = [
     ["Form", isBookDemo ? "Book a Demo" : "Custom Software & Automation"],
     ...Object.entries(labels).map(([key, label]) => [label, submission.fields?.[key] || ""]),
+    ...(isBookDemo && zoomMeeting.joinUrl ? [
+      ["Zoom join link", zoomMeeting.joinUrl],
+      ["Zoom host start link", zoomMeeting.startUrl],
+      ["Zoom meeting ID", zoomMeeting.id],
+      ["Zoom passcode", zoomMeeting.password],
+    ] : []),
     ["Page", submission.page || ""],
     ["IP", submission.ipAddress || ""],
     ["User agent", submission.userAgent || ""],
@@ -244,31 +273,92 @@ function createEmailContent(submission) {
   };
 }
 
-function createMeetingReminderContent(submission, meetingAt) {
+function getMeetingDetailFields(
+  submission,
+  meetingAt,
+  { includeCustomer = true, includeHostStartUrl = false, includePage = true } = {},
+) {
   const fields = submission.fields || {};
-  const meetingTime = formatMeetingDate(meetingAt, fields.timezone);
-  const reminderFields = [
+  const meetingTime = formatSafeMeetingDate(meetingAt, fields.timezone);
+  const zoomMeeting = getZoomMeeting(submission);
+
+  return [
     ["Meeting time", meetingTime],
-    ["Lead", submission.displayName || fields.fullName || ""],
-    ["Work email", submission.email || fields.workEmail || ""],
-    ["Company", submission.companyName || fields.companyName || ""],
+    ...(includeCustomer ? [
+      ["Name", submission.displayName || fields.fullName || ""],
+      ["Work email", submission.email || fields.workEmail || ""],
+      ["Company", submission.companyName || fields.companyName || ""],
+    ] : []),
+    ...(zoomMeeting.joinUrl ? [["Zoom link", zoomMeeting.joinUrl]] : []),
+    ...(includeHostStartUrl && zoomMeeting.startUrl ? [["Host start link", zoomMeeting.startUrl]] : []),
+    ...(zoomMeeting.id ? [["Meeting ID", zoomMeeting.id]] : []),
+    ...(zoomMeeting.password ? [["Passcode", zoomMeeting.password]] : []),
     ["Solution interest", fields.solutionInterest || ""],
     ["Service", fields.service || ""],
     ["Intent", fields.intent || ""],
     ["Notes", fields.notes || ""],
-    ["Page", submission.page || ""],
+    ...(includePage ? [["Page", submission.page || ""]] : []),
   ];
+}
 
-  const leadName = submission.displayName || submission.companyName || "a lead";
-  const subject = `Reminder: demo with ${leadName} in the next 24 hours`;
-  const summary = `${leadName} has a Book Demo meeting scheduled for ${meetingTime}.`;
+function createMeetingScheduledContent(submission, meetingAt, audience = "customer") {
+  const fields = submission.fields || {};
+  const meetingTime = formatSafeMeetingDate(meetingAt, fields.timezone);
+  const leadName = submission.displayName || fields.fullName || "there";
+  const companyName = submission.companyName || fields.companyName || "your team";
+  const isInternal = audience === "internal";
+  const detailFields = getMeetingDetailFields(submission, meetingAt, {
+    includeCustomer: isInternal,
+    includeHostStartUrl: isInternal,
+    includePage: isInternal,
+  });
+
+  const subject = isInternal
+    ? `Demo scheduled: ${submission.displayName || companyName} - ${meetingTime}`
+    : "Your Swishtag demo is scheduled";
+  const summary = isInternal
+    ? `${leadName} from ${companyName} booked a demo for ${meetingTime}.`
+    : `Thanks ${leadName}. Your Swishtag demo is scheduled for ${meetingTime}.`;
 
   return {
     subject,
-    heading: "Book Demo Meeting Reminder",
+    heading: isInternal ? "Book Demo Meeting Scheduled" : "Your Demo Is Scheduled",
+    summary,
+    textBody: renderTextEmail(detailFields),
+    htmlBody: renderHtmlEmail(
+      isInternal ? "Book Demo Meeting Scheduled" : "Your Demo Is Scheduled",
+      summary,
+      detailFields,
+    ),
+  };
+}
+
+function createMeetingReminderContent(submission, meetingAt, audience = "internal") {
+  const fields = submission.fields || {};
+  const meetingTime = formatSafeMeetingDate(meetingAt, fields.timezone);
+  const leadName = submission.displayName || submission.companyName || "a lead";
+  const isInternal = audience === "internal";
+  const reminderFields = getMeetingDetailFields(submission, meetingAt, {
+    includeCustomer: isInternal,
+    includeHostStartUrl: isInternal,
+    includePage: isInternal,
+  });
+
+  const subject = isInternal
+    ? `Reminder: demo with ${leadName} in the next 24 hours`
+    : "Reminder: your Swishtag demo is coming up";
+  const summary = isInternal
+    ? `${leadName} has a Book Demo meeting scheduled for ${meetingTime}.`
+    : `Your Swishtag demo is scheduled for ${meetingTime}.`;
+
+  const heading = isInternal ? "Book Demo Meeting Reminder" : "Your Demo Reminder";
+
+  return {
+    subject,
+    heading,
     summary,
     textBody: renderTextEmail(reminderFields),
-    htmlBody: renderHtmlEmail("Book Demo Meeting Reminder", summary, reminderFields),
+    htmlBody: renderHtmlEmail(heading, summary, reminderFields),
   };
 }
 
@@ -349,23 +439,66 @@ export async function sendSubmissionEmail(submission) {
   };
 }
 
+export async function sendMeetingScheduledEmail(submission, meetingAt) {
+  const config = getMailConfig();
+  validateMailConfig(config);
+
+  const customerEmail = submission.email || submission.fields?.workEmail || "";
+  const internalRecipients = getRecipients(envValue("MEETING_CONFIRMATION_TO", config.to));
+  const recipients = [];
+
+  if (!internalRecipients.length && !customerEmail) {
+    throw new Error("No meeting confirmation recipients are configured.");
+  }
+
+  if (internalRecipients.length) {
+    const internalContent = createMeetingScheduledContent(submission, meetingAt, "internal");
+    for (const recipient of internalRecipients) {
+      await sendSmtpMessage(config, recipient, internalContent, customerEmail || config.fromAddress);
+      recipients.push(recipient);
+    }
+  }
+
+  if (customerEmail && envFlag("MEETING_CONFIRMATION_SEND_TO_CUSTOMER", true)) {
+    const customerContent = createMeetingScheduledContent(submission, meetingAt, "customer");
+    await sendSmtpMessage(config, customerEmail, customerContent, internalRecipients[0] || config.fromAddress);
+    recipients.push(customerEmail);
+  }
+
+  return {
+    recipients,
+    subject: "Your Swishtag demo is scheduled",
+  };
+}
+
 export async function sendMeetingReminderEmail(submission, meetingAt) {
   const config = getMailConfig();
   validateMailConfig(config);
 
   const recipients = getRecipients(envValue("MEETING_REMINDER_TO", config.to));
-  if (!recipients.length) {
-    throw new Error("MEETING_REMINDER_TO or MAIL_TO must contain a valid recipient.");
+  const customerEmail = submission.email || submission.fields?.workEmail || "";
+  const sentRecipients = [];
+
+  if (!recipients.length && !customerEmail) {
+    throw new Error("No meeting reminder recipients are configured.");
   }
 
-  const content = createMeetingReminderContent(submission, meetingAt);
+  if (recipients.length) {
+    const content = createMeetingReminderContent(submission, meetingAt, "internal");
+    for (const recipient of recipients) {
+      await sendSmtpMessage(config, recipient, content, customerEmail || config.fromAddress);
+      sentRecipients.push(recipient);
+    }
+  }
 
-  for (const recipient of recipients) {
-    await sendSmtpMessage(config, recipient, content, submission.email || config.fromAddress);
+  if (customerEmail && envFlag("MEETING_REMINDER_SEND_TO_CUSTOMER", true)) {
+    const content = createMeetingReminderContent(submission, meetingAt, "customer");
+    await sendSmtpMessage(config, customerEmail, content, recipients[0] || config.fromAddress);
+    sentRecipients.push(customerEmail);
   }
 
   return {
-    recipients,
-    subject: content.subject,
+    recipients: sentRecipients,
+    subject: "Meeting reminder",
   };
 }

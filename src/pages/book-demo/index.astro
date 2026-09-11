@@ -611,7 +611,7 @@ const formToken = formSubmissionMode === "wordpress" ? (import.meta.env.PUBLIC_A
 
   function setSubmitting(isSubmitting){
     submitBtn.disabled = isSubmitting;
-    submitBtn.innerHTML = isSubmitting ? 'Sending... <b>...</b>' : 'Book my demo <b>&#8599;</b>';
+    submitBtn.innerHTML = isSubmitting ? 'Sending...' : 'Book my demo <b>&#8599;</b>';
   }
 
   async function postForm(payload){
